@@ -1,0 +1,89 @@
+import 'package:GPPremium/models/antiquebra.dart';
+import 'package:GPPremium/screens/antiquebra/ListaAntiquebra.dart';
+import 'package:GPPremium/screens/camelback/ListaCamelback.dart';
+import 'package:GPPremium/screens/carcaca/ListaCarcacas.dart';
+import 'package:GPPremium/screens/dashboard/home.dart';
+import 'package:GPPremium/screens/espessuramento/ListaEspessuramento.dart';
+import 'package:GPPremium/screens/marca/ListaMarca.dart';
+import 'package:GPPremium/screens/matriz/ListaMatriz.dart';
+import 'package:GPPremium/screens/medida/ListaMedida.dart';
+import 'package:GPPremium/screens/modelo/ListaModelo.dart';
+import 'package:GPPremium/screens/pais/ListaPais.dart';
+import 'package:GPPremium/screens/producao/ListaProducao.dart';
+import 'package:GPPremium/screens/regra/ListaRegras.dart';
+import 'package:GPPremium/service/antiquebraapi.dart';
+import 'package:GPPremium/service/camelbackapi.dart';
+import 'package:GPPremium/service/carcacaapi.dart';
+import 'package:GPPremium/service/espessuramento.dart';
+import 'package:GPPremium/service/marcaapi.dart';
+import 'package:GPPremium/service/matrizapi.dart';
+import 'package:GPPremium/service/medidaapi.dart';
+import 'package:GPPremium/service/modeloapi.dart';
+import 'package:GPPremium/service/paisapi.dart';
+import 'package:GPPremium/service/producaoapi.dart';
+import 'package:GPPremium/service/regraapi.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:provider/provider.dart';
+import 'autenticacao/login.dart';
+//flutter build appbundle
+ const SERVER_IP = 'http://143.198.182.236:8080/gp/api/';
+
+// const SERVER_IP = 'http://192.168.0.113:8080/api/';
+
+
+final storage = FlutterSecureStorage();
+
+void main() {
+  runApp(GpPremiumApp());
+  // findAll();
+}
+
+class GpPremiumApp extends StatelessWidget {
+  var navigator = GlobalKey<NavigatorState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<CarcacaApi>(create: (_) => CarcacaApi()),
+        ChangeNotifierProvider<ProducaoApi>(create: (_) => ProducaoApi()),
+        ChangeNotifierProvider<RegraApi>(create: (_) => RegraApi()),
+        ChangeNotifierProvider<PaisApi>(create: (_) => PaisApi()),
+        ChangeNotifierProvider<CamelbackApi>(create: (_) => CamelbackApi()),
+        ChangeNotifierProvider<MedidaApi>(create: (_) => MedidaApi()),
+        ChangeNotifierProvider<ModeloApi>(create: (_) => ModeloApi()),
+        ChangeNotifierProvider<MarcaApi>(create: (_) => MarcaApi()),
+        ChangeNotifierProvider<MatrizApi>(create: (_) => MatrizApi()),
+        ChangeNotifierProvider<AntiquebraApi>(create: (_) => AntiquebraApi()),
+        ChangeNotifierProvider<EspessuramentoApi>(create: (_) => EspessuramentoApi()),
+      ],
+      child: MaterialApp(
+        routes: {
+          '/espessuramento': (context) => ListaEspessuramento(),
+          '/antiquebra': (context) => ListaAntiquebra(),
+          '/matriz': (context) => ListaMatriz(),
+          '/marca': (context) => ListaMarca(),
+          '/modelo': (context) => ListaModelo(),
+          '/medida': (context) => ListaMedida(),
+          '/camelback': (context) => ListaCamelback(),
+          '/carcacas': (context) => ListaCarcaca(),
+          '/regras': (context) => ListaRegras(),
+          '/producao': (context) => ListaProducao(),
+          '/pais': (context) => ListaPais(),
+          '/home': (_) => Home(),
+        },
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primaryColor: Colors.black,
+          accentColor: Color.fromRGBO(0, 0, 0, 1),
+          // buttonTheme: ButtonThemeData(
+          //   buttonColor: Colors.blueAccent[700],
+          //   textTheme: ButtonTextTheme.primary,
+          // ),
+        ),
+        home: Login(),
+      ),
+    );
+  }
+}
