@@ -1,4 +1,4 @@
-package com.example.gp_app;
+package br.com.pneusgppremium.gp_app;
 
 import io.flutter.embedding.android.FlutterActivity;
 
