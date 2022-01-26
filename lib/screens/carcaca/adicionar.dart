@@ -220,7 +220,6 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
           ),
           Padding(padding: EdgeInsets.all(10)),
           Container(
-            width: 100.0,
             child: _image == null
                 ? Text("Pré Visualização da foto..")
                 : Image.file(_image),
