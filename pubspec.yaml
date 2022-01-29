@@ -38,7 +38,7 @@ dependencies:
   line_icons: ^2.0.1
   equatable: ^2.0.3
   image_picker:
-  multi_image_picker2: ^5.0.02
+  multi_image_picker2:
   permission_handler:
   usage: ^4.0.2
   flutter_quill:
