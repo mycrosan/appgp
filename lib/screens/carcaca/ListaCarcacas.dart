@@ -16,7 +16,6 @@ class ListaCarcaca extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
         title: Text('Carcaças'),
         // actions: [
         //   PopupMenuButton(

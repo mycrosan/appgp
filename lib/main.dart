@@ -26,6 +26,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'autenticacao/login.dart';
+
 //flutter build appbundle
 //  const SERVER_IP = 'http://143.198.182.236:8080/gp/api/';
 
@@ -55,7 +56,8 @@ class GpPremiumApp extends StatelessWidget {
         ChangeNotifierProvider<MarcaApi>(create: (_) => MarcaApi()),
         ChangeNotifierProvider<MatrizApi>(create: (_) => MatrizApi()),
         ChangeNotifierProvider<AntiquebraApi>(create: (_) => AntiquebraApi()),
-        ChangeNotifierProvider<EspessuramentoApi>(create: (_) => EspessuramentoApi()),
+        ChangeNotifierProvider<EspessuramentoApi>(
+            create: (_) => EspessuramentoApi()),
       ],
       child: MaterialApp(
         routes: {
@@ -74,12 +76,37 @@ class GpPremiumApp extends StatelessWidget {
         },
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primaryColor: Colors.black,
-          accentColor: Color.fromRGBO(0, 0, 0, 1),
           // buttonTheme: ButtonThemeData(
-          //   buttonColor: Colors.blueAccent[700],
-          //   textTheme: ButtonTextTheme.primary,
+          //   buttonColor: Colors.deepPurple,     //  <-- dark color
+          //   textTheme: ButtonTextTheme.primary, //  <-- this auto selects the right color
           // ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                  primary: Colors.black,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+                 )),
+          primaryColor: Colors.black,
+          buttonTheme: ButtonThemeData(
+            buttonColor: Colors.red,
+            textTheme: ButtonTextTheme.primary,
+          ),
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.black,
+            titleTextStyle: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ), //TextStyle
+          ),
+          floatingActionButtonTheme: const FloatingActionButtonThemeData(
+            backgroundColor: Colors.black,
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(2.0)),
+            ),
+            elevation: 10,
+          ), //AppBarTheme
         ),
         home: Login(),
       ),

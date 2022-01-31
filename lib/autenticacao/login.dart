@@ -59,7 +59,7 @@ class Login extends StatelessWidget {
             ),
           ),
         ),
-        backgroundColor: Theme.of(context).accentColor);
+        backgroundColor: Theme.of(context).primaryColor);
   }
 
   Widget _construirFormulario(context) {
