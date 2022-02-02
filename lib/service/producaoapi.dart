@@ -34,7 +34,7 @@ class ProducaoApi extends ChangeNotifier {
 
   Future<Producao> get(String url) async {
     http.Response response = await http.get(
-      url,
+      Uri.parse(url),
       headers: {
         'Content-type': 'application/json',
         'Accept': 'application/json',

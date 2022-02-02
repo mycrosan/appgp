@@ -33,8 +33,7 @@ class UploadImageApi extends ChangeNotifier {
   }
 
   Future<Producao> get(String url) async {
-    http.Response response = await http.get(
-      url,
+    http.Response response = await http.get(Uri.parse(url),
       headers: {
         'Content-type': 'application/json',
         'Accept': 'application/json',

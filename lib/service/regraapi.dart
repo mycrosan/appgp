@@ -34,7 +34,7 @@ class RegraApi extends ChangeNotifier {
   }
 
   Future<Regra> get(String url) async {
-    http.Response response = await http.get(url);
+    http.Response response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
       final map = jsonDecode(response.body);

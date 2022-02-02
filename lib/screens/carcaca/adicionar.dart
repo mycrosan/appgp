@@ -79,22 +79,37 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
     });
   }
 
-  File _image;
+  XFile _imageFile;
+  dynamic _pickImageError;
 
   Future getImage() async {
-    final pickedFile = await ImagePicker.pickImage(source: ImageSource.camera, imageQuality: 25);
+    try {
+      final pickedFile = await ImagePicker().pickImage(
+        source:  ImageSource.camera,
+        imageQuality: 25,
+      );
+      setState(() {
+        _imageFile = pickedFile;
+      });
+    } catch (e) {
+      setState(() {
+        _pickImageError = e;
+      });
+    }
 
-    setState(() {
-      _image = pickedFile;
-    });
-
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-      } else {
-        print('No image selected.');
-      }
-    });
+    // final pickedFile = await ImagePicker().pickImage (source: ImageSource.camera, imageQuality: 25);
+    //
+    // setState(() {
+    //   _image = pickedFile;
+    // });
+    //
+    // setState(() {
+    //   if (pickedFile != null) {
+    //     _image = XFile(pickedFile.path);
+    //   } else {
+    //     print('No image selected.');
+    //   }
+    // });
   }
 
   @override
@@ -220,9 +235,10 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
           ),
           Padding(padding: EdgeInsets.all(10)),
           Container(
-            child: _image == null
+            child: _imageFile == null
                 ? Text("Pré Visualização da foto..")
-                : Image.file(_image),
+                : Image.file(File(_imageFile.path),
+              fit: BoxFit.cover),
           ),
           // botões camera
           Row(
@@ -285,7 +301,7 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
                     'title': 'carcacaImage',
                   };
 
-                  responseMessageSimple imageResponse = await UploadApi().addImage(body, _image.path);
+                  responseMessageSimple imageResponse = await UploadApi().addImage(body, _imageFile.path);
 
                   print(imageResponse.content[0]);
                   carcaca.fotos = imageResponse.content[0];
