@@ -36,7 +36,6 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
 
   bool isVideo = false;
 
-
   set _imageFile(XFile value) {
     _imageFileList = value == null ? null : [value];
   }
@@ -96,10 +95,6 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
   // XFile _imageFile;
   dynamic _pickImageError;
 
-
-
-
-
   Future getImage() async {
     try {
       final pickedFileList = await _picker.pickMultiImage(
@@ -132,57 +127,55 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
     );
   }
 
-
   void _onImageButtonPressed(ImageSource source,
       {BuildContext context, bool isMultiImage = false}) async {
     // if (_controller != null) {
     //   await _controller.setVolume(0.0);
     // }
-    if (false) {// Todo isVideo
+    if (false) {
+      // Todo isVideo
       final XFile file = await _picker.pickVideo(
           source: source, maxDuration: const Duration(seconds: 10));
       // await _playVideo(file);
     } else if (isMultiImage) {
       await _displayPickImageDialog(context,
-              (double maxWidth, double maxHeight, int quality) async {
-            try {
-              final pickedFileList = await _picker.pickMultiImage(
-                maxWidth: maxWidth,
-                maxHeight: maxHeight,
-                imageQuality: quality,
-              );
-              setState(() {
-                _imageFileList = pickedFileList;
-              });
-            } catch (e) {
-              setState(() {
-                _pickImageError = e;
-              });
-            }
+          (double maxWidth, double maxHeight, int quality) async {
+        try {
+          final pickedFileList = await _picker.pickMultiImage(
+            maxWidth: maxWidth,
+            maxHeight: maxHeight,
+            imageQuality: quality,
+          );
+          setState(() {
+            _imageFileList = pickedFileList;
           });
+        } catch (e) {
+          setState(() {
+            _pickImageError = e;
+          });
+        }
+      });
     } else {
       await _displayPickImageDialog(context,
-              (double maxWidth, double maxHeight, int quality) async {
-            try {
-              final pickedFile = await _picker.pickImage(
-                source: source,
-                maxWidth: maxWidth,
-                maxHeight: maxHeight,
-                imageQuality: quality,
-              );
-              setState(() {
-                _imageFile = pickedFile;
-              });
-            } catch (e) {
-              setState(() {
-                _pickImageError = e;
-              });
-            }
+          (double maxWidth, double maxHeight, int quality) async {
+        try {
+          final pickedFile = await _picker.pickImage(
+            source: source,
+            maxWidth: maxWidth,
+            maxHeight: maxHeight,
+            imageQuality: quality,
+          );
+          setState(() {
+            _imageFile = pickedFile;
           });
+        } catch (e) {
+          setState(() {
+            _pickImageError = e;
+          });
+        }
+      });
     }
   }
-
-
 
   Widget _handlePreview() {
     if (false) {
@@ -231,42 +224,20 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
       return Row(
         children: <Widget>[
           Expanded(
-            child: SizedBox(
-              height: 500.0,
+            child: Container(
+              height: 200.0,
               child: new ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: _imageFileList.length,
                 itemBuilder: (BuildContext ctxt, int index) {
-
                   return new Image.file(File(_imageFileList[index].path));
                 },
               ),
             ),
           ),
-          // new IconButton(
-          //   icon: Icon(Icons.remove_circle),
-          //   onPressed: () {},
-          // ),
         ],
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
       );
-      //   Flexible(
-      //   fit: FlexFit.tight,
-      //   child: ListView.builder(
-      //         key: UniqueKey(),
-      //         itemBuilder: (context, index) {
-      //           // Why network for web?
-      //           // See https://pub.dev/packages/image_picker#getting-ready-for-the-web-platform
-      //           return Semantics(
-      //             label: 'image_picker_example_picked_image',
-      //             child: kIsWeb
-      //                 ? Image.network(_imageFileList[index].path)
-      //                 : Image.file(File(_imageFileList[index].path)),
-      //           );
-      //         },
-      //         itemCount: _imageFileList.length,
-      //       ),
-      // );
     } else if (_pickImageError != null) {
       return Text(
         'Pick image error: $_pickImageError',
@@ -446,32 +417,33 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
           Center(
             child: !kIsWeb && defaultTargetPlatform == TargetPlatform.android
                 ? FutureBuilder<void>(
-              future: retrieveLostData(),
-              builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.none:
-                  case ConnectionState.waiting:
-                    return const Text(
-                      'You have not yet picked an image.',
-                      textAlign: TextAlign.center,
-                    );
-                  case ConnectionState.done:
-                    return _handlePreview();
-                  default:
-                    if (snapshot.hasError) {
-                      return Text(
-                        'Pick image/video error: ${snapshot.error}}',
-                        textAlign: TextAlign.center,
-                      );
-                    } else {
-                      return const Text(
-                        'You have not yet picked an image.',
-                        textAlign: TextAlign.center,
-                      );
-                    }
-                }
-              },
-            )
+                    future: retrieveLostData(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<void> snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.none:
+                        case ConnectionState.waiting:
+                          return const Text(
+                            'You have not yet picked an image.',
+                            textAlign: TextAlign.center,
+                          );
+                        case ConnectionState.done:
+                          return _handlePreview();
+                        default:
+                          if (snapshot.hasError) {
+                            return Text(
+                              'Pick image/video error: ${snapshot.error}}',
+                              textAlign: TextAlign.center,
+                            );
+                          } else {
+                            return const Text(
+                              'You have not yet picked an image.',
+                              textAlign: TextAlign.center,
+                            );
+                          }
+                      }
+                    },
+                  )
                 : _handlePreview(),
           ),
 
@@ -540,11 +512,11 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
                     'title': 'carcacaImage',
                   };
 
-                  // responseMessageSimple imageResponse =
-                  //     await UploadApi().addImage(body, _imageFile.path);
-                  //
-                  // print(imageResponse.content[0]);
-                  // carcaca.fotos = imageResponse.content[0];
+                  responseMessageSimple imageResponse =
+                      await UploadApi().addImage(body, _imageFileList);
+
+                  print(imageResponse.content[0]);
+                  carcaca.fotos = json.encode(imageResponse.content);
 
                   if (_formkey.currentState.validate()) {
                     var response = await CarcacaApi().create(carcaca);
@@ -567,4 +539,3 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
 
 typedef void OnPickImageCallback(
     double maxWidth, double maxHeight, int quality);
-

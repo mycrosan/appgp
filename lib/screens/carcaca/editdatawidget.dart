@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:GPPremium/models/carcaca.dart';
@@ -104,14 +105,18 @@ class EditarCarcacaPageState extends State<EditarCarcacaPage> {
   }
 
   showImage(img) async {
-      final ByteData imageData = await NetworkAssetBundle(
-              Uri.parse(SERVER_IP + "carcaca/image/${img}"))
-          .load("");
+    var images = json.decode(img);
+    List butter = [];
+
+    for (final i in images) {
+      final ByteData imageData =
+          await NetworkAssetBundle(Uri.parse(SERVER_IP + "carcaca/image/${i}"))
+              .load("");
       final Uint8List bytes = imageData.buffer.asUint8List();
-      // Image image = Image.memory(bytes);
-      // return bytes;
-      image_ok = true;
-      return Image.memory(bytes);
+      butter.add(Image.memory(bytes));
+    }
+    image_ok = true;
+    return butter;
   }
 
   @override
@@ -236,13 +241,19 @@ class EditarCarcacaPageState extends State<EditarCarcacaPage> {
                         builder: (context, AsyncSnapshot snapshot) {
                           if (snapshot.hasData) {
                             return Container(
-                                    child: snapshot.data,
-                                  );
+                              height: 200.0,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: snapshot.data.length,
+                                itemBuilder: (BuildContext ctxt, int index) {
+                                  return snapshot.data[index];
+                                },
+                              ),
+                            );
                           } else {
                             return CircularProgressIndicator();
                           }
                         }),
-
                   ),
                   Row(
                     children: [

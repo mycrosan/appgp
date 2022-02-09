@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class UploadApi {
-  Future<Object> addImage(Map<String, String> body, String filepath) async {
+  Future<Object> addImage(Map<String, String> body, List imagesList) async {
 
     String addimageUrl = SERVER_IP + 'upload';
 
@@ -14,10 +14,14 @@ class UploadApi {
       'Content-Type': 'multipart/form-data',
     };
 
-    var request = http.MultipartRequest('POST', Uri.parse(addimageUrl))
-      ..fields.addAll(body)
-      ..headers.addAll(headers)
-      ..files.add(await http.MultipartFile.fromPath('files', filepath));
+    var request = http.MultipartRequest('POST', Uri.parse(addimageUrl));
+    request.fields.addAll(body);
+    request.headers.addAll(headers);
+
+    for(final i in imagesList) {
+      request.files.add(
+          await http.MultipartFile.fromPath('files', i.path));
+    }
 
     var response = await request.send();
     //for getting and decoding the response into json format
