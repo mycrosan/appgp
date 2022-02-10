@@ -159,174 +159,6 @@ class AdicionarRegraPageState extends State<AdicionarRegraPage> {
       key: _formkey,
       child: Column(
         children: [
-          Row(
-            children: [
-              Expanded(
-                  child: TextFormField(
-                controller: textEditingControllerTamanhoMin,
-                decoration: InputDecoration(
-                  labelText: "Tamanho mínimo",
-                ),
-                validator: (value) {
-                  if (value.length == 0) return 'Não pode ser nulo';
-                },
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                onChanged: (String newValue) {
-                  setState(() {
-                    regra.tamanhoMin = double.parse(newValue);
-                  });
-                },
-              )),
-              Padding(padding: EdgeInsets.all(5)),
-              Expanded(
-                  child: TextFormField(
-                controller: textEditingControllerTamanhoMax,
-                decoration: InputDecoration(
-                  labelText: "Tamanho máximo",
-                ),
-                validator: (value) {
-                  if (value.length == 0) return 'Não pode ser nulo';
-                },
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                onChanged: (String newValue) {
-                  setState(() {
-                    regra.tamanhoMax = double.parse(newValue);
-                  });
-                },
-              )),
-            ],
-          ),
-          Row(children: [
-            Expanded(
-              child: DropdownButtonFormField(
-                decoration: InputDecoration(
-                  labelText: "Antiquebra1",
-                ),
-                validator: (value) =>
-                    value == null ? 'Não pode ser nulo' : null,
-                value: antiquebra1Selected,
-                isExpanded: true,
-                onChanged: (Antiquebra antiquebra) {
-                  setState(() {
-                    antiquebra1Selected = antiquebra;
-                    regra.antiquebra1 = antiquebra1Selected;
-                  });
-                },
-                items: antiquebraList.map((antiquebra) {
-                  return DropdownMenuItem(
-                    value: antiquebra,
-                    child: Text(antiquebra.descricao),
-                  );
-                }).toList(),
-              ),
-            ),
-            Padding(padding: EdgeInsets.all(5)),
-            Expanded(
-              child: DropdownButtonFormField(
-                decoration: InputDecoration(
-                  labelText: "Antiquebra2",
-                ),
-                validator: (value) =>
-                    value == null ? 'Não pode ser nulo' : null,
-                value: antiquebra2Selected,
-                isExpanded: true,
-                onChanged: (Antiquebra antiquebra) {
-                  setState(() {
-                    antiquebra2Selected = antiquebra;
-                    regra.antiquebra2 = antiquebra2Selected;
-                  });
-                },
-                items: antiquebraList.map((antiquebra) {
-                  return DropdownMenuItem(
-                    value: antiquebra,
-                    child: Text(antiquebra.descricao),
-                  );
-                }).toList(),
-              ),
-            ),
-            Padding(padding: EdgeInsets.all(5)),
-            Expanded(
-              child: DropdownButtonFormField(
-                decoration: InputDecoration(
-                  labelText: "Antiquebra3",
-                ),
-                value: antiquebra3Selected,
-                isExpanded: true,
-                onChanged: (Antiquebra antiquebra) {
-                  setState(() {
-                    antiquebra3Selected = antiquebra;
-                    regra.antiquebra2 = antiquebra3Selected;
-                  });
-                },
-                items: antiquebraList.map((antiquebra) {
-                  return DropdownMenuItem(
-                    value: antiquebra,
-                    child: Text(antiquebra.descricao),
-                  );
-                }).toList(),
-              ),
-            )
-          ]),
-          Row(children: [
-            Expanded(
-              child: DropdownButtonFormField(
-                decoration: InputDecoration(
-                  labelText: "Espessuramento",
-                ),
-                value: espessuramentoSelected,
-                isExpanded: true,
-                onChanged: (Espessuramento espessuramento) {
-                  setState(() {
-                    espessuramentoSelected = espessuramento;
-                    regra.espessuramento = espessuramentoSelected;
-                  });
-                },
-                items: espessuramentoList.map((espessuramento) {
-                  return DropdownMenuItem(
-                    value: espessuramento,
-                    child: Text(espessuramento.descricao),
-                  );
-                }).toList(),
-              ),
-            ),
-            Padding(padding: EdgeInsets.all(5)),
-            Expanded(
-              child: TextFormField(
-                controller: textEditingControllerTempo,
-                decoration: InputDecoration(
-                  labelText: "Tempo",
-                ),
-                validator: (value) =>
-                    value.length == 0 ? 'Não pode ser nulo' : null,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                onChanged: (String newValue) {
-                  setState(() {
-                    regra.tempo = newValue;
-                  });
-                },
-              ),
-            )
-          ]),
-          DropdownButtonFormField(
-            decoration: InputDecoration(
-              labelText: "Camelback",
-            ),
-            validator: (value) => value == null ? 'Não pode ser nulo' : null,
-            value: camelbackSelected,
-            isExpanded: true,
-            onChanged: (Camelback camelback) {
-              setState(() {
-                camelbackSelected = camelback;
-                regra.camelback = camelbackSelected;
-              });
-            },
-            items: camelbackList.map((camelback) {
-              return DropdownMenuItem(
-                value: camelback,
-                child: Text(camelback.descricao),
-              );
-            }).toList(),
-          ),
           DropdownButtonFormField(
             decoration: InputDecoration(
               labelText: "Matriz",
@@ -411,6 +243,172 @@ class AdicionarRegraPageState extends State<AdicionarRegraPage> {
               );
             }).toList(),
           ),
+          Row(
+            children: [
+              Expanded(
+                  child: TextFormField(
+                controller: textEditingControllerTamanhoMin,
+                decoration: InputDecoration(
+                  labelText: "Tamanho mínimo",
+                ),
+                validator: (value) {
+                  if (value.length == 0) return 'Não pode ser nulo';
+                },
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                onChanged: (String newValue) {
+                  setState(() {
+                    regra.tamanhoMin = double.parse(newValue);
+                  });
+                },
+              )),
+              Padding(padding: EdgeInsets.all(5)),
+              Expanded(
+                  child: TextFormField(
+                controller: textEditingControllerTamanhoMax,
+                decoration: InputDecoration(
+                  labelText: "Tamanho máximo",
+                ),
+                validator: (value) {
+                  if (value.length == 0) return 'Não pode ser nulo';
+                },
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                onChanged: (String newValue) {
+                  setState(() {
+                    regra.tamanhoMax = double.parse(newValue);
+                  });
+                },
+              )),
+            ],
+          ),
+          DropdownButtonFormField(
+            decoration: InputDecoration(
+              labelText: "Camelback",
+            ),
+            validator: (value) => value == null ? 'Não pode ser nulo' : null,
+            value: camelbackSelected,
+            isExpanded: true,
+            onChanged: (Camelback camelback) {
+              setState(() {
+                camelbackSelected = camelback;
+                regra.camelback = camelbackSelected;
+              });
+            },
+            items: camelbackList.map((camelback) {
+              return DropdownMenuItem(
+                value: camelback,
+                child: Text(camelback.descricao),
+              );
+            }).toList(),
+          ),
+          Row(children: [
+            Expanded(
+              child: DropdownButtonFormField(
+                decoration: InputDecoration(
+                  labelText: "Antiquebra 1",
+                ),
+                validator: (value) =>
+                    value == null ? 'Não pode ser nulo' : null,
+                value: antiquebra1Selected,
+                isExpanded: true,
+                onChanged: (Antiquebra antiquebra) {
+                  setState(() {
+                    antiquebra1Selected = antiquebra;
+                    regra.antiquebra1 = antiquebra1Selected;
+                  });
+                },
+                items: antiquebraList.map((antiquebra) {
+                  return DropdownMenuItem(
+                    value: antiquebra,
+                    child: Text(antiquebra.descricao),
+                  );
+                }).toList(),
+              ),
+            ),
+            Padding(padding: EdgeInsets.all(5)),
+            Expanded(
+              child: DropdownButtonFormField(
+                decoration: InputDecoration(
+                  labelText: "Antiquebra 2",
+                ),
+                value: antiquebra2Selected,
+                isExpanded: true,
+                onChanged: (Antiquebra antiquebra) {
+                  setState(() {
+                    antiquebra2Selected = antiquebra;
+                    regra.antiquebra2 = antiquebra2Selected;
+                  });
+                },
+                items: antiquebraList.map((antiquebra) {
+                  return DropdownMenuItem(
+                    value: antiquebra,
+                    child: Text(antiquebra.descricao),
+                  );
+                }).toList(),
+              ),
+            ),
+            Padding(padding: EdgeInsets.all(5)),
+            Expanded(
+              child: DropdownButtonFormField(
+                decoration: InputDecoration(
+                  labelText: "Antiquebra 3",
+                ),
+                value: antiquebra3Selected,
+                isExpanded: true,
+                onChanged: (Antiquebra antiquebra) {
+                  setState(() {
+                    antiquebra3Selected = antiquebra;
+                    regra.antiquebra2 = antiquebra3Selected;
+                  });
+                },
+                items: antiquebraList.map((antiquebra) {
+                  return DropdownMenuItem(
+                    value: antiquebra,
+                    child: Text(antiquebra.descricao),
+                  );
+                }).toList(),
+              ),
+            )
+          ]),
+          Row(children: [
+            Expanded(
+              child: DropdownButtonFormField(
+                decoration: InputDecoration(
+                  labelText: "Espessuramento",
+                ),
+                value: espessuramentoSelected,
+                isExpanded: true,
+                onChanged: (Espessuramento espessuramento) {
+                  setState(() {
+                    espessuramentoSelected = espessuramento;
+                    regra.espessuramento = espessuramentoSelected;
+                  });
+                },
+                items: espessuramentoList.map((espessuramento) {
+                  return DropdownMenuItem(
+                    value: espessuramento,
+                    child: Text(espessuramento.descricao),
+                  );
+                }).toList(),
+              ),
+            ),
+            Padding(padding: EdgeInsets.all(5)),
+            Expanded(
+              child: TextFormField(
+                controller: textEditingControllerTempo,
+                decoration: InputDecoration(
+                  labelText: "Tempo",
+                ),
+                validator: (value) =>
+                    value.length == 0 ? 'Não pode ser nulo' : null,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                onChanged: (String newValue) {
+                  setState(() {
+                    regra.tempo = newValue;
+                  });
+                },
+              ),
+            )
+          ]),
           Padding(padding: EdgeInsets.all(10)),
           Row(
             children: [
