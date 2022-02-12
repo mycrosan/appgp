@@ -128,53 +128,6 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
     );
   }
 
-  void _onImageButtonPressed(ImageSource source,
-      {BuildContext context, bool isMultiImage = false}) async {
-    // if (_controller != null) {
-    //   await _controller.setVolume(0.0);
-    // }
-    if (false) {
-      // Todo isVideo
-      final XFile file = await _picker.pickVideo(
-          source: source, maxDuration: const Duration(seconds: 10));
-      // await _playVideo(file);
-    } else if (isMultiImage) {
-      await _displayPickImageDialog(context,
-          (double maxWidth, double maxHeight, int quality) async {
-        try {
-          final pickedFileList = await _picker.pickImage(source: ImageSource.camera
-          );
-          setState(() {
-            _imageFileList.add(pickedFileList);
-          });
-        } catch (e) {
-          setState(() {
-            _pickImageError = e;
-          });
-        }
-      });
-    } else {
-      await _displayPickImageDialog(context,
-          (double maxWidth, double maxHeight, int quality) async {
-        try {
-          final pickedFile = await _picker.pickImage(
-            source: source,
-            maxWidth: maxWidth,
-            maxHeight: maxHeight,
-            imageQuality: quality,
-          );
-          setState(() {
-            _imageFile = pickedFile;
-          });
-        } catch (e) {
-          setState(() {
-            _pickImageError = e;
-          });
-        }
-      });
-    }
-  }
-
   Widget _handlePreview() {
     if (false) {
       // return _previewVideo();
@@ -243,33 +196,10 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
       );
     } else {
       return const Text(
-        'You have not yet picked an image.',
+        'Sem imagens',
         textAlign: TextAlign.center,
       );
     }
-  }
-
-  Future<void> _displayPickImageDialog(
-      BuildContext context, OnPickImageCallback onPick) async {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Add optional parameters'),
-            content: Column(
-              children: <Widget>[
-              ],
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('CANCEL'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
   }
 
   Widget _construirFormulario(context) {
@@ -389,7 +319,7 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
                         case ConnectionState.none:
                         case ConnectionState.waiting:
                           return const Text(
-                            'You have not yet picked an image.',
+                            'Sem imagens',
                             textAlign: TextAlign.center,
                           );
                         case ConnectionState.done:
@@ -402,7 +332,7 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
                             );
                           } else {
                             return const Text(
-                              'You have not yet picked an image.',
+                              'Sem imagens',
                               textAlign: TextAlign.center,
                             );
                           }
