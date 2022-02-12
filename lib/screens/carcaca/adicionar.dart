@@ -32,7 +32,8 @@ class AdicionarCarcacaPage extends StatefulWidget {
 class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
   final _formkey = GlobalKey<FormState>();
 
-  List<XFile> _imageFileList;
+  XFile _imageFile1;
+  List _imageFileList = [];
 
   bool isVideo = false;
 
@@ -97,12 +98,12 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
 
   Future getImage() async {
     try {
-      final pickedFileList = await _picker.pickMultiImage(
-        // source:  ImageSource.camera,
+      final pickedFile = await _picker.pickImage(
+        source:  ImageSource.camera,
         imageQuality: 25,
       );
       setState(() {
-        _imageFileList = pickedFileList;
+        _imageFileList.add(pickedFile);
       });
     } catch (e) {
       setState(() {
@@ -141,13 +142,10 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
       await _displayPickImageDialog(context,
           (double maxWidth, double maxHeight, int quality) async {
         try {
-          final pickedFileList = await _picker.pickMultiImage(
-            maxWidth: maxWidth,
-            maxHeight: maxHeight,
-            imageQuality: quality,
+          final pickedFileList = await _picker.pickImage(source: ImageSource.camera
           );
           setState(() {
-            _imageFileList = pickedFileList;
+            _imageFileList.add(pickedFileList);
           });
         } catch (e) {
           setState(() {
@@ -220,7 +218,7 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
     if (retrieveError != null) {
       return retrieveError;
     }
-    if (_imageFileList != null) {
+    if (_imageFileList.length > 0) {
       return Row(
         children: <Widget>[
           Expanded(
@@ -260,24 +258,6 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
             title: Text('Add optional parameters'),
             content: Column(
               children: <Widget>[
-                // TextField(
-                //   controller: maxWidthController,
-                //   keyboardType: TextInputType.numberWithOptions(decimal: true),
-                //   decoration:
-                //   InputDecoration(hintText: "Enter maxWidth if desired"),
-                // ),
-                // TextField(
-                //   controller: maxHeightController,
-                //   keyboardType: TextInputType.numberWithOptions(decimal: true),
-                //   decoration:
-                //   InputDecoration(hintText: "Enter maxHeight if desired"),
-                // ),
-                // TextField(
-                //   controller: qualityController,
-                //   keyboardType: TextInputType.number,
-                //   decoration:
-                //   InputDecoration(hintText: "Enter quality if desired"),
-                // ),
               ],
             ),
             actions: <Widget>[
@@ -287,21 +267,6 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
                   Navigator.of(context).pop();
                 },
               ),
-              // TextButton(
-              //     child: const Text('PICK'),
-              //     onPressed: () {
-              //       double? width = maxWidthController.text.isNotEmpty
-              //           ? double.parse(maxWidthController.text)
-              //           : null;
-              //       double? height = maxHeightController.text.isNotEmpty
-              //           ? double.parse(maxHeightController.text)
-              //           : null;
-              //       int? quality = qualityController.text.isNotEmpty
-              //           ? int.parse(qualityController.text)
-              //           : null;
-              //       onPick(width, height, quality);
-              //       Navigator.of(context).pop();
-              //     }),
             ],
           );
         });
@@ -446,13 +411,6 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
                   )
                 : _handlePreview(),
           ),
-
-          // Container(
-          //   child: _imageFile == null
-          //       ? Text("Pré Visualização da foto..")
-          //       : Image.file(File(_imageFile.path), fit: BoxFit.cover),
-          // ),
-          // botões camera
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -462,33 +420,6 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
                 tooltip: 'incrementar',
                 child: Icon(Icons.camera_alt),
               ),
-              /*
-              RaisedButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => MyApp()));
-                },
-                child: Text("Camera e Galeria"),
-                color: Colors.blue,
-                textColor: Colors.white,
-                highlightColor: Colors.black,
-              )
-              //IconButton(
-              //onPressed: () {
-              //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => cameraApp ()));
-              //},
-              //icon: Icon(Icons.photo_camera_outlined),
-              //),
-              //Padding(
-              //padding: EdgeInsets.all(2),
-              //),
-              //IconButton(
-              //onPressed: () {},
-              // icon: Icon(Icons.add_photo_alternate_outlined),
-              // ),
-            */
             ],
           ),
           Padding(
