@@ -17,28 +17,23 @@ class ListaCarcaca extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Carcaças'),
-        // actions: [
-        //   PopupMenuButton(
-        //     itemBuilder: (context) => [
-        //       PopupMenuItem(
-        //         child: Text("Adicionar"),
-        //         value: 1,
-        //       ),
-        //       PopupMenuItem(
-        //         child: Text("Remover"),
-        //         value: 1,
-        //       )
-        //     ],
-        //     onSelected: (int menu) {
-        //       Navigator.push(
-        //           context,
-        //           MaterialPageRoute(
-        //             builder: (context) =>
-        //                 AdicionarCarcacaPage(), //AddCarcacaPage(),
-        //           ));
-        //     },
-        //   )
-        // ],
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        AdicionarCarcacaPage(),
+                  ));
+              // do something
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: EdgeInsets.all(10),
@@ -111,19 +106,19 @@ class ListaCarcaca extends StatelessWidget {
               }
             }),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    AdicionarCarcacaPage(), //AddCarcacaPage(),
-              ));
-        },
-        child: Icon(
-          Icons.add,
-        ),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     Navigator.push(
+      //         context,
+      //         MaterialPageRoute(
+      //           builder: (context) =>
+      //               AdicionarCarcacaPage(), //AddCarcacaPage(),
+      //         ));
+      //   },
+      //   child: Icon(
+      //     Icons.add,
+      //   ),
+      // ),
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:GPPremium/models/medida.dart';
 import 'package:GPPremium/models/modelo.dart';
 import 'package:GPPremium/models/pais.dart';
 import 'package:GPPremium/service/carcacaapi.dart';
+import 'package:GPPremium/service/get_image.dart';
 import 'package:GPPremium/service/medidaapi.dart';
 import 'package:GPPremium/service/modeloapi.dart';
 import 'package:GPPremium/service/paisapi.dart';
@@ -104,20 +105,20 @@ class EditarCarcacaPageState extends State<EditarCarcacaPage> {
     super.dispose();
   }
 
-  showImage(img) async {
-    var images = json.decode(img);
-    List butter = [];
-
-    for (final i in images) {
-      final ByteData imageData =
-          await NetworkAssetBundle(Uri.parse(SERVER_IP + "carcaca/image/${i}"))
-              .load("");
-      final Uint8List bytes = imageData.buffer.asUint8List();
-      butter.add(Image.memory(bytes));
-    }
-    image_ok = true;
-    return butter;
-  }
+  // showImage(img) async {
+  //   var images = json.decode(img);
+  //   List butter = [];
+  //
+  //   for (final i in images) {
+  //     final ByteData imageData =
+  //         await NetworkAssetBundle(Uri.parse(SERVER_IP + "carcaca/image/${i}"))
+  //             .load("");
+  //     final Uint8List bytes = imageData.buffer.asUint8List();
+  //     butter.add(Image.memory(bytes));
+  //   }
+  //   image_ok = true;
+  //   return butter;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -237,7 +238,7 @@ class EditarCarcacaPageState extends State<EditarCarcacaPage> {
                   Padding(padding: EdgeInsets.all(10)),
                   Container(
                     child: FutureBuilder(
-                        future: showImage(carcaca.fotos),
+                        future: new ImageService().showImage(carcaca.fotos),
                         builder: (context, AsyncSnapshot snapshot) {
                           if (snapshot.hasData) {
                             return Container(
