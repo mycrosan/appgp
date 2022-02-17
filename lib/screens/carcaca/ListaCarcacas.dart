@@ -116,7 +116,7 @@ class ListaCarcacaState extends State<ListaCarcaca> {
                           ),
                         color: Colors.white70,
                         child: ListTile(
-                          title: Text('Etiqueta2: ' +
+                          title: Text('Etiqueta: ' +
                               _responseValue.numeroEtiqueta +
                               " id: " +
                               _responseValue.id.toString()),
