@@ -21,6 +21,8 @@ class ListaCarcacaState extends State<ListaCarcaca> {
   Widget build(BuildContext context) {
     var carcacasAPI = new CarcacaApi();
 
+    final DinamicListCard listCards = DinamicListCard();
+
     TextEditingController textEditingControllerCarcaca;
     textEditingControllerCarcaca = MaskedTextController(mask: '000000');
     Carcaca _responseValue;
@@ -78,11 +80,11 @@ class ListaCarcacaState extends State<ListaCarcaca> {
 
                     _isList.value = false;
 
+                    _isList.notifyListeners();
+
                     if (_responseValue != null) {
                       print('chegou no nulo');
                     } else {
-                      responseMessage responseValue;
-                      responseMessage value = responseValue;
                       // showDialog(
                       //   context: context,
                       //   builder: (BuildContext context) {
@@ -101,6 +103,9 @@ class ListaCarcacaState extends State<ListaCarcaca> {
                       //   },
                       // );
                     }
+                  } else {
+                    _isList.value = true;
+                    _isList.notifyListeners();
                   }
                 },
               ),
@@ -110,65 +115,9 @@ class ListaCarcacaState extends State<ListaCarcaca> {
                 builder: (_, __, ___) {
                   return Visibility(
                       visible: !_isList.value,
-                      child: _responseValue != null ? Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
-                        color: Colors.white70,
-                        child: ListTile(
-                          title: Text('Etiqueta: ' +
-                              _responseValue.numeroEtiqueta +
-                              " id: " +
-                              _responseValue.id.toString()),
-                          subtitle: Text('Medida: ' +
-                              _responseValue.medida.descricao +
-                              "\n"
-                                  'DOT: ' +
-                              _responseValue.dot +
-                              "\n"
-                                  'Modelo: ' +
-                              _responseValue.modelo.descricao),
-                          trailing: Container(
-                            width: 100,
-                            child: Row(
-                              children: <Widget>[
-                                IconButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  EditarCarcacaPage(
-                                                    carcacaEdit:
-                                                    _responseValue,
-                                                  )));
-                                    },
-                                    icon: Icon(Icons.edit, color: Colors.orange)),
-
-                                IconButton(
-                                    onPressed: () async {
-                                      Provider.of<CarcacaApi>(context,
-                                          listen: false)
-                                          .delete(_responseValue.id);
-                                    },
-                                    icon: Icon(
-                                      Icons.delete,
-                                      color: Colors.red,
-                                    )),
-                                // IconButton(onPressed: (){}, icon: Icon(Icons.arrow_right, color: Colors.black,))
-                              ],
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => DetalhesCarcacaPage(
-                                      id: _responseValue.id,
-                                    )));
-                          },
-                        ),
-                      ) : Text('Sem Informações'));
+                      child: _responseValue != null
+                          ? listCards.cardResponse(_responseValue, context)
+                          : Text('Sem Informações'));
                 }),
             Visibility(
               visible: _isList.value,
@@ -179,19 +128,6 @@ class ListaCarcacaState extends State<ListaCarcaca> {
           ],
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     Navigator.push(
-      //         context,
-      //         MaterialPageRoute(
-      //           builder: (context) =>
-      //               AdicionarCarcacaPage(), //AddCarcacaPage(),
-      //         ));
-      //   },
-      //   child: Icon(
-      //     Icons.add,
-      //   ),
-      // ),
     );
   }
 
@@ -265,6 +201,67 @@ class ListaCarcacaState extends State<ListaCarcaca> {
               return CircularProgressIndicator();
             }
           }),
+    );
+  }
+}
+
+class DinamicListCard extends ChangeNotifier {
+  cardResponse(_responseValue, context) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      color: Colors.white70,
+      child: ListTile(
+        title: Text('Etiqueta: ' +
+            _responseValue.numeroEtiqueta +
+            " id: " +
+            _responseValue.id.toString()),
+        subtitle: Text('Medida: ' +
+            _responseValue.medida.descricao +
+            "\n"
+                'DOT: ' +
+            _responseValue.dot +
+            "\n"
+                'Modelo: ' +
+            _responseValue.modelo.descricao),
+        trailing: Container(
+          width: 100,
+          child: Row(
+            children: <Widget>[
+              IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EditarCarcacaPage(
+                                  carcacaEdit: _responseValue,
+                                )));
+                  },
+                  icon: Icon(Icons.edit, color: Colors.orange)),
+
+              IconButton(
+                  onPressed: () async {
+                    Provider.of<CarcacaApi>(context, listen: false)
+                        .delete(_responseValue.id);
+                  },
+                  icon: Icon(
+                    Icons.delete,
+                    color: Colors.red,
+                  )),
+              // IconButton(onPressed: (){}, icon: Icon(Icons.arrow_right, color: Colors.black,))
+            ],
+          ),
+        ),
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => DetalhesCarcacaPage(
+                        id: _responseValue.id,
+                      )));
+        },
+      ),
     );
   }
 }
