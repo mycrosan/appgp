@@ -47,13 +47,12 @@ class DetalhesCarcacaPageState extends State<DetalhesCarcacaPage> {
                         snapshot.data.modelo.descricao),
                   ),
                 ),
-                Container(
+                Expanded(
                   child: FutureBuilder(
                       future: new ImageService().showImage(snapshot.data.fotos),
                       builder: (context, AsyncSnapshot snapshot) {
                         if (snapshot.hasData) {
                           return Container(
-                            height: 200.0,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               itemCount: snapshot.data.length,
