@@ -16,6 +16,22 @@ class ListaProducao extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Produção'),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AdicionarProducaoPage(),
+                  ));
+              // do something
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: EdgeInsets.all(10),
@@ -74,19 +90,19 @@ class ListaProducao extends StatelessWidget {
               }
             }),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    AdicionarProducaoPage(), //AddCarcacaPage(),
-              ));
-        },
-        child: Icon(
-          Icons.add,
-        ),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     Navigator.push(
+      //         context,
+      //         MaterialPageRoute(
+      //           builder: (context) =>
+      //               AdicionarProducaoPage(), //AddCarcacaPage(),
+      //         ));
+      //   },
+      //   child: Icon(
+      //     Icons.add,
+      //   ),
+      // ),
     );
   }
 }

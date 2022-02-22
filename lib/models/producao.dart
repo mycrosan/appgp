@@ -7,9 +7,10 @@ class Producao {
   double medidaPneuRaspado;
   String dados;
   Regra regra;
+  String fotos;
 
   Producao(
-      {this.id, this.carcaca, this.medidaPneuRaspado, this.dados, this.regra});
+      {this.id, this.carcaca, this.medidaPneuRaspado, this.dados, this.regra, this.fotos});
 
   Producao.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -17,6 +18,7 @@ class Producao {
     medidaPneuRaspado = json['medida_pneu_raspado'];
     dados = json['dados'];
     regra = json['regra'] != null ? new Regra.fromJson(json['regra']) : null;
+    fotos = json["fotos"];
   }
 
   Map<String, dynamic> toJson() {
@@ -30,6 +32,7 @@ class Producao {
     if (this.regra != null) {
       data['regra'] = this.regra.toJson();
     }
+    data['fotos'] = this.fotos;
     return data;
   }
 }
