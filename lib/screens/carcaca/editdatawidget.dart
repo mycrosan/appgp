@@ -238,7 +238,7 @@ class EditarCarcacaPageState extends State<EditarCarcacaPage> {
                   Padding(padding: EdgeInsets.all(10)),
                   Container(
                     child: FutureBuilder(
-                        future: new ImageService().showImage(carcaca.fotos),
+                        future: new ImageService().showImage(carcaca.fotos, "carcaca"),
                         builder: (context, AsyncSnapshot snapshot) {
                           if (snapshot.hasData) {
                             return Container(

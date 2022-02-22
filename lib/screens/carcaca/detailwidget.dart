@@ -49,7 +49,7 @@ class DetalhesCarcacaPageState extends State<DetalhesCarcacaPage> {
                 ),
                 Expanded(
                   child: FutureBuilder(
-                      future: new ImageService().showImage(snapshot.data.fotos),
+                      future: new ImageService().showImage(snapshot.data.fotos, "carcaca"),
                       builder: (context, AsyncSnapshot snapshot) {
                         if (snapshot.hasData) {
                           return Container(

@@ -36,7 +36,6 @@ final storage = FlutterSecureStorage();
 
 void main() {
   runApp(GpPremiumApp());
-  // findAll();
 }
 
 class GpPremiumApp extends StatelessWidget {
