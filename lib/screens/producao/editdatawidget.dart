@@ -14,6 +14,7 @@ import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../service/get_image.dart';
 import 'ListaProducao.dart';
 
 class EditarProducaoPage extends StatefulWidget {
@@ -333,6 +334,26 @@ class EditarProducaoPageState extends State<EditarProducaoPage> {
             ),
             Padding(
               padding: EdgeInsets.all(5),
+            ),
+            Container(
+              child: FutureBuilder(
+                  future: new ImageService().showImage(producao.fotos, "producao"),
+                  builder: (context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      return Container(
+                        height: 200.0,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (BuildContext ctxt, int index) {
+                            return snapshot.data[index];
+                          },
+                        ),
+                      );
+                    } else {
+                      return CircularProgressIndicator();
+                    }
+                  }),
             ),
             Row(
               children: [

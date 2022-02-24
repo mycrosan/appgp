@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -19,6 +20,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 import '../../models/responseMessageSimple.dart';
 import '../../service/uploadapi.dart';
@@ -42,6 +44,15 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
   set _imageFile(XFile value) {
     _imageFileList = value == null ? null : [value];
   }
+
+  void _doSomething(RoundedLoadingButtonController controller) async {
+    Timer(Duration(seconds: 10), () {
+      controller.success();
+    });
+  }
+
+  final RoundedLoadingButtonController _btnController1 =
+      RoundedLoadingButtonController();
 
   String _retrieveDataError;
 
@@ -115,6 +126,10 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
         regraList = value;
       });
     });
+    // _btnController1.stateStream.listen((value) {
+    //   print(value);
+    //
+    // });
   }
 
   dynamic _pickImageError;
@@ -474,30 +489,66 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
                 )),
                 Padding(padding: EdgeInsets.all(5)),
                 Expanded(
-                    child: ElevatedButton(
-                  child: Text("Salvar"),
-                  onPressed: () async {
-                    Map<String, String> body = {
-                      'title': 'producao',
-                    };
+                  child: RoundedLoadingButton(
+                    successIcon: Icons.check,
+                    failedIcon: Icons.cottage,
+                    child:
+                        Text('Salvar!', style: TextStyle(color: Colors.white)),
+                    controller: _btnController1,
+                    onPressed: () async {
 
-                    responseMessageSimple imageResponse =
+                      if (_formkey.currentState.validate()) {
+
+                        Map<String, String> body = {
+                          'title': 'producao',
+                        };
+                        responseMessageSimple imageResponse =
                         await UploadApi().addImage(body, _imageFileList);
 
-                    print(imageResponse.content[0]);
-                    producao.fotos = json.encode(imageResponse.content);
+                        print(imageResponse.content[0]);
+                        producao.fotos = json.encode(imageResponse.content);
 
-                    if (_formkey.currentState.validate()) {
-                      var response = await producaoApi.create(producao);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ListaProducao(),
-                        ),
-                      );
-                    }
-                  },
-                )),
+                        var response = await producaoApi.create(producao);
+
+                        _btnController1.success();
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ListaProducao(),
+                          ),
+                        );
+                      } else {
+                        _btnController1.reset();
+                      }
+                    },
+                  ),
+                ),
+                // Expanded(
+                //     child: ElevatedButton(
+                //   child: Text("Salvar"),
+                //   onPressed: () async {
+                //     Map<String, String> body = {
+                //       'title': 'producao',
+                //     };
+                //
+                //     responseMessageSimple imageResponse =
+                //         await UploadApi().addImage(body, _imageFileList);
+                //
+                //     print(imageResponse.content[0]);
+                //     producao.fotos = json.encode(imageResponse.content);
+                //
+                //     if (_formkey.currentState.validate()) {
+                //       var response = await producaoApi.create(producao);
+                //       Navigator.push(
+                //         context,
+                //         MaterialPageRoute(
+                //           builder: (context) => ListaProducao(),
+                //         ),
+                //       );
+                //     }
+                //   },
+                // )),
               ],
             )
           ],

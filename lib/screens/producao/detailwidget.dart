@@ -35,21 +35,55 @@ class DetalhesProducaoPageState extends State<DetalhesProducaoPage> {
                   child: ListTile(
                     title: Text('Etiqueta: ' +
                         snapshot.data.carcaca.numeroEtiqueta +
-                        " id: " +
-                        snapshot.data.id.toString()),
+                        " Dot: " +
+                        snapshot.data.carcaca.dot),
                     subtitle: Text('Medida: ' +
                         snapshot.data.carcaca.medida.descricao +
+                        'Modelo: ' +
+                        snapshot.data.carcaca.modelo.descricao +
                         "\n"
-                            'DOT: ' +
-                        snapshot.data.carcaca.dot +
+                            'Marca: ' +
+                        snapshot.data.carcaca.modelo.marca.descricao +
                         "\n"
-                            'Modelo: ' +
-                        snapshot.data.carcaca.modelo.descricao),
+                            'Matriz: ' +
+                        snapshot.data.regra.matriz.descricao +
+                        "\n"
+                            'Tamanho mínimo: ' +
+                        snapshot.data.regra.tamanhoMin.toString() +
+                        "\n"
+                            'Tamanho máximo: ' +
+                        snapshot.data.regra.tamanhoMax.toString() +
+                        "\n"
+                            'Anti quebra 1: ' +
+                        ((snapshot.data.regra.antiquebra1 != null)
+                            ? snapshot.data.regra.antiquebra1.descricao
+                            : "SI") +
+                        "\n"
+                            'Anti quebra 2: ' +
+                        ((snapshot.data.regra.antiquebra2 != null)
+                            ? snapshot.data.regra.antiquebra2.descricao
+                            : "SI") +
+                        "\n"
+                            'Anti quebra 3: ' +
+                        ((snapshot.data.regra.antiquebra3 != null)
+                            ? snapshot.data.regra.antiquebra3.descricao
+                            : "SI") +
+                        "\n"
+                            'Espessuramento: ' +
+                        snapshot.data.regra.espessuramento.descricao +
+                        "\n"
+                            'Tempo: ' +
+                        snapshot.data.regra.tempo.toString() +
+                        "\n"
+                            'Camelback: ' +
+                        snapshot.data.regra.camelback.descricao),
                   ),
                 ),
+                Padding(padding: EdgeInsets.all(5)),
                 Expanded(
                   child: FutureBuilder(
-                      future: new ImageService().showImage(snapshot.data.fotos, "producao"),
+                      future: new ImageService()
+                          .showImage(snapshot.data.fotos, "producao"),
                       builder: (context, AsyncSnapshot snapshot) {
                         if (snapshot.hasData) {
                           return Container(
@@ -67,8 +101,6 @@ class DetalhesProducaoPageState extends State<DetalhesProducaoPage> {
                       }),
                 ),
               ]);
-
-
 
               // return RichText(
               //   text: TextSpan(

@@ -19,6 +19,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 import 'ListaCarcacas.dart';
 
@@ -40,6 +41,9 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
   set _imageFile(XFile value) {
     _imageFileList = value == null ? null : [value];
   }
+
+  final RoundedLoadingButtonController _btnController1 =
+  RoundedLoadingButtonController();
 
   String _retrieveDataError;
 
@@ -366,30 +370,68 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
               )),
               Padding(padding: EdgeInsets.all(5)),
               Expanded(
-                  child: ElevatedButton(
-                child: Text("Salvar"),
-                onPressed: () async {
-                  Map<String, String> body = {
-                    'title': 'carcaca',
-                  };
+                child: RoundedLoadingButton(
+                  successIcon: Icons.check,
+                  failedIcon: Icons.cottage,
+                  child:
+                  Text('Salvar!', style: TextStyle(color: Colors.white)),
+                  controller: _btnController1,
+                  onPressed: () async {
 
-                  responseMessageSimple imageResponse =
+                    if (_formkey.currentState.validate()) {
+
+                      Map<String, String> body = {
+                        'title': 'carcaca',
+                      };
+
+                      responseMessageSimple imageResponse =
                       await UploadApi().addImage(body, _imageFileList);
 
-                  print(imageResponse.content[0]);
-                  carcaca.fotos = json.encode(imageResponse.content);
+                      print(imageResponse.content[0]);
+                      carcaca.fotos = json.encode(imageResponse.content);
 
-                  if (_formkey.currentState.validate()) {
-                    var response = await CarcacaApi().create(carcaca);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ListaCarcaca(),
-                      ),
-                    );
-                  }
-                },
-              )),
+                      var response = await CarcacaApi().create(carcaca);
+
+                      _btnController1.success();
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ListaCarcaca(),
+                        ),
+                      );
+                    } else {
+                      _btnController1.reset();
+                    }
+                  },
+                ),
+              ),
+
+              // Expanded(
+              //     child: ElevatedButton(
+              //   child: Text("Salvar"),
+              //   onPressed: () async {
+              //     Map<String, String> body = {
+              //       'title': 'carcaca',
+              //     };
+              //
+              //     responseMessageSimple imageResponse =
+              //         await UploadApi().addImage(body, _imageFileList);
+              //
+              //     print(imageResponse.content[0]);
+              //     carcaca.fotos = json.encode(imageResponse.content);
+              //
+              //     if (_formkey.currentState.validate()) {
+              //       var response = await CarcacaApi().create(carcaca);
+              //       Navigator.push(
+              //         context,
+              //         MaterialPageRoute(
+              //           builder: (context) => ListaCarcaca(),
+              //         ),
+              //       );
+              //     }
+              //   },
+              // )),
             ],
           )
         ],
