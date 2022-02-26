@@ -490,6 +490,7 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
                 Padding(padding: EdgeInsets.all(5)),
                 Expanded(
                   child: RoundedLoadingButton(
+                    color: Colors.black,
                     successIcon: Icons.check,
                     failedIcon: Icons.cottage,
                     child:

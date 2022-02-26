@@ -32,52 +32,53 @@ class DetalhesProducaoPageState extends State<DetalhesProducaoPage> {
             if (snapshot.hasData) {
               return Column(children: [
                 Card(
-                  child: ListTile(
+                    child: ListTile(
                     title: Text('Etiqueta: ' +
-                        snapshot.data.carcaca.numeroEtiqueta +
-                        " Dot: " +
-                        snapshot.data.carcaca.dot),
-                    subtitle: Text('Medida: ' +
-                        snapshot.data.carcaca.medida.descricao +
-                        'Modelo: ' +
-                        snapshot.data.carcaca.modelo.descricao +
-                        "\n"
-                            'Marca: ' +
-                        snapshot.data.carcaca.modelo.marca.descricao +
-                        "\n"
-                            'Matriz: ' +
-                        snapshot.data.regra.matriz.descricao +
-                        "\n"
-                            'Tamanho mínimo: ' +
-                        snapshot.data.regra.tamanhoMin.toString() +
-                        "\n"
-                            'Tamanho máximo: ' +
-                        snapshot.data.regra.tamanhoMax.toString() +
-                        "\n"
-                            'Anti quebra 1: ' +
-                        ((snapshot.data.regra.antiquebra1 != null)
-                            ? snapshot.data.regra.antiquebra1.descricao
-                            : "SI") +
-                        "\n"
-                            'Anti quebra 2: ' +
-                        ((snapshot.data.regra.antiquebra2 != null)
-                            ? snapshot.data.regra.antiquebra2.descricao
-                            : "SI") +
-                        "\n"
-                            'Anti quebra 3: ' +
-                        ((snapshot.data.regra.antiquebra3 != null)
-                            ? snapshot.data.regra.antiquebra3.descricao
-                            : "SI") +
-                        "\n"
-                            'Espessuramento: ' +
-                        snapshot.data.regra.espessuramento.descricao +
+                    snapshot.data.carcaca.numeroEtiqueta +
+                    " Dot: " +
+                    snapshot.data.carcaca.dot),
+                subtitle: Text('Medida: ' +
+                    snapshot.data.carcaca.medida.descricao +
+                    'Modelo: ' +
+                    snapshot.data.carcaca.modelo.descricao +
+                    "\n"
+                        'Marca: ' +
+                    snapshot.data.carcaca.modelo.marca.descricao +
+                    "\n"
+                        'Matriz: ' +
+                    snapshot.data.regra.matriz.descricao +
+                    "\n"
+                        'Tamanho mínimo: ' +
+                    snapshot.data.regra.tamanhoMin.toString() +
+                    "\n"
+                        'Tamanho máximo: ' +
+                    snapshot.data.regra.tamanhoMax.toString() +
+                    "\n"
+                        'Anti quebra 1: ' +
+                    ((snapshot.data.regra.antiquebra1 != null)
+                        ? snapshot.data.regra.antiquebra1.descricao
+                        : "SI") +
+                    "\n"
+                        'Anti quebra 2: ' +
+                    ((snapshot.data.regra.antiquebra2 != null)
+                        ? snapshot.data.regra.antiquebra2.descricao
+                        : "SI") +
+                    "\n"
+                        'Anti quebra 3: ' +
+                    ((snapshot.data.regra.antiquebra3 != null)
+                        ? snapshot.data.regra.antiquebra3.descricao
+                        : "SI") +
+                    "\n"
+                        'Espessuramento: ' +
+                    ((snapshot.data.regra.espessuramento != null) ? snapshot.data
+                        .regra.espessuramento.descricao : "SI") +
                         "\n"
                             'Tempo: ' +
                         snapshot.data.regra.tempo.toString() +
                         "\n"
                             'Camelback: ' +
                         snapshot.data.regra.camelback.descricao),
-                  ),
+                    ),
                 ),
                 Padding(padding: EdgeInsets.all(5)),
                 Expanded(
