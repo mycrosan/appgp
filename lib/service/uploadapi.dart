@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:GPPremium/main.dart';
 import 'package:GPPremium/models/responseMessage.dart';
 import 'package:GPPremium/models/responseMessageSimple.dart';
@@ -23,20 +26,40 @@ class UploadApi {
       request.files.add(
           await http.MultipartFile.fromPath('files', i.path));
     }
+    try {
+      var response = await request.send().timeout(const Duration(seconds: 15));
+      //for getting and decoding the response into json format
+      var responsed = await http.Response.fromStream(response);
 
-    var response = await request.send();
-    //for getting and decoding the response into json format
-    var responsed = await http.Response.fromStream(response);
-    final responseData = json.decode(responsed.body);
+      // try {
+      //   final request = await client.get(...);
+      //   final response = await request.close()
+      //       .timeout(const Duration(seconds: 2));
+      // // rest of the code
+      // ...
+      // } on TimeoutException catch (_) {
+      // // A timeout occurred.
+      // } on SocketException catch (_) {
+      // // Other exception
+      // }
+      final responseData = json.decode(responsed.body);
 
 
-    if (response.statusCode==200) {
-      print("SUCCESS");
-      return responseMessageSimple.fromJson(responseData);
+      if (response.statusCode==200) {
+        print("SUCCESS");
+        return responseMessageSimple.fromJson(responseData);
+      }
+      else {
+        print("ERROR");
+      }
+
+    } on TimeoutException catch (_) {
+      print("Não retornou nenhuma imagem");
+    } on SocketException catch (_) {
+
     }
-    else {
-      print("ERROR");
-    }
+
+
 
     // if (response.statusCode == 200) {
     //   responseMessage.fromJson(jsonDecode(response);

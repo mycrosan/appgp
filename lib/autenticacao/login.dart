@@ -121,7 +121,7 @@ class Login extends StatelessWidget {
                         builder: (BuildContext context) {
                           return AlertDialog(
                             title: Text("Mensagem"),
-                            content: Text(response.mensagem),
+                            content: Text(response.message + "\n\n"+ response.error),
                             actions: [
                               FlatButton(
                                 child: Text("Ok"),

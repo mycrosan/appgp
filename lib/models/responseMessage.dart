@@ -1,5 +1,5 @@
 class responseMessage {
-  String status;
+  bool status;
   String timestamp;
   String message;
   String error;

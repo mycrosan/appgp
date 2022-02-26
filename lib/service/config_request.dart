@@ -101,7 +101,7 @@ class ConfigRequest {
           'Accept': 'application/json',
           'Authorization': 'Bearer $jwt'
         },
-      );
+      ).timeout(const Duration(seconds: 15));
       return response;
     }
   }
