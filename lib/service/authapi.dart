@@ -30,8 +30,13 @@ class AuthApi {
         storage.write(key: "jwt", value: jwt);
         return AuthDTO.fromJson(jsonData);
       } else {
-        print('falha no login');
-        throw Exception('Falha ao tentar logar 1');
+        // print('falha no login');
+        // throw Exception('Falha ao tentar logar 1');
+        return responseMessage.fromJson({"status": false, "timestamp": "",
+          "message": "Falha no login!",
+          "error": response.body,
+          "debugMessage": "debug",
+          "subErrors": null});
       }
     } on TimeoutException catch (_) {
       throw Exception('Falha ao tentar logar 2');
