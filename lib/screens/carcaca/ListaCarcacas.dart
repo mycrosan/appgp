@@ -1,7 +1,7 @@
 import 'package:GPPremium/models/carcaca.dart';
 import 'package:GPPremium/screens/carcaca/adicionar.dart';
 import 'package:GPPremium/screens/carcaca/editdatawidget.dart';
-import 'package:GPPremium/screens/carcaca/printWidget.dart';
+import 'package:GPPremium/screens/producao/printWidget.dart';
 import 'package:GPPremium/service/carcacaapi.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';

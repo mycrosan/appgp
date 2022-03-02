@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../service/get_image.dart';
-import '../carcaca/printWidget.dart';
+import 'printWidget.dart';
 
 class DetalhesProducaoPage extends StatefulWidget {
   Producao producao;

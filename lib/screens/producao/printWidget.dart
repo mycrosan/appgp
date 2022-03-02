@@ -221,10 +221,7 @@ class _PrintPageState extends State<PrintPage> {
                                     x: 0,
                                     y: 10,
                                     weight: 10,
-                                    content: 'Etiqueta: ' +
-                                        widget.producaoPrint.regra.matriz.descricao +
-                                        ' DOT: ' +
-                                        widget.producaoPrint.carcaca.dot,
+                                    content: 'Matriz: ' + widget.producaoPrint.regra.matriz.descricao ,
                                     size: 60,
                                     linefeed: 10));
 
@@ -233,7 +230,7 @@ class _PrintPageState extends State<PrintPage> {
                                     x: 0,
                                     y: 40,
                                     content: 'Dot: ' +
-                                        widget.producaoPrint.carcaca.medida.descricao));
+                                        widget.producaoPrint.carcaca.dot));
 
                                 list.add(LineText(
                                     type: LineText.TYPE_QRCODE,
