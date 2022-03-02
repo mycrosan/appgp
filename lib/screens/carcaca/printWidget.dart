@@ -222,7 +222,7 @@ class _PrintPageState extends State<PrintPage> {
                                     y: 10,
                                     weight: 10,
                                     content: 'Etiqueta: ' +
-                                        widget.producaoPrint.carcaca.numeroEtiqueta +
+                                        widget.producaoPrint.regra.matriz.descricao +
                                         ' DOT: ' +
                                         widget.producaoPrint.carcaca.dot,
                                     size: 60,
