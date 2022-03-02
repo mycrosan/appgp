@@ -79,7 +79,7 @@ class ListaProducao extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => DetalhesProducaoPage(
-                                      id: snapshot.data[index].id,
+                                      producao: snapshot.data[index],
                                     )));
                           },
                         ),

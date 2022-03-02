@@ -43,7 +43,8 @@ dependencies:
   usage: ^4.0.2
   flutter_quill:
   rounded_loading_button: ^2.0.9
-  esc_pos_bluetooth: ^0.4.1
+  intl: ^0.17.0
+  bluetooth_print: ^3.0.1
 
 dev_dependencies:
   flutter_test:
