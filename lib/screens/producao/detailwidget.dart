@@ -116,6 +116,7 @@ class DetalhesProducaoPageState extends State<DetalhesProducaoPage> {
                               },
                             ),
                           );
+
                         } else {
                           return CircularProgressIndicator();
                         }

@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:android_bluetooth_printer/android_bluetooth_printer.dart';
 import 'package:bluetooth_print/bluetooth_print.dart';
 import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,8 +12,11 @@ import 'package:flutter/services.dart';
 import '../../models/carcaca.dart';
 import '../../models/producao.dart';
 
-class PrintPage extends StatefulWidget {
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
+class PrintPage extends StatefulWidget {
   Producao producaoPrint;
 
   PrintPage({Key key, this.producaoPrint}) : super(key: key);
@@ -76,199 +81,112 @@ class _PrintPageState extends State<PrintPage> {
         appBar: AppBar(
           title: const Text('IMPRESSÃO BLUETOOTH'),
         ),
-        body: RefreshIndicator(
-          onRefresh: () =>
-              bluetoothPrint.startScan(timeout: Duration(seconds: 4)),
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+        body: Column(
+          children: [
+            Expanded(
+              child: PdfPreview(
+                build: (format) => _generatePdf(format, "ola"),
+              ),
+            ),
+            RefreshIndicator(
+              onRefresh: () =>
+                  bluetoothPrint.startScan(timeout: Duration(seconds: 4)),
+              child: SingleChildScrollView(
+                child: Column(
                   children: <Widget>[
-                    Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                      child: Text(tips),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 10),
+                          child: Text(tips),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                Divider(),
-                StreamBuilder<List<BluetoothDevice>>(
-                  stream: bluetoothPrint.scanResults,
-                  initialData: [],
-                  builder: (c, snapshot) => Column(
-                    children: snapshot.data
-                        .map((d) => ListTile(
-                              title: Text(d.name ?? ''),
-                              subtitle: Text(d.address),
-                              onTap: () async {
-                                setState(() {
-                                  _device = d;
-                                });
-                              },
-                              trailing: _device != null &&
-                                      _device.address == d.address
-                                  ? Icon(
-                                      Icons.check,
-                                      color: Colors.green,
-                                    )
-                                  : null,
-                            ))
-                        .toList(),
-                  ),
-                ),
-                Divider(),
-                Container(
-                  padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                  child: Column(
-                    children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          OutlinedButton(
-                            child: Text('connect'),
-                            onPressed: _connected
-                                ? null
-                                : () async {
-                                    if (_device != null &&
-                                        _device.address != null) {
-                                      await bluetoothPrint.connect(_device);
-                                    } else {
-                                      setState(() {
-                                        tips = 'please select device';
-                                      });
-                                      print('please select device');
-                                    }
+                    Divider(),
+                    StreamBuilder<List<BluetoothDevice>>(
+                      stream: bluetoothPrint.scanResults,
+                      initialData: [],
+                      builder: (c, snapshot) => Column(
+                        children: snapshot.data
+                            .map((d) => ListTile(
+                                  title: Text(d.name ?? ''),
+                                  subtitle: Text(d.address),
+                                  onTap: () async {
+                                    setState(() {
+                                      _device = d;
+                                    });
                                   },
+                                  trailing: _device != null &&
+                                          _device.address == d.address
+                                      ? Icon(
+                                          Icons.check,
+                                          color: Colors.green,
+                                        )
+                                      : null,
+                                ))
+                            .toList(),
+                      ),
+                    ),
+                    Divider(),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+                      child: Column(
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              OutlinedButton(
+                                child: Text('connect'),
+                                onPressed: _connected
+                                    ? null
+                                    : () async {
+                                        if (_device != null &&
+                                            _device.address != null) {
+                                          await bluetoothPrint.connect(_device);
+                                        } else {
+                                          setState(() {
+                                            tips = 'please select device';
+                                          });
+                                          print('please select device');
+                                        }
+                                      },
+                              ),
+                              SizedBox(width: 10.0),
+                              OutlinedButton(
+                                child: Text('disconnect'),
+                                onPressed: _connected
+                                    ? () async {
+                                        await bluetoothPrint.disconnect();
+                                      }
+                                    : null,
+                              ),
+                            ],
                           ),
-                          SizedBox(width: 10.0),
                           OutlinedButton(
-                            child: Text('disconnect'),
-                            onPressed: _connected
-                                ? () async {
-                                    await bluetoothPrint.disconnect();
-                                  }
-                                : null,
+                            child: Text('Android Print'),
+                            onPressed: () async {
+                              final pdf = pw.Document();
+
+                              pdf.addPage(pw.Page(
+                                  pageFormat: PdfPageFormat.a4,
+                                  build: (pw.Context context) {
+                                    return pw.Center(
+                                      child: pw.Text("Hello World"),
+                                    ); // Center
+                                  }));
+                              pdf.save(); // Page
+                            },
                           ),
                         ],
                       ),
-                      OutlinedButton(
-                        child: Text('print receipt(esc)'),
-                        onPressed: _connected
-                            ? () async {
-                                Map<String, dynamic> config = Map();
-
-                                // config['width'] = 40; // 标签宽度，单位mm
-                                config['height'] = 40; // 标签高度，单位mm
-                                // config['gap'] = 2; // 标签
-
-                                List<LineText> list = [];
-
-                                list.add(LineText(
-                                  y: 0,
-                                  type: LineText.TYPE_TEXT,
-                                  content: 'A Title',
-                                  size: 100,
-                                  weight: 5,
-                                  align: LineText.ALIGN_CENTER,
-                                ));
-
-                                list.add(LineText(
-                                  y: 30,
-                                  type: LineText.TYPE_TEXT,
-                                  content: 'this is conent left',
-                                  align: LineText.ALIGN_LEFT,
-                                ));
-
-                                list.add(LineText(
-                                  y: 60,
-                                  type: LineText.TYPE_TEXT,
-                                  content: 'this is conent right',
-                                  align: LineText.ALIGN_RIGHT,
-                                ));
-
-                                // ByteData data = await rootBundle
-                                //     .load("assets/images/banner.png");
-                                //
-                                // List<int> imageBytes = data.buffer.asUint8List(
-                                //     data.offsetInBytes, data.lengthInBytes);
-                                //
-                                // String base64Image = base64Encode(imageBytes);
-                                // list.add(LineText(
-                                //     type: LineText.TYPE_IMAGE,
-                                //     content: base64Image,
-                                //     align: LineText.ALIGN_CENTER,
-                                //     linefeed: 1));
-
-                                await bluetoothPrint.printReceipt(config, list);
-                              }
-                            : null,
-                      ),
-                      OutlinedButton(
-                        child: Text('Imprimir label(tsc)'),
-                        onPressed: _connected
-                            ? () async {
-                                Map<String, dynamic> config = Map();
-                                // config['width'] = 40; // 标签宽度，单位mm
-                                config['height'] = 40; // 标签高度，单位mm
-                                // config['gap'] = 1; // 标签间隔，单位mm
-
-                                // x、y坐标位置，单位dpi，1mm=8dpi
-                                List<LineText> list = [];
-
-                                list.add(LineText(
-                                    type: LineText.TYPE_TEXT,
-                                    x: 0,
-                                    y: 10,
-                                    weight: 10,
-                                    content: 'Matriz: ' + widget.producaoPrint.regra.matriz.descricao ,
-                                    size: 60,
-                                    linefeed: 10));
-
-                                list.add(LineText(
-                                    type: LineText.TYPE_TEXT,
-                                    x: 0,
-                                    y: 40,
-                                    content: 'Dot: ' +
-                                        widget.producaoPrint.carcaca.dot));
-
-                                list.add(LineText(
-                                    type: LineText.TYPE_QRCODE,
-                                    x: 0,
-                                    y: 70,
-                                    content: 'http://pneusgppremium.com.br'));
-
-                                list.add(LineText(
-                                    type: LineText.TYPE_BARCODE,
-                                    x: 0,
-                                    y: 190,
-                                    content: 'SANDY'));
-
-                                List<LineText> list1 = [];
-                                // ByteData data = await rootBundle.load("assets/images/guide3.png");
-                                // List<int> imageBytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-                                // String base64Image = base64Encode(imageBytes);
-                                // list1.add(LineText(type: LineText.TYPE_IMAGE, x:10, y:10, content: base64Image,));
-
-                                await bluetoothPrint.printLabel(config, list);
-                                await bluetoothPrint.printLabel(config, list1);
-                              }
-                            : null,
-                      ),
-                      OutlinedButton(
-                        child: Text('print selftest'),
-                        onPressed: _connected
-                            ? () async {
-                                await bluetoothPrint.printTest();
-                              }
-                            : null,
-                      )
-                    ],
-                  ),
-                )
-              ],
+                    )
+                  ],
+                ),
+              ),
             ),
-          ),
+          ],
         ),
         floatingActionButton: StreamBuilder<bool>(
           stream: bluetoothPrint.isScanning,
@@ -290,5 +208,32 @@ class _PrintPageState extends State<PrintPage> {
         ),
       ),
     );
+  }
+
+  Future<Uint8List> _generatePdf(PdfPageFormat format, String title) async {
+    final pdf = pw.Document(version: PdfVersion.pdf_1_5, compress: true);
+    final font = await PdfGoogleFonts.nunitoExtraLight();
+
+    pdf.addPage(
+      pw.Page(
+        pageFormat: format,
+        build: (context) {
+          return pw.Column(
+            children: [
+              pw.SizedBox(
+                width: double.infinity,
+                child: pw.FittedBox(
+                  child: pw.Text(title, style: pw.TextStyle(font: font)),
+                ),
+              ),
+              pw.SizedBox(height: 10)
+              // pw.Flexible(child: pw.FlutterLogo())
+            ],
+          );
+        },
+      ),
+    );
+
+    return pdf.save();
   }
 }
