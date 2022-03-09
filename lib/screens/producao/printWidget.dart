@@ -1,15 +1,9 @@
-import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:android_bluetooth_printer/android_bluetooth_printer.dart';
-import 'package:bluetooth_print/bluetooth_print.dart';
-import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
-import '../../models/carcaca.dart';
 import '../../models/producao.dart';
 
 import 'package:pdf/pdf.dart';
@@ -26,214 +20,560 @@ class PrintPage extends StatefulWidget {
 }
 
 class _PrintPageState extends State<PrintPage> {
-  BluetoothPrint bluetoothPrint = BluetoothPrint.instance;
-  List<BluetoothPrint> _devices = [];
-  String _devicesMsg = "";
-  bool _connected = false;
-  BluetoothDevice _device;
-  String tips = 'no device connect';
-
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) => initBluetooth());
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initBluetooth() async {
-    bluetoothPrint.startScan(timeout: Duration(seconds: 4));
-
-    bool isConnected = await bluetoothPrint.isConnected;
-
-    bluetoothPrint.state.listen((state) {
-      print('cur device status: $state');
-
-      switch (state) {
-        case BluetoothPrint.CONNECTED:
-          setState(() {
-            _connected = true;
-            tips = 'connect success';
-          });
-          break;
-        case BluetoothPrint.DISCONNECTED:
-          setState(() {
-            _connected = false;
-            tips = 'disconnect success';
-          });
-          break;
-        default:
-          break;
-      }
-    });
-
-    if (isConnected) {
-      setState(() {
-        _connected = true;
-      });
-    }
-  }
+  final String title = "Imprimir";
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('IMPRESSÃO BLUETOOTH'),
-        ),
-        body: Column(
-          children: [
-            Expanded(
-              child: PdfPreview(
-                build: (format) => _generatePdf(format, "ola"),
-              ),
-            ),
-            RefreshIndicator(
-              onRefresh: () =>
-                  bluetoothPrint.startScan(timeout: Duration(seconds: 4)),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 10),
-                          child: Text(tips),
-                        ),
-                      ],
-                    ),
-                    Divider(),
-                    StreamBuilder<List<BluetoothDevice>>(
-                      stream: bluetoothPrint.scanResults,
-                      initialData: [],
-                      builder: (c, snapshot) => Column(
-                        children: snapshot.data
-                            .map((d) => ListTile(
-                                  title: Text(d.name ?? ''),
-                                  subtitle: Text(d.address),
-                                  onTap: () async {
-                                    setState(() {
-                                      _device = d;
-                                    });
-                                  },
-                                  trailing: _device != null &&
-                                          _device.address == d.address
-                                      ? Icon(
-                                          Icons.check,
-                                          color: Colors.green,
-                                        )
-                                      : null,
-                                ))
-                            .toList(),
-                      ),
-                    ),
-                    Divider(),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                      child: Column(
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              OutlinedButton(
-                                child: Text('connect'),
-                                onPressed: _connected
-                                    ? null
-                                    : () async {
-                                        if (_device != null &&
-                                            _device.address != null) {
-                                          await bluetoothPrint.connect(_device);
-                                        } else {
-                                          setState(() {
-                                            tips = 'please select device';
-                                          });
-                                          print('please select device');
-                                        }
-                                      },
-                              ),
-                              SizedBox(width: 10.0),
-                              OutlinedButton(
-                                child: Text('disconnect'),
-                                onPressed: _connected
-                                    ? () async {
-                                        await bluetoothPrint.disconnect();
-                                      }
-                                    : null,
-                              ),
-                            ],
-                          ),
-                          OutlinedButton(
-                            child: Text('Android Print'),
-                            onPressed: () async {
-                              final pdf = pw.Document();
-
-                              pdf.addPage(pw.Page(
-                                  pageFormat: PdfPageFormat.a4,
-                                  build: (pw.Context context) {
-                                    return pw.Center(
-                                      child: pw.Text("Hello World"),
-                                    ); // Center
-                                  }));
-                              pdf.save(); // Page
-                            },
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-        floatingActionButton: StreamBuilder<bool>(
-          stream: bluetoothPrint.isScanning,
-          initialData: false,
-          builder: (c, snapshot) {
-            if (snapshot.data) {
-              return FloatingActionButton(
-                child: Icon(Icons.stop),
-                onPressed: () => bluetoothPrint.stopScan(),
-                backgroundColor: Colors.red,
-              );
-            } else {
-              return FloatingActionButton(
-                  child: Icon(Icons.search),
-                  onPressed: () =>
-                      bluetoothPrint.startScan(timeout: Duration(seconds: 4)));
-            }
-          },
+        appBar: AppBar(title: Text(title)),
+        body: PdfPreview(
+          build: (format) => _generatePdf(format),
         ),
       ),
     );
   }
 
-  Future<Uint8List> _generatePdf(PdfPageFormat format, String title) async {
-    final pdf = pw.Document(version: PdfVersion.pdf_1_5, compress: true);
-    final font = await PdfGoogleFonts.nunitoExtraLight();
+  Future<Uint8List> _generatePdf(PdfPageFormat pageFormat) async {
+    final lorem = pw.LoremText();
 
-    pdf.addPage(
-      pw.Page(
-        pageFormat: format,
-        build: (context) {
-          return pw.Column(
-            children: [
-              pw.SizedBox(
-                width: double.infinity,
-                child: pw.FittedBox(
-                  child: pw.Text(title, style: pw.TextStyle(font: font)),
-                ),
-              ),
-              pw.SizedBox(height: 10)
-              // pw.Flexible(child: pw.FlutterLogo())
-            ],
-          );
-        },
-      ),
+    final products = <Product>[
+      Product('MATRIZ', widget.producaoPrint.regra.matriz.descricao, 3.99, 2),
+      Product('98452', lorem.sentence(6), 15, 2),
+      Product('28375', lorem.sentence(4), 6.95, 3),
+      Product('95673', lorem.sentence(3), 49.99, 4),
+    ];
+
+    final invoice = Invoice(
+      // invoiceNumber: '982347',
+      products: products,
+      // customerName: 'Abraham Swearegin',
+      // customerAddress: '54 rue de Rivoli\n75001 Paris, France',
+      // paymentInfo:
+      //     '4509 Wiseman Street\nKnoxville, Tennessee(TN), 37929\n865-372-0425',
+      tax: .15,
+      // baseColor: PdfColors.teal,
+      accentColor: PdfColors.blueGrey900,
     );
 
-    return pdf.save();
+    return await invoice.buildPdf(pageFormat);
+  }
+}
+
+// class CustomData {
+//   const CustomData({this.name = '[your name]'});
+//
+//   final String name;
+// }
+
+class Invoice {
+  Invoice({
+    this.products,
+    this.customerName,
+    this.customerAddress,
+    this.invoiceNumber,
+    this.tax,
+    this.paymentInfo,
+    this.baseColor,
+    this.accentColor,
+  });
+
+  final List<Product> products;
+  final String customerName;
+  final String customerAddress;
+  final String invoiceNumber;
+  final double tax;
+  final String paymentInfo;
+  final PdfColor baseColor;
+  final PdfColor accentColor;
+
+  static const _darkColor = PdfColors.blueGrey800;
+  static const _lightColor = PdfColors.white;
+
+  PdfColor get _baseTextColor => baseColor.isLight ? _lightColor : _darkColor;
+
+  PdfColor get _accentTextColor => baseColor.isLight ? _lightColor : _darkColor;
+
+  double get _total =>
+      products.map<double>((p) => p.total).reduce((a, b) => a + b);
+
+  double get _grandTotal => _total * (1 + tax);
+
+  String _logo;
+
+  String _bgShape;
+
+  Future<Uint8List> buildPdf(PdfPageFormat pageFormat) async {
+    // Create a PDF document.
+
+    // _logo = await rootBundle.loadString('assets/images/banner.png');
+    // _bgShape = await rootBundle.loadString('assets/images/banner.png');
+
+    // Add page to the PDF
+
+    final doc = pw.Document();
+
+    doc.addPage(pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        // pageTheme: _buildTheme(
+        //   pageFormat,
+        //   await PdfGoogleFonts.robotoRegular(),
+        //   await PdfGoogleFonts.robotoBold(),
+        //   await PdfGoogleFonts.robotoItalic(),
+        // ),
+        // header: _buildHeader,
+        // footer: _buildFooter,
+        build: (pw.Context context) {
+          // _contentHeader(context),
+          return pw.GridView(
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+            crossAxisCount: 2,
+            children: [
+              pw.Container(
+                child: pw.Text("He'd have you all unravel at the"),
+              ),
+              pw.Container(
+                child: pw.Text("He'd have you all unravel at the"),
+              ),
+              // Container(
+              //   padding: const EdgeInsets.all(8),
+              //   child: const Text('Heed not the rabble'),
+              //   color: Colors.green[200],
+              // ),
+              // Container(
+              //   padding: const EdgeInsets.all(8),
+              //   child: const Text('Sound of screams but the'),
+              //   color: Colors.green[300],
+              // ),
+              // Container(
+              //   padding: const EdgeInsets.all(8),
+              //   child: const Text('Who scream'),
+              //   color: Colors.green[400],
+              // ),
+              // Container(
+              //   padding: const EdgeInsets.all(8),
+              //   child: const Text('Revolution is coming...'),
+              //   color: Colors.green[500],
+              // ),
+              // Container(
+              //   padding: const EdgeInsets.all(8),
+              //   child: const Text('Revolution, they...'),
+              //   color: Colors.green[600],
+              // ),
+            ],
+          );
+        }));
+
+    // Return the PDF file content
+    return doc.save();
+  }
+
+  pw.Widget _buildHeader(pw.Context context) {
+    return pw.Column(
+      children: [
+        pw.Row(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Expanded(
+              child: pw.Column(
+                children: [
+                  pw.Container(
+                    height: 50,
+                    padding: const pw.EdgeInsets.only(left: 20),
+                    alignment: pw.Alignment.centerLeft,
+                    child: pw.Text(
+                      'INVOICE',
+                      style: pw.TextStyle(
+                        color: baseColor,
+                        fontWeight: pw.FontWeight.bold,
+                        fontSize: 40,
+                      ),
+                    ),
+                  ),
+                  pw.Container(
+                    decoration: pw.BoxDecoration(
+                      borderRadius:
+                          const pw.BorderRadius.all(pw.Radius.circular(2)),
+                      color: accentColor,
+                    ),
+                    padding: const pw.EdgeInsets.only(
+                        left: 40, top: 10, bottom: 10, right: 20),
+                    alignment: pw.Alignment.centerLeft,
+                    height: 50,
+                    child: pw.DefaultTextStyle(
+                      style: pw.TextStyle(
+                        color: _accentTextColor,
+                        fontSize: 12,
+                      ),
+                      child: pw.GridView(
+                        crossAxisCount: 2,
+                        children: [
+                          pw.Text('Invoice #'),
+                          pw.Text(invoiceNumber),
+                          pw.Text('Date:'),
+                          pw.Text(_formatDate(DateTime.now())),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            pw.Expanded(
+              child: pw.Column(
+                mainAxisSize: pw.MainAxisSize.min,
+                children: [
+                  pw.Container(
+                    alignment: pw.Alignment.topRight,
+                    padding: const pw.EdgeInsets.only(bottom: 8, left: 30),
+                    height: 72,
+                    child: pw.PdfLogo(),
+                  ),
+                  pw.Container(
+                    color: baseColor,
+                    padding: pw.EdgeInsets.only(top: 3),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        // if (context.pageNumber > 1) pw.SizedBox(height: 20)
+      ],
+    );
+  }
+
+  // pw.Widget _buildFooter(pw.Context context) {
+  //   return pw.Row(
+  //     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+  //     crossAxisAlignment: pw.CrossAxisAlignment.end,
+  //     children: [
+  //       pw.Container(
+  //         height: 20,
+  //         width: 100,
+  //         child: pw.BarcodeWidget(
+  //           barcode: pw.Barcode.pdf417(),
+  //           data: 'Invoice# $invoiceNumber',
+  //           drawText: false,
+  //         ),
+  //       ),
+  //       pw.Text(
+  //         'Page ${context.pageNumber}/${context.pagesCount}',
+  //         style: const pw.TextStyle(
+  //           fontSize: 12,
+  //           color: PdfColors.white,
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
+
+  pw.PageTheme _buildTheme(
+      PdfPageFormat pageFormat, pw.Font base, pw.Font bold, pw.Font italic) {
+    return pw.PageTheme(
+      pageFormat: pageFormat,
+      theme: pw.ThemeData.withFont(
+        base: base,
+        bold: bold,
+        italic: italic,
+      ),
+      // buildBackground: (context) => pw.FullPage(
+      //   ignoreMargins: true,
+      //   child: pw.SvgImage(svg: _bgShape),
+      // ),
+    );
+  }
+
+  pw.Widget _contentHeader(pw.Context context) {
+    return pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.Expanded(
+          child: pw.Container(
+            margin: const pw.EdgeInsets.symmetric(horizontal: 20),
+            height: 70,
+            child: pw.FittedBox(
+              child: pw.Text(
+                'Total: ${_formatCurrency(_grandTotal)}',
+                style: pw.TextStyle(
+                  color: baseColor,
+                  fontStyle: pw.FontStyle.italic,
+                ),
+              ),
+            ),
+          ),
+        ),
+        pw.Expanded(
+          child: pw.Row(
+            children: [
+              pw.Container(
+                margin: const pw.EdgeInsets.only(left: 10, right: 10),
+                height: 70,
+                child: pw.Text(
+                  'Invoice to:',
+                  style: pw.TextStyle(
+                    color: _darkColor,
+                    fontWeight: pw.FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              pw.Expanded(
+                child: pw.Container(
+                  height: 70,
+                  child: pw.RichText(
+                      text: pw.TextSpan(
+                          text: '$customerName\n',
+                          style: pw.TextStyle(
+                            color: _darkColor,
+                            fontWeight: pw.FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                          children: [
+                        const pw.TextSpan(
+                          text: '\n',
+                          style: pw.TextStyle(
+                            fontSize: 5,
+                          ),
+                        ),
+                        pw.TextSpan(
+                          text: customerAddress,
+                          style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.normal,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ])),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  // pw.Widget _contentFooter(pw.Context context) {
+  //   return pw.Row(
+  //     crossAxisAlignment: pw.CrossAxisAlignment.start,
+  //     children: [
+  //       pw.Expanded(
+  //         flex: 2,
+  //         child: pw.Column(
+  //           crossAxisAlignment: pw.CrossAxisAlignment.start,
+  //           children: [
+  //             pw.Text(
+  //               'Thank you for your business',
+  //               style: pw.TextStyle(
+  //                 color: _darkColor,
+  //                 fontWeight: pw.FontWeight.bold,
+  //               ),
+  //             ),
+  //             pw.Container(
+  //               margin: const pw.EdgeInsets.only(top: 20, bottom: 8),
+  //               child: pw.Text(
+  //                 'Payment Info:',
+  //                 style: pw.TextStyle(
+  //                   color: baseColor,
+  //                   fontWeight: pw.FontWeight.bold,
+  //                 ),
+  //               ),
+  //             ),
+  //             pw.Text(
+  //               paymentInfo,
+  //               style: const pw.TextStyle(
+  //                 fontSize: 8,
+  //                 lineSpacing: 5,
+  //                 color: _darkColor,
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //       pw.Expanded(
+  //         flex: 1,
+  //         child: pw.DefaultTextStyle(
+  //           style: const pw.TextStyle(
+  //             fontSize: 10,
+  //             color: _darkColor,
+  //           ),
+  //           child: pw.Column(
+  //             crossAxisAlignment: pw.CrossAxisAlignment.start,
+  //             children: [
+  //               pw.Row(
+  //                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+  //                 children: [
+  //                   pw.Text('Sub Total:'),
+  //                   pw.Text(_formatCurrency(_total)),
+  //                 ],
+  //               ),
+  //               pw.SizedBox(height: 5),
+  //               pw.Row(
+  //                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+  //                 children: [
+  //                   pw.Text('Tax:'),
+  //                   pw.Text('${(tax * 100).toStringAsFixed(1)}%'),
+  //                 ],
+  //               ),
+  //               pw.Divider(color: accentColor),
+  //               pw.DefaultTextStyle(
+  //                 style: pw.TextStyle(
+  //                   color: baseColor,
+  //                   fontSize: 14,
+  //                   fontWeight: pw.FontWeight.bold,
+  //                 ),
+  //                 child: pw.Row(
+  //                   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+  //                   children: [
+  //                     pw.Text('Total:'),
+  //                     pw.Text(_formatCurrency(_grandTotal)),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
+
+  pw.Widget _termsAndConditions(pw.Context context) {
+    return pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.end,
+      children: [
+        pw.Expanded(
+          child: pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              // pw.Container(
+              //   decoration: pw.BoxDecoration(
+              //     border: pw.Border(top: pw.BorderSide(color: accentColor)),
+              //   ),
+              //   padding: const pw.EdgeInsets.only(top: 0, bottom: 0),
+              //   child: pw.Text(
+              //     'Terms & Conditions',
+              //     style: pw.TextStyle(
+              //       fontSize: 12,
+              //       color: baseColor,
+              //       fontWeight: pw.FontWeight.bold,
+              //     ),
+              //   ),
+              // ),
+              // pw.Text(
+              //   pw.LoremText().paragraph(10),
+              //   textAlign: pw.TextAlign.justify,
+              //   style: const pw.TextStyle(
+              //     fontSize: 6,
+              //     lineSpacing: 2,
+              //     color: _darkColor,
+              //   ),
+              // ),
+            ],
+          ),
+        ),
+        pw.Expanded(
+          child: pw.SizedBox(),
+        ),
+      ],
+    );
+  }
+
+  pw.Widget _contentTable(pw.Context context) {
+    const tableHeaders = [
+      'SKU#\n\aaskdfk',
+      'Item\n\ Description',
+      'Price',
+      'Quantity',
+      'Total'
+    ];
+
+    return pw.Table.fromTextArray(
+      border: null,
+      cellAlignment: pw.Alignment.centerLeft,
+      // headerDecoration: pw.BoxDecoration(
+      //   borderRadius: const pw.BorderRadius.all(pw.Radius.circular(0)),
+      //   color: baseColor,
+      // ),
+      headerHeight: 0,
+      cellHeight: 0,
+      cellAlignments: {
+        0: pw.Alignment.centerLeft,
+        1: pw.Alignment.centerLeft,
+        2: pw.Alignment.centerRight,
+        3: pw.Alignment.center,
+        4: pw.Alignment.centerRight,
+      },
+      headerStyle: pw.TextStyle(
+        // color: _baseTextColor,
+        fontSize: 14,
+        fontWeight: pw.FontWeight.bold,
+      ),
+      cellStyle: const pw.TextStyle(
+        color: _darkColor,
+        fontSize: 14,
+      ),
+      rowDecoration: pw.BoxDecoration(
+        border: pw.Border(
+          bottom: pw.BorderSide(
+            color: accentColor,
+            width: .5,
+          ),
+        ),
+      ),
+      // headers: List<String>.generate(
+      //   tableHeaders.length,
+      //       (col) => tableHeaders[col],
+      // ),
+      data: List<List<String>>.generate(
+        products.length,
+        (row) => List<String>.generate(
+          tableHeaders.length,
+          (col) => products[row].getIndex(col),
+        ),
+      ),
+    );
+  }
+}
+
+String _formatCurrency(double amount) {
+  return '\$${amount.toStringAsFixed(2)}';
+}
+
+String _formatDate(DateTime date) {
+  final format = DateFormat.yMMMd('pt_BR');
+  return format.format(date);
+}
+
+class Product {
+  const Product(
+    this.sku,
+    this.productName,
+    this.price,
+    this.quantity,
+  );
+
+  final String sku;
+  final String productName;
+  final double price;
+  final int quantity;
+
+  double get total => price * quantity;
+
+  String getIndex(int index) {
+    switch (index) {
+      case 0:
+        return sku;
+      case 1:
+        return productName;
+      case 2:
+        return _formatCurrency(price);
+      case 3:
+        return quantity.toString();
+      case 4:
+        return _formatCurrency(total);
+    }
+    return '';
   }
 }

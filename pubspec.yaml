@@ -43,10 +43,11 @@ dependencies:
   usage: ^4.0.2
   flutter_quill:
   rounded_loading_button: ^2.0.9
-  intl: ^0.17.0
-  bluetooth_print: ^3.0.1
-  android_bluetooth_printer: ^0.0.2+2
   printing: ^5.7.2
+  intl: ^0.17.0
+  open_file: ^3.2.1
+  path_provider: ^2.0.2
+  url_launcher: ^6.0.6
 
 dev_dependencies:
   flutter_test:
