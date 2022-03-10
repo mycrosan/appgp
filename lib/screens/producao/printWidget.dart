@@ -82,7 +82,7 @@ class PrintPageState extends State<PrintPage> {
                                   pw.MainAxisAlignment.spaceBetween,
                               children: <pw.Widget>[
                                 pw.Container(
-                                    width: 450.0,
+                                    width: 400.0,
                                     decoration: pw.BoxDecoration(
                                       border: pw.Border.all(width: 3),
                                     ),
@@ -106,7 +106,7 @@ class PrintPageState extends State<PrintPage> {
                                               ))
                                     ])),
                                 pw.Container(
-                                  width: 120.0,
+                                  width: 100.0,
                                   decoration: pw.BoxDecoration(
                                     border: pw.Border.all(width: 3),
                                   ),
@@ -151,10 +151,10 @@ class PrintPageState extends State<PrintPage> {
     final bgShape = await rootBundle.loadString('assets/images/resume.svg');
 
     format = format.applyMargin(
-        left: 0.5 * PdfPageFormat.cm,
-        top: 0.5 * PdfPageFormat.cm,
-        right: 0.5 * PdfPageFormat.cm,
-        bottom: 0.5 * PdfPageFormat.cm);
+        left: 2.0 * PdfPageFormat.cm,
+        top: 2.0 * PdfPageFormat.cm,
+        right: 2.0 * PdfPageFormat.cm,
+        bottom: 2.0 * PdfPageFormat.cm);
 
     return pw.PageTheme(
       pageFormat: format,
