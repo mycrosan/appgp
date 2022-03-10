@@ -1,10 +1,8 @@
-import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 
 import '../../models/producao.dart';
 
@@ -12,32 +10,30 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
-import 'data.dart';
-
 class PrintPage extends StatefulWidget {
   Producao producaoPrint;
 
   PrintPage({Key key, this.producaoPrint}) : super(key: key);
 
   @override
-  _PrintPageState createState() => _PrintPageState();
+  State<StatefulWidget> createState() {
+    return PrintPageState();
+  }
 }
 
 const PdfColor green = PdfColor.fromInt(0xff9ce5d0);
 const PdfColor lightGreen = PdfColor.fromInt(0xffcdf1e7);
 const double sep = 120.0;
 
-class _PrintPageState extends State<PrintPage> {
-  final String title = "Imprimir";
-
+class PrintPageState extends State<PrintPage> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: Text(title)),
-        body: PdfPreview(
-          build: (format) => _generatePdf(format),
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Imprimir"),
+      ),
+      body: PdfPreview(
+        build: (format) => _generatePdf(format),
       ),
     );
   }
@@ -85,87 +81,58 @@ class _PrintPageState extends State<PrintPage> {
                               mainAxisAlignment:
                                   pw.MainAxisAlignment.spaceBetween,
                               children: <pw.Widget>[
-                                pw.Column(children: [
-                                  pw.Text('MATRIZ',
-                                      textScaleFactor: 1,
-                                      style: pw.Theme.of(context)
-                                          .defaultTextStyle
-                                          .copyWith(
-                                              fontWeight: pw.FontWeight.bold)),
-                                  // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
-                                  pw.Text(
-                                      widget
-                                          .producaoPrint.regra.matriz.descricao,
-                                      textScaleFactor: 2,
-                                      style: pw.Theme.of(context)
-                                          .defaultTextStyle
-                                          .copyWith(
-                                            fontWeight: pw.FontWeight.bold,
-                                          ))
-                                ]),
-                                pw.Column(children: [
-                                  pw.Text('ETIQUETA',
-                                      textScaleFactor: 1,
-                                      style: pw.Theme.of(context)
-                                          .defaultTextStyle
-                                          .copyWith(
-                                              fontWeight: pw.FontWeight.bold)),
-                                  // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
-                                  pw.Text(
-                                      widget.producaoPrint.carcaca.id
-                                          .toString(),
-                                      textScaleFactor: 2,
-                                      style: pw.Theme.of(context)
-                                          .defaultTextStyle
-                                          .copyWith(
-                                            fontWeight: pw.FontWeight.bold,
-                                          ))
-                                ]),
-                                // pw.Padding(
-                                //     padding: const pw.EdgeInsets.only(top: 20)),
+                                pw.Container(
+                                    width: 450.0,
+                                    decoration: pw.BoxDecoration(
+                                      border: pw.Border.all(width: 3),
+                                    ),
+                                    child: pw.Column(children: [
+                                      pw.Text('MATRIZ',
+                                          textScaleFactor: 1,
+                                          style: pw.Theme.of(context)
+                                              .defaultTextStyle
+                                              .copyWith(
+                                                  fontWeight:
+                                                      pw.FontWeight.bold)),
+                                      // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
+                                      pw.Text(
+                                          widget.producaoPrint.regra.matriz
+                                              .descricao,
+                                          textScaleFactor: 2,
+                                          style: pw.Theme.of(context)
+                                              .defaultTextStyle
+                                              .copyWith(
+                                                fontWeight: pw.FontWeight.bold,
+                                              ))
+                                    ])),
+                                pw.Container(
+                                  width: 120.0,
+                                  decoration: pw.BoxDecoration(
+                                    border: pw.Border.all(width: 3),
+                                  ),
+                                  child: pw.Column(children: [
+                                    pw.Text('ETIQUETA',
+                                        textScaleFactor: 1,
+                                        style: pw.Theme.of(context)
+                                            .defaultTextStyle
+                                            .copyWith(
+                                                fontWeight:
+                                                    pw.FontWeight.bold)),
+                                    // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
+                                    pw.Text(
+                                        widget.producaoPrint.carcaca.id
+                                            .toString(),
+                                        textScaleFactor: 2,
+                                        style: pw.Theme.of(context)
+                                            .defaultTextStyle
+                                            .copyWith(
+                                              fontWeight: pw.FontWeight.bold,
+                                            ))
+                                  ]),
+                                  // pw.Padding(
+                                  //     padding: const pw.EdgeInsets.only(top: 20)),
+                                )
                               ]),
-                          pw.Row(
-                            crossAxisAlignment: pw.CrossAxisAlignment.start,
-                            mainAxisAlignment:
-                                pw.MainAxisAlignment.spaceBetween,
-                            children: <pw.Widget>[
-                              pw.Column(
-                                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                                children: <pw.Widget>[
-                                  pw.Text('568 Port Washington Road',
-                                      style: const pw.TextStyle(
-                                        decoration: pw.TextDecoration.underline,
-                                        color: PdfColors.blue,
-                                      )),
-                                  pw.Text('Nordegg, AB T0M 2H0'),
-                                  pw.Text('Canada, ON'),
-                                ],
-                              ),
-
-                              // decoration: BoxDecoration(
-                              //     border: Border.all(color: Colors.blueAccent)
-                              // ),
-                              pw.Column(
-                                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                                children: <pw.Widget>[
-                                  pw.Text('568 Port Washington Road'),
-                                  pw.Text('Nordegg, AB T0M 2H0'),
-                                  pw.Text('Canada, ON'),
-                                ],
-                              ),
-                              pw.Column(
-                                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                                children: <pw.Widget>[
-                                  pw.Text('+1 403-721-6898'),
-                                  _UrlText('p.charlesbois@yahoo.com',
-                                      'mailto:p.charlesbois@yahoo.com'),
-                                  _UrlText('wholeprices.ca',
-                                      'https://wholeprices.ca'),
-                                ],
-                              ),
-                              pw.Padding(padding: pw.EdgeInsets.zero)
-                            ],
-                          ),
                         ],
                       ),
                     ),
@@ -206,12 +173,12 @@ class _PrintPageState extends State<PrintPage> {
                 left: 0,
                 top: 0,
               ),
-              pw.Positioned(
-                child: pw.Transform.rotate(
-                    angle: pi, child: pw.SvgImage(svg: bgShape)),
-                right: 0,
-                bottom: 0,
-              ),
+              // pw.Positioned(
+              //   child: pw.Transform.rotate(
+              //       angle: pi, child: pw.SvgImage(svg: bgShape)),
+              //   right: 0,
+              //   bottom: 0,
+              // ),
             ],
           ),
         );
