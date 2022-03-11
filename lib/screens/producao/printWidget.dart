@@ -87,7 +87,7 @@ class PrintPageState extends State<PrintPage> {
                                       border: pw.Border.all(width: 3),
                                     ),
                                     child: pw.Column(children: [
-                                      pw.Text('MATRIZ',
+                                      pw.Text('Matriz',
                                           textScaleFactor: 1,
                                           style: pw.Theme.of(context)
                                               .defaultTextStyle
@@ -111,7 +111,7 @@ class PrintPageState extends State<PrintPage> {
                                     border: pw.Border.all(width: 3),
                                   ),
                                   child: pw.Column(children: [
-                                    pw.Text('ETIQUETA',
+                                    pw.Text('Cód. da etiqueta',
                                         textScaleFactor: 1,
                                         style: pw.Theme.of(context)
                                             .defaultTextStyle
@@ -132,6 +132,347 @@ class PrintPageState extends State<PrintPage> {
                                   // pw.Padding(
                                   //     padding: const pw.EdgeInsets.only(top: 20)),
                                 )
+                              ]),
+                          // Medida Marca e Modelo da Carcaça
+                          pw.Row(
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              mainAxisAlignment:
+                                  pw.MainAxisAlignment.spaceBetween,
+                              children: <pw.Widget>[
+                                pw.Container(
+                                    width: 200.0,
+                                    decoration: pw.BoxDecoration(
+                                      border: pw.Border.all(width: 3),
+                                    ),
+                                    child: pw.Column(children: [
+                                      pw.Text('Medida da carcaça',
+                                          textScaleFactor: 1,
+                                          style: pw.Theme.of(context)
+                                              .defaultTextStyle
+                                              .copyWith(
+                                                  fontWeight:
+                                                      pw.FontWeight.bold)),
+                                      // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
+                                      pw.Text(
+                                          widget.producaoPrint.carcaca.medida
+                                              .descricao,
+                                          textScaleFactor: 1.3,
+                                          style: pw.Theme.of(context)
+                                              .defaultTextStyle
+                                              .copyWith(
+                                                fontWeight: pw.FontWeight.bold,
+                                              ))
+                                    ])),
+                                pw.Container(
+                                  width: 300.0,
+                                  decoration: pw.BoxDecoration(
+                                    border: pw.Border.all(width: 3),
+                                  ),
+                                  child: pw.Column(children: [
+                                    pw.Text('Marca e modelo da carcaça',
+                                        textScaleFactor: 1,
+                                        style: pw.Theme.of(context)
+                                            .defaultTextStyle
+                                            .copyWith(
+                                                fontWeight:
+                                                    pw.FontWeight.bold)),
+                                    // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
+                                    pw.Text(
+                                        widget.producaoPrint.carcaca.modelo
+                                                .marca.descricao +
+                                            " " +
+                                            widget.producaoPrint.carcaca.modelo
+                                                .descricao,
+                                        textScaleFactor: 1.3,
+                                        style: pw.Theme.of(context)
+                                            .defaultTextStyle
+                                            .copyWith(
+                                              fontWeight: pw.FontWeight.bold,
+                                            ))
+                                  ]),
+                                  // pw.Padding(
+                                  //     padding: const pw.EdgeInsets.only(top: 20)),
+                                )
+                              ]),
+//Regra | Tamanho min | Tamanho Max | Camelback
+                          pw.Row(
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              mainAxisAlignment: pw.MainAxisAlignment.start,
+                              children: <pw.Widget>[
+                                pw.Container(
+                                    width: 100.0,
+                                    height: 50.0,
+                                    decoration: pw.BoxDecoration(
+                                      border: pw.Border.all(width: 3),
+                                    ),
+                                    child: pw.Column(children: [
+                                      pw.Text('Regra',
+                                          textScaleFactor: 1,
+                                          style: pw.Theme.of(context)
+                                              .defaultTextStyle
+                                              .copyWith(
+                                                  fontWeight:
+                                                      pw.FontWeight.bold)),
+                                      // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
+                                      pw.Text(
+                                          widget.producaoPrint.regra.id
+                                              .toString(),
+                                          textScaleFactor: 1.5,
+                                          style: pw.Theme.of(context)
+                                              .defaultTextStyle
+                                              .copyWith(
+                                                fontWeight: pw.FontWeight.bold,
+                                              ))
+                                    ])),
+                                pw.Container(
+                                  width: 100.0,
+                                  height: 50.0,
+                                  decoration: pw.BoxDecoration(
+                                    border: pw.Border.all(width: 3),
+                                  ),
+                                  child: pw.Column(children: [
+                                    pw.Text('Tamanho Min',
+                                        textScaleFactor: 1,
+                                        style: pw.Theme.of(context)
+                                            .defaultTextStyle
+                                            .copyWith(
+                                                fontWeight:
+                                                    pw.FontWeight.bold)),
+                                    // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
+                                    pw.Text(
+                                        widget.producaoPrint.regra.tamanhoMin
+                                            .toString(),
+                                        textScaleFactor: 1.5,
+                                        style: pw.Theme.of(context)
+                                            .defaultTextStyle
+                                            .copyWith(
+                                              fontWeight: pw.FontWeight.bold,
+                                            ))
+                                  ]),
+                                  // pw.Padding(
+                                  //     padding: const pw.EdgeInsets.only(top: 20)),
+                                ),
+                                pw.Container(
+                                  width: 100.0,
+                                  height: 50.0,
+                                  decoration: pw.BoxDecoration(
+                                    border: pw.Border.all(width: 3),
+                                  ),
+                                  child: pw.Column(children: [
+                                    pw.Text('Tamanho Máx',
+                                        textScaleFactor: 1,
+                                        style: pw.Theme.of(context)
+                                            .defaultTextStyle
+                                            .copyWith(
+                                                fontWeight:
+                                                    pw.FontWeight.bold)),
+                                    // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
+                                    pw.Text(
+                                        widget.producaoPrint.regra.tamanhoMax
+                                            .toString(),
+                                        textScaleFactor: 1.5,
+                                        style: pw.Theme.of(context)
+                                            .defaultTextStyle
+                                            .copyWith(
+                                              fontWeight: pw.FontWeight.bold,
+                                            ))
+                                  ]),
+                                  // pw.Padding(
+                                  //     padding: const pw.EdgeInsets.only(top: 20)),
+                                ),
+                                pw.Container(
+                                  width: 200.0,
+                                  decoration: pw.BoxDecoration(
+                                    border: pw.Border.all(width: 3),
+                                  ),
+                                  child: pw.Column(children: [
+                                    pw.Text('Camelback',
+                                        textScaleFactor: 1,
+                                        style: pw.Theme.of(context)
+                                            .defaultTextStyle
+                                            .copyWith(
+                                                fontWeight:
+                                                    pw.FontWeight.bold)),
+                                    // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
+                                    pw.Text(
+                                        widget.producaoPrint.regra.camelback
+                                            .descricao,
+                                        textScaleFactor: 2,
+                                        style: pw.Theme.of(context)
+                                            .defaultTextStyle
+                                            .copyWith(
+                                              fontWeight: pw.FontWeight.bold,
+                                            ))
+                                  ]),
+                                  // pw.Padding(
+                                  //     padding: const pw.EdgeInsets.only(top: 20)),
+                                )
+                              ]),
+                          pw.Row(
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              mainAxisAlignment: pw.MainAxisAlignment.start,
+                              children: <pw.Widget>[
+                                pw.Container(
+                                    width: 100.0,
+                                    decoration: pw.BoxDecoration(
+                                      border: pw.Border.all(width: 3),
+                                    ),
+                                    child: pw.Column(children: [
+                                      pw.Text('Anti quebra 1',
+                                          textScaleFactor: 1,
+                                          style: pw.Theme.of(context)
+                                              .defaultTextStyle
+                                              .copyWith(
+                                                  fontWeight:
+                                                      pw.FontWeight.bold)),
+                                      // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
+                                      pw.Text(
+                                          widget.producaoPrint.regra.antiquebra1
+                                              .descricao,
+                                          textScaleFactor: 2,
+                                          textAlign: pw.TextAlign.center,
+                                          style: pw.Theme.of(context)
+                                              .defaultTextStyle
+                                              .copyWith(
+                                                fontWeight: pw.FontWeight.bold,
+                                              ))
+                                    ])),
+                                pw.Container(
+                                  width: 100.0,
+                                  height: 81.0,
+                                  decoration: pw.BoxDecoration(
+                                    border: pw.Border.all(width: 3),
+                                  ),
+                                  child: pw.Column(children: [
+                                    pw.Text('Anti quebra 2',
+                                        textScaleFactor: 1,
+                                        style: pw.Theme.of(context)
+                                            .defaultTextStyle
+                                            .copyWith(
+                                                fontWeight:
+                                                    pw.FontWeight.bold)),
+                                    // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
+                                    widget.producaoPrint.regra.antiquebra2 !=
+                                            null
+                                        ? pw.Text(
+                                            widget.producaoPrint.regra
+                                                .antiquebra2.descricao,
+                                            textScaleFactor: 2,
+                                            style: pw.Theme.of(context)
+                                                .defaultTextStyle
+                                                .copyWith(
+                                                  fontWeight:
+                                                      pw.FontWeight.bold,
+                                                ))
+                                        : pw.Text("SI",
+                                            textScaleFactor: 2,
+                                            textAlign: pw.TextAlign.center,
+                                            style: pw.Theme.of(context)
+                                                .defaultTextStyle
+                                                .copyWith(
+                                                    fontWeight:
+                                                        pw.FontWeight.bold))
+                                  ]),
+                                  // pw.Padding(
+                                  //     padding: const pw.EdgeInsets.only(top: 20)),
+                                ),
+                                pw.Container(
+                                  width: 100.0,
+                                  height: 81.0,
+                                  decoration: pw.BoxDecoration(
+                                    border: pw.Border.all(width: 3),
+                                  ),
+                                  child: pw.Column(children: [
+                                    pw.Text('Anti quebra 3',
+                                        textScaleFactor: 1,
+                                        style: pw.Theme.of(context)
+                                            .defaultTextStyle
+                                            .copyWith(
+                                                fontWeight:
+                                                    pw.FontWeight.bold)),
+                                    // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
+                                    widget.producaoPrint.regra.antiquebra3 !=
+                                            null
+                                        ? pw.Text(
+                                            widget.producaoPrint.regra
+                                                .antiquebra3.descricao,
+                                            textScaleFactor: 2,
+                                            textAlign: pw.TextAlign.center,
+                                            style: pw.Theme.of(context)
+                                                .defaultTextStyle
+                                                .copyWith(
+                                                  fontWeight:
+                                                      pw.FontWeight.bold,
+                                                ))
+                                        : pw.Text("SI",
+                                            textScaleFactor: 2,
+                                            style: pw.Theme.of(context)
+                                                .defaultTextStyle
+                                                .copyWith(
+                                                    fontWeight:
+                                                        pw.FontWeight.bold))
+                                  ]),
+                                  // pw.Padding(
+                                  //     padding: const pw.EdgeInsets.only(top: 20)),
+                                ),
+                                pw.Container(
+                                  width: 100.0,
+                                  decoration: pw.BoxDecoration(
+                                    border: pw.Border.all(width: 3),
+                                  ),
+                                  child: pw.Column(children: [
+                                    pw.Text('Espessuramento',
+                                        textScaleFactor: 1,
+                                        style: pw.Theme.of(context)
+                                            .defaultTextStyle
+                                            .copyWith(
+                                                fontWeight:
+                                                    pw.FontWeight.bold)),
+                                    // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
+                                    pw.Text(
+                                        widget.producaoPrint.regra
+                                            .espessuramento.descricao,
+                                        textScaleFactor: 2,
+                                        textAlign: pw.TextAlign.center,
+                                        style: pw.Theme.of(context)
+                                            .defaultTextStyle
+                                            .copyWith(
+                                              fontWeight: pw.FontWeight.bold,
+                                            ))
+                                  ]),
+                                ),
+                                pw.Container(
+                                  width: 100.0,
+                                  height: 81.0,
+                                  decoration: pw.BoxDecoration(
+                                    border: pw.Border.all(width: 3),
+                                  ),
+                                  child: pw.Column(children: [
+                                    pw.Text('Tempo',
+                                        textScaleFactor: 1,
+                                        style: pw.Theme.of(context)
+                                            .defaultTextStyle
+                                            .copyWith(
+                                                fontWeight:
+                                                    pw.FontWeight.bold)),
+                                    // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
+                                    pw.Text(
+                                        widget.producaoPrint.regra.tempo
+                                            .toString(),
+                                        textScaleFactor: 3.5,
+                                        style: pw.Theme.of(context)
+                                            .defaultTextStyle
+                                            .copyWith(
+                                              fontWeight: pw.FontWeight.bold,
+                                            ))
+                                  ]),
+                                ),
+
+                                // pw.Positioned(
+                                //   child: pw.Text("Ola"),
+                                //   left: 0,
+                                //   top: 0,
+                                // ),
                               ]),
                         ],
                       ),
@@ -168,11 +509,11 @@ class PrintPageState extends State<PrintPage> {
           ignoreMargins: true,
           child: pw.Stack(
             children: [
-              pw.Positioned(
-                // child: pw.SvgImage(svg: bgShape),
-                left: 0,
-                top: 0,
-              ),
+              // pw.Positioned(
+              //   child: pw.Text("Ola"),
+              //   left: 0,
+              //   top: 0,
+              // ),
               // pw.Positioned(
               //   child: pw.Transform.rotate(
               //       angle: pi, child: pw.SvgImage(svg: bgShape)),
@@ -183,154 +524,6 @@ class PrintPageState extends State<PrintPage> {
           ),
         );
       },
-    );
-  }
-}
-
-class _Block extends pw.StatelessWidget {
-  _Block({
-    this.title,
-    this.icon,
-  });
-
-  final String title;
-
-  final pw.IconData icon;
-
-  @override
-  pw.Widget build(pw.Context context) {
-    return pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: <pw.Widget>[
-          pw.Row(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: <pw.Widget>[
-                pw.Container(
-                  width: 6,
-                  height: 6,
-                  margin: const pw.EdgeInsets.only(top: 0, left: 2, right: 5),
-                  decoration: const pw.BoxDecoration(
-                    color: green,
-                    shape: pw.BoxShape.circle,
-                  ),
-                ),
-                pw.Text(title,
-                    style: pw.Theme.of(context)
-                        .defaultTextStyle
-                        .copyWith(fontWeight: pw.FontWeight.bold)),
-                pw.Spacer(),
-                if (icon != null) pw.Icon(icon, color: lightGreen, size: 18),
-              ]),
-          pw.Container(
-            decoration: const pw.BoxDecoration(
-                border: pw.Border(left: pw.BorderSide(color: green, width: 2))),
-            padding: const pw.EdgeInsets.only(left: 10, top: 5, bottom: 5),
-            margin: const pw.EdgeInsets.only(left: 5),
-            child: pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: <pw.Widget>[
-                  pw.Lorem(length: 20),
-                ]),
-          ),
-        ]);
-  }
-}
-
-class _Category extends pw.StatelessWidget {
-  _Category({this.title});
-
-  final String title;
-
-  @override
-  pw.Widget build(pw.Context context) {
-    return pw.Container(
-      decoration: const pw.BoxDecoration(
-        color: lightGreen,
-        borderRadius: pw.BorderRadius.all(pw.Radius.circular(6)),
-      ),
-      margin: const pw.EdgeInsets.only(bottom: 10, top: 20),
-      padding: const pw.EdgeInsets.fromLTRB(10, 4, 10, 4),
-      child: pw.Text(
-        title,
-        textScaleFactor: 1.5,
-      ),
-    );
-  }
-}
-
-class _Percent extends pw.StatelessWidget {
-  _Percent({
-    this.size,
-    this.value,
-    this.title,
-    this.fontSize = 1.2,
-    this.color = green,
-    this.backgroundColor = PdfColors.grey300,
-    this.strokeWidth = 5,
-  });
-
-  final double size;
-
-  final double value;
-
-  final pw.Widget title;
-
-  final double fontSize;
-
-  final PdfColor color;
-
-  final PdfColor backgroundColor;
-
-  final double strokeWidth;
-
-  @override
-  pw.Widget build(pw.Context context) {
-    final widgets = <pw.Widget>[
-      pw.Container(
-        width: size,
-        height: size,
-        child: pw.Stack(
-          alignment: pw.Alignment.center,
-          fit: pw.StackFit.expand,
-          children: <pw.Widget>[
-            pw.Center(
-              child: pw.Text(
-                '${(value * 100).round().toInt()}%',
-                textScaleFactor: fontSize,
-              ),
-            ),
-            pw.CircularProgressIndicator(
-              value: value,
-              backgroundColor: backgroundColor,
-              color: color,
-              strokeWidth: strokeWidth,
-            ),
-          ],
-        ),
-      )
-    ];
-
-    widgets.add(title);
-
-    return pw.Column(children: widgets);
-  }
-}
-
-class _UrlText extends pw.StatelessWidget {
-  _UrlText(this.text, this.url);
-
-  final String text;
-  final String url;
-
-  @override
-  pw.Widget build(pw.Context context) {
-    return pw.UrlLink(
-      destination: url,
-      child: pw.Text(text,
-          style: const pw.TextStyle(
-            decoration: pw.TextDecoration.underline,
-            color: PdfColors.blue,
-          )),
     );
   }
 }
