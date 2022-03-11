@@ -27,7 +27,7 @@ class DetalhesProducaoPageState extends State<DetalhesProducaoPage> {
         actions: [
           IconButton(
             icon: Icon(
-              Icons.print,
+              Icons.add,
               color: Colors.white,
             ),
             onPressed: () {

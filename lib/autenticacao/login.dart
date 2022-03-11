@@ -51,7 +51,7 @@ class Login extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        'v1.0.21',
+                        'v1.0.23',
                         style: TextStyle(color: Colors.white),
                       ),
                     ])

@@ -183,7 +183,7 @@ class PrintPageState extends State<PrintPage> {
                                             " " +
                                             widget.producaoPrint.carcaca.modelo
                                                 .descricao,
-                                        textScaleFactor: 1.3,
+                                        textScaleFactor: 0.8,
                                         style: pw.Theme.of(context)
                                             .defaultTextStyle
                                             .copyWith(
@@ -314,6 +314,7 @@ class PrintPageState extends State<PrintPage> {
                               children: <pw.Widget>[
                                 pw.Container(
                                     width: 100.0,
+                                    height: 81.0,
                                     decoration: pw.BoxDecoration(
                                       border: pw.Border.all(width: 3),
                                     ),
@@ -329,7 +330,7 @@ class PrintPageState extends State<PrintPage> {
                                       pw.Text(
                                           widget.producaoPrint.regra.antiquebra1
                                               .descricao,
-                                          textScaleFactor: 2,
+                                          textScaleFactor: 1.5,
                                           textAlign: pw.TextAlign.center,
                                           style: pw.Theme.of(context)
                                               .defaultTextStyle
@@ -346,6 +347,7 @@ class PrintPageState extends State<PrintPage> {
                                   child: pw.Column(children: [
                                     pw.Text('Anti quebra 2',
                                         textScaleFactor: 1,
+                                        textAlign: pw.TextAlign.center,
                                         style: pw.Theme.of(context)
                                             .defaultTextStyle
                                             .copyWith(
@@ -357,7 +359,8 @@ class PrintPageState extends State<PrintPage> {
                                         ? pw.Text(
                                             widget.producaoPrint.regra
                                                 .antiquebra2.descricao,
-                                            textScaleFactor: 2,
+                                            textScaleFactor: 1.5,
+                                            textAlign: pw.TextAlign.center,
                                             style: pw.Theme.of(context)
                                                 .defaultTextStyle
                                                 .copyWith(
@@ -385,6 +388,7 @@ class PrintPageState extends State<PrintPage> {
                                   child: pw.Column(children: [
                                     pw.Text('Anti quebra 3',
                                         textScaleFactor: 1,
+                                        textAlign: pw.TextAlign.center,
                                         style: pw.Theme.of(context)
                                             .defaultTextStyle
                                             .copyWith(
@@ -396,7 +400,7 @@ class PrintPageState extends State<PrintPage> {
                                         ? pw.Text(
                                             widget.producaoPrint.regra
                                                 .antiquebra3.descricao,
-                                            textScaleFactor: 2,
+                                            textScaleFactor: 1.5,
                                             textAlign: pw.TextAlign.center,
                                             style: pw.Theme.of(context)
                                                 .defaultTextStyle
@@ -415,8 +419,10 @@ class PrintPageState extends State<PrintPage> {
                                   // pw.Padding(
                                   //     padding: const pw.EdgeInsets.only(top: 20)),
                                 ),
+
                                 pw.Container(
                                   width: 100.0,
+                                  height: 81.0,
                                   decoration: pw.BoxDecoration(
                                     border: pw.Border.all(width: 3),
                                   ),
@@ -429,16 +435,26 @@ class PrintPageState extends State<PrintPage> {
                                                 fontWeight:
                                                     pw.FontWeight.bold)),
                                     // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
-                                    pw.Text(
-                                        widget.producaoPrint.regra
-                                            .espessuramento.descricao,
-                                        textScaleFactor: 2,
-                                        textAlign: pw.TextAlign.center,
-                                        style: pw.Theme.of(context)
-                                            .defaultTextStyle
-                                            .copyWith(
-                                              fontWeight: pw.FontWeight.bold,
-                                            ))
+                                    widget.producaoPrint.regra.espessuramento !=
+                                            null
+                                        ? pw.Text(
+                                            widget.producaoPrint.regra
+                                                .espessuramento.descricao,
+                                            textScaleFactor: 2,
+                                            style: pw.Theme.of(context)
+                                                .defaultTextStyle
+                                                .copyWith(
+                                                  fontWeight:
+                                                      pw.FontWeight.bold,
+                                                ))
+                                        : pw.Text("SI",
+                                            textScaleFactor: 2,
+                                            textAlign: pw.TextAlign.center,
+                                            style: pw.Theme.of(context)
+                                                .defaultTextStyle
+                                                .copyWith(
+                                                    fontWeight:
+                                                        pw.FontWeight.bold))
                                   ]),
                                 ),
                                 pw.Container(
