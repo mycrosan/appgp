@@ -165,6 +165,7 @@ class PrintPageState extends State<PrintPage> {
                                     ])),
                                 pw.Container(
                                   width: 300.0,
+                                  height: 70.0,
                                   decoration: pw.BoxDecoration(
                                     border: pw.Border.all(width: 3),
                                   ),
@@ -367,7 +368,7 @@ class PrintPageState extends State<PrintPage> {
                                                   fontWeight:
                                                       pw.FontWeight.bold,
                                                 ))
-                                        : pw.Text("SI",
+                                        : pw.Text("NÃO",
                                             textScaleFactor: 2,
                                             textAlign: pw.TextAlign.center,
                                             style: pw.Theme.of(context)
@@ -408,7 +409,7 @@ class PrintPageState extends State<PrintPage> {
                                                   fontWeight:
                                                       pw.FontWeight.bold,
                                                 ))
-                                        : pw.Text("SI",
+                                        : pw.Text("NÃO",
                                             textScaleFactor: 2,
                                             style: pw.Theme.of(context)
                                                 .defaultTextStyle
@@ -447,7 +448,7 @@ class PrintPageState extends State<PrintPage> {
                                                   fontWeight:
                                                       pw.FontWeight.bold,
                                                 ))
-                                        : pw.Text("SI",
+                                        : pw.Text("NÃO",
                                             textScaleFactor: 2,
                                             textAlign: pw.TextAlign.center,
                                             style: pw.Theme.of(context)

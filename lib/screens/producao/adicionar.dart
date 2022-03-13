@@ -10,6 +10,7 @@ import 'package:GPPremium/models/pais.dart';
 import 'package:GPPremium/models/producao.dart';
 import 'package:GPPremium/models/regra.dart';
 import 'package:GPPremium/models/responseMessage.dart';
+import 'package:GPPremium/screens/producao/printWidget.dart';
 import 'package:GPPremium/service/carcacaapi.dart';
 import 'package:GPPremium/service/matrizapi.dart';
 import 'package:GPPremium/service/producaoapi.dart';
@@ -497,14 +498,12 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
                         Text('Salvar!', style: TextStyle(color: Colors.white)),
                     controller: _btnController1,
                     onPressed: () async {
-
                       if (_formkey.currentState.validate()) {
-
                         Map<String, String> body = {
                           'title': 'producao',
                         };
                         responseMessageSimple imageResponse =
-                        await UploadApi().addImage(body, _imageFileList);
+                            await UploadApi().addImage(body, _imageFileList);
 
                         print(imageResponse.content[0]);
                         producao.fotos = json.encode(imageResponse.content);
@@ -513,11 +512,37 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
 
                         _btnController1.success();
 
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ListaProducao(),
-                          ),
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text("Imprimir?"),
+                              content: Text("Quer ir para tela de impressão?"),
+                              actions: [
+                                ElevatedButton(
+                                  child: Text("Sim"),
+                                  onPressed: () {
+                                    MaterialPageRoute(
+                                        builder: (context) => PrintPage(
+                                              producaoPrint: producao,
+                                            ));
+                                  },
+                                ),
+                                ElevatedButton(
+                                  child: Text("Não"),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ListaProducao(),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            );
+                            ;
+                          },
                         );
                       } else {
                         _btnController1.reset();

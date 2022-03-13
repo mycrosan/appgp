@@ -2,6 +2,7 @@ import 'package:GPPremium/models/producao.dart';
 import 'package:GPPremium/service/producaoapi.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ionicons/ionicons.dart';
 
 import '../../service/get_image.dart';
 import 'printWidget.dart';
@@ -27,7 +28,7 @@ class DetalhesProducaoPageState extends State<DetalhesProducaoPage> {
         actions: [
           IconButton(
             icon: Icon(
-              Icons.add,
+              Ionicons.print,
               color: Colors.white,
             ),
             onPressed: () {

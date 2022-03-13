@@ -395,12 +395,10 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
 
                       _btnController1.success();
 
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ListaCarcaca(),
-                        ),
-                      );
+
+
+
+
                     } else {
                       _btnController1.reset();
                     }
