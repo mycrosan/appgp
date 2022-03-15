@@ -111,7 +111,7 @@ class PrintPageState extends State<PrintPage> {
                                     border: pw.Border.all(width: 3),
                                   ),
                                   child: pw.Column(children: [
-                                    pw.Text('Cód. da etiqueta',
+                                    pw.Text('Nº. da etiqueta',
                                         textScaleFactor: 1,
                                         style: pw.Theme.of(context)
                                             .defaultTextStyle
@@ -120,7 +120,7 @@ class PrintPageState extends State<PrintPage> {
                                                     pw.FontWeight.bold)),
                                     // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
                                     pw.Text(
-                                        widget.producaoPrint.carcaca.id
+                                        widget.producaoPrint.carcaca.numeroEtiqueta
                                             .toString(),
                                         textScaleFactor: 2,
                                         style: pw.Theme.of(context)
