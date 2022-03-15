@@ -156,7 +156,7 @@ class ListaCarcacaState extends State<ListaCarcaca> {
                                 'Modelo: ' +
                             snapshot.data[index].modelo.descricao),
                         trailing: Container(
-                          width: 150,
+                          width: 100,
                           child: Row(
                             children: <Widget>[
                               IconButton(

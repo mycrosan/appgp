@@ -43,7 +43,7 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
   }
 
   final RoundedLoadingButtonController _btnController1 =
-  RoundedLoadingButtonController();
+      RoundedLoadingButtonController();
 
   String _retrieveDataError;
 
@@ -103,7 +103,7 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
   Future getImage() async {
     try {
       final pickedFile = await _picker.pickImage(
-        source:  ImageSource.camera,
+        source: ImageSource.camera,
         imageQuality: 25,
       );
       setState(() {
@@ -312,7 +312,6 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
             }).toList(),
           ),
           Padding(padding: EdgeInsets.all(10)),
-
           Center(
             child: !kIsWeb && defaultTargetPlatform == TargetPlatform.android
                 ? FutureBuilder<void>(
@@ -374,19 +373,16 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
                   color: Colors.black,
                   successIcon: Icons.check,
                   failedIcon: Icons.cottage,
-                  child:
-                  Text('Salvar!', style: TextStyle(color: Colors.white)),
+                  child: Text('Salvar!', style: TextStyle(color: Colors.white)),
                   controller: _btnController1,
                   onPressed: () async {
-
                     if (_formkey.currentState.validate()) {
-
                       Map<String, String> body = {
                         'title': 'carcaca',
                       };
 
                       responseMessageSimple imageResponse =
-                      await UploadApi().addImage(body, _imageFileList);
+                          await UploadApi().addImage(body, _imageFileList);
 
                       print(imageResponse.content[0]);
                       carcaca.fotos = json.encode(imageResponse.content);
@@ -395,10 +391,12 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
 
                       _btnController1.success();
 
-
-
-
-
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ListaCarcaca(),
+                        ),
+                      );
                     } else {
                       _btnController1.reset();
                     }
