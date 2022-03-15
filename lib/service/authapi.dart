@@ -38,8 +38,12 @@ class AuthApi {
           "debugMessage": "debug",
           "subErrors": null});
       }
-    } on TimeoutException catch (_) {
-      throw Exception('Falha ao tentar logar 2');
+    } on TimeoutException catch (e) {
+      return responseMessage.fromJson({"status": false, "timestamp": "",
+        "message": "O servidor não respondeu, tente novamente!",
+        "error": e.message,
+        "debugMessage": "debug",
+        "subErrors": null});
     } on SocketException catch (e) {
       return responseMessage.fromJson({"status": false, "timestamp": "",
         "message": "Falha na comunicação com o servidor",
