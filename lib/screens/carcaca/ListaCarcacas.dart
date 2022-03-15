@@ -1,7 +1,7 @@
 import 'package:GPPremium/models/carcaca.dart';
-import 'package:GPPremium/models/responseMessage.dart';
 import 'package:GPPremium/screens/carcaca/adicionar.dart';
 import 'package:GPPremium/screens/carcaca/editdatawidget.dart';
+import 'package:GPPremium/screens/producao/printWidget.dart';
 import 'package:GPPremium/service/carcacaapi.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
@@ -182,6 +182,18 @@ class ListaCarcacaState extends State<ListaCarcaca> {
                                     Icons.delete,
                                     color: Colors.red,
                                   )),
+                              // IconButton(
+                              //     onPressed: () {
+                              //       Navigator.push(
+                              //           context,
+                              //           MaterialPageRoute(
+                              //               builder: (context) =>
+                              //                   PrintPage(
+                              //                     carcacaPrint:
+                              //                     snapshot.data[index],
+                              //                   )));
+                              //     },
+                              //     icon: Icon(Icons.print, color: Colors.greenAccent)),
                               // IconButton(onPressed: (){}, icon: Icon(Icons.arrow_right, color: Colors.black,))
                             ],
                           ),

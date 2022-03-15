@@ -2,13 +2,15 @@ import 'package:GPPremium/models/producao.dart';
 import 'package:GPPremium/service/producaoapi.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ionicons/ionicons.dart';
 
 import '../../service/get_image.dart';
+import 'printWidget.dart';
 
 class DetalhesProducaoPage extends StatefulWidget {
-  int id;
+  Producao producao;
 
-  DetalhesProducaoPage({Key key, this.id}) : super(key: key);
+  DetalhesProducaoPage({Key key, this.producao}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -23,11 +25,30 @@ class DetalhesProducaoPageState extends State<DetalhesProducaoPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Detalhe Produção'),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Ionicons.print,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          PrintPage(
+                            producaoPrint:
+                            this.widget.producao,
+                          )));
+              // do something
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: EdgeInsets.all(10),
         child: FutureBuilder(
-          future: producaoApi.getById(widget.id),
+          future: producaoApi.getById(widget.producao.id),
           builder: (context, AsyncSnapshot<Producao> snapshot) {
             if (snapshot.hasData) {
               return Column(children: [
@@ -96,6 +117,7 @@ class DetalhesProducaoPageState extends State<DetalhesProducaoPage> {
                               },
                             ),
                           );
+
                         } else {
                           return CircularProgressIndicator();
                         }
