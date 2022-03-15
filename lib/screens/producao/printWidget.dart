@@ -141,6 +141,7 @@ class PrintPageState extends State<PrintPage> {
                               children: <pw.Widget>[
                                 pw.Container(
                                     width: 200.0,
+                                    height: 40.0,
                                     decoration: pw.BoxDecoration(
                                       border: pw.Border.all(width: 3),
                                     ),
@@ -165,7 +166,7 @@ class PrintPageState extends State<PrintPage> {
                                     ])),
                                 pw.Container(
                                   width: 300.0,
-                                  height: 70.0,
+                                  height: 40.0,
                                   decoration: pw.BoxDecoration(
                                     border: pw.Border.all(width: 3),
                                   ),
@@ -506,7 +507,7 @@ class PrintPageState extends State<PrintPage> {
   }
 
   Future<pw.PageTheme> _myPageTheme(PdfPageFormat format) async {
-    final bgShape = await rootBundle.loadString('assets/images/resume.svg');
+    // final bgShape = await rootBundle.loadString('assets/images/resume.svg');
 
     format = format.applyMargin(
         left: 2.0 * PdfPageFormat.cm,
