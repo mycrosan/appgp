@@ -53,7 +53,7 @@ class PrintPageState extends State<PrintPage> {
     //       //pw.Image(image,fit:pw.BoxFit.fill));
     //     }));
 
-    final doc = pw.Document(title: 'ETIQUETA', author: 'SANDY');
+    final doc = pw.Document(title: 'ETIQUETA', author: 'GP');
 
     final profileImage = pw.MemoryImage(
       (await rootBundle.load('assets/images/banner.png')).buffer.asUint8List(),
@@ -79,7 +79,7 @@ class PrintPageState extends State<PrintPage> {
                           pw.Row(
                               crossAxisAlignment: pw.CrossAxisAlignment.start,
                               mainAxisAlignment:
-                                  pw.MainAxisAlignment.spaceBetween,
+                                  pw.MainAxisAlignment.start,
                               children: <pw.Widget>[
                                 pw.Container(
                                     width: 400.0,
@@ -137,7 +137,7 @@ class PrintPageState extends State<PrintPage> {
                           pw.Row(
                               crossAxisAlignment: pw.CrossAxisAlignment.start,
                               mainAxisAlignment:
-                                  pw.MainAxisAlignment.spaceBetween,
+                                  pw.MainAxisAlignment.start,
                               children: <pw.Widget>[
                                 pw.Container(
                                     width: 200.0,
@@ -510,10 +510,10 @@ class PrintPageState extends State<PrintPage> {
     // final bgShape = await rootBundle.loadString('assets/images/resume.svg');
 
     format = format.applyMargin(
-        left: 2.0 * PdfPageFormat.cm,
-        top: 2.0 * PdfPageFormat.cm,
-        right: 2.0 * PdfPageFormat.cm,
-        bottom: 2.0 * PdfPageFormat.cm);
+        left: 1.0 * PdfPageFormat.cm,
+        top: 1.0 * PdfPageFormat.cm,
+        right: 1.0 * PdfPageFormat.cm,
+        bottom: 1.0 * PdfPageFormat.cm);
 
     return pw.PageTheme(
       pageFormat: format,
@@ -524,7 +524,7 @@ class PrintPageState extends State<PrintPage> {
       ),
       buildBackground: (pw.Context context) {
         return pw.FullPage(
-          ignoreMargins: true,
+          ignoreMargins: false,
           child: pw.Stack(
             children: [
               // pw.Positioned(
