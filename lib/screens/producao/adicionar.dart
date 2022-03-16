@@ -522,10 +522,12 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
                                 ElevatedButton(
                                   child: Text("Sim"),
                                   onPressed: () {
-                                    MaterialPageRoute(
-                                        builder: (context) => PrintPage(
-                                              producaoPrint: producao,
-                                            ));
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => PrintPage(
+                                                  producaoPrint: producao,
+                                                )));
                                   },
                                 ),
                                 ElevatedButton(

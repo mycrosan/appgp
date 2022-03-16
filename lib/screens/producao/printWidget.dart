@@ -78,8 +78,7 @@ class PrintPageState extends State<PrintPage> {
                         children: <pw.Widget>[
                           pw.Row(
                               crossAxisAlignment: pw.CrossAxisAlignment.start,
-                              mainAxisAlignment:
-                                  pw.MainAxisAlignment.start,
+                              mainAxisAlignment: pw.MainAxisAlignment.start,
                               children: <pw.Widget>[
                                 pw.Container(
                                     width: 400.0,
@@ -120,7 +119,8 @@ class PrintPageState extends State<PrintPage> {
                                                     pw.FontWeight.bold)),
                                     // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
                                     pw.Text(
-                                        widget.producaoPrint.carcaca.numeroEtiqueta
+                                        widget.producaoPrint.carcaca
+                                            .numeroEtiqueta
                                             .toString(),
                                         textScaleFactor: 2,
                                         style: pw.Theme.of(context)
@@ -136,8 +136,7 @@ class PrintPageState extends State<PrintPage> {
                           // Medida Marca e Modelo da Carcaça
                           pw.Row(
                               crossAxisAlignment: pw.CrossAxisAlignment.start,
-                              mainAxisAlignment:
-                                  pw.MainAxisAlignment.start,
+                              mainAxisAlignment: pw.MainAxisAlignment.start,
                               children: <pw.Widget>[
                                 pw.Container(
                                     width: 200.0,
@@ -442,7 +441,8 @@ class PrintPageState extends State<PrintPage> {
                                         ? pw.Text(
                                             widget.producaoPrint.regra
                                                 .espessuramento.descricao,
-                                            textScaleFactor: 2,
+                                            textScaleFactor: 1.5,
+                                            textAlign: pw.TextAlign.center,
                                             style: pw.Theme.of(context)
                                                 .defaultTextStyle
                                                 .copyWith(
