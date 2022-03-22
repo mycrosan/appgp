@@ -30,7 +30,7 @@ import 'autenticacao/login.dart';
 //flutter build appbundle
 //  const SERVER_IP = 'http://143.198.182.236:8080/gp/api/';
 
- var SERVER_IP;
+var SERVER_IP;
 
 final storage = FlutterSecureStorage();
 
