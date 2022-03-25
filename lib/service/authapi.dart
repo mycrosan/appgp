@@ -21,7 +21,7 @@ class AuthApi {
                 'Content-type': 'application/json',
               },
               body: transactionJson)
-          .timeout(Duration(seconds: 10));
+          .timeout(Duration(seconds: 20));
 
       if (response.statusCode == 200) {
         var values = response.body;
