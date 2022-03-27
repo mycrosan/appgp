@@ -202,32 +202,120 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
     return Form(
       key: _formkey,
       child: Column(
-          children: [
-            TextFormField(
-              controller: textEditingControllerCarcaca,
-              decoration: InputDecoration(
-                labelText: "Carcaça",
-              ),
-              validator: (value) =>
-                  value.length == 0 ? 'Não pode ser nulo' : null,
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              onChanged: (String newValue) async {
-                setState(() {
-                  producao.carcaca = null;
-                  medidaCarcaca = null;
-                  modeloCarcaca = null;
-                  paisCarcaca = null;
-                  mostrarCarcacaSelecionada = false;
-                });
-                if (newValue.length >= 6) {
-                  var response = await CarcacaApi().consultaCarcaca(newValue);
-                  if (response is Carcaca && response != null) {
+        children: [
+          TextFormField(
+            controller: textEditingControllerCarcaca,
+            decoration: InputDecoration(
+              labelText: "Carcaça",
+            ),
+            validator: (value) =>
+                value.length == 0 ? 'Não pode ser nulo' : null,
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            onChanged: (String newValue) async {
+              setState(() {
+                producao.carcaca = null;
+                medidaCarcaca = null;
+                modeloCarcaca = null;
+                paisCarcaca = null;
+                mostrarCarcacaSelecionada = false;
+              });
+              if (newValue.length >= 6) {
+                var response = await CarcacaApi().consultaCarcaca(newValue);
+                if (response is Carcaca && response != null) {
+                  setState(() {
+                    producao.carcaca = response;
+                    medidaCarcaca = response.medida;
+                    modeloCarcaca = response.modelo;
+                    paisCarcaca = response.pais;
+                    mostrarCarcacaSelecionada = true;
+                  });
+                } else {
+                  responseMessage value = response;
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text(value.message),
+                        content: Text(value.debugMessage),
+                        actions: [
+                          TextButton(
+                            child: Text("OK"),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
+              }
+            },
+          ),
+          Container(
+            child: mostrarCarcacaSelecionada
+                ? Card(
+                    child: ListTile(
+                      title: Text('Etiqueta: ' +
+                          producao.carcaca.numeroEtiqueta.toString()),
+                      subtitle: Text('Medida: ' +
+                          medidaCarcaca.descricao +
+                          ' DOT: ' +
+                          producao.carcaca.dot +
+                          ' Modelo: ' +
+                          modeloCarcaca.descricao +
+                          ' Pais: ' +
+                          paisCarcaca.descricao),
+                    ),
+                  )
+                : Text('Sem carcaça'),
+          ),
+          DropdownButtonFormField(
+            decoration: InputDecoration(
+              labelText: "Matriz",
+            ),
+            validator: (value) => value == null ? 'Não pode ser nulo' : null,
+            value: matrizSelected,
+            isExpanded: true,
+            onChanged: (Matriz matriz) {
+              // var regra = regraList.firstWhere((regra) => regra.id == matriz.id);
+              setState(() {
+                matrizSelected = matriz;
+              });
+            },
+            items: matrizList.map((Matriz matriz) {
+              return DropdownMenuItem(
+                value: matriz,
+                child: Text(matriz.descricao),
+              );
+            }).toList(),
+          ),
+          Padding(
+            padding: EdgeInsets.all(5),
+          ),
+          TextFormField(
+            controller: textEditingControllerPneuRaspado,
+            decoration: InputDecoration(
+              labelText: "Medida pneu raspado",
+            ),
+            validator: (value) =>
+                value.length == 0 ? 'Não pode ser nulo' : null,
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            onChanged: (String newValue) async {
+              if (newValue.length >= 5) {
+                if (_formkey.currentState.validate()) {
+                  regraSelected = null;
+                  var response = await RegraApi().consultaRegra(
+                      matrizSelected,
+                      medidaCarcaca,
+                      modeloCarcaca,
+                      paisCarcaca,
+                      double.parse(newValue));
+                  if (response is Regra && response != null) {
                     setState(() {
-                      producao.carcaca = response;
-                      medidaCarcaca = response.medida;
-                      modeloCarcaca = response.modelo;
-                      paisCarcaca = response.pais;
-                      mostrarCarcacaSelecionada = true;
+                      regraSelected = response;
+                      producao.medidaPneuRaspado = double.parse(newValue);
+                      producao.regra = regraSelected;
                     });
                   } else {
                     responseMessage value = response;
@@ -250,152 +338,66 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
                     );
                   }
                 }
-              },
-            ),
-            Container(
-              child: mostrarCarcacaSelecionada
-                  ? Card(
-                      child: ListTile(
-                        title: Text('Etiqueta: ' +
-                            producao.carcaca.numeroEtiqueta.toString()),
-                        subtitle: Text('Medida: ' +
-                            medidaCarcaca.descricao +
-                            ' DOT: ' +
-                            producao.carcaca.dot +
-                            ' Modelo: ' +
-                            modeloCarcaca.descricao +
-                            ' Pais: ' +
-                            paisCarcaca.descricao),
-                      ),
-                    )
-                  : Text(''),
-            ),
-            DropdownButtonFormField(
-              decoration: InputDecoration(
-                labelText: "Matriz",
-              ),
-              validator: (value) => value == null ? 'Não pode ser nulo' : null,
-              value: matrizSelected,
-              isExpanded: true,
-              onChanged: (Matriz matriz) {
-                // var regra = regraList.firstWhere((regra) => regra.id == matriz.id);
-                setState(() {
-                  matrizSelected = matriz;
-                });
-              },
-              items: matrizList.map((Matriz matriz) {
-                return DropdownMenuItem(
-                  value: matriz,
-                  child: Text(matriz.descricao),
-                );
-              }).toList(),
-            ),
-            Padding(
-              padding: EdgeInsets.all(5),
-            ),
-            TextFormField(
-              controller: textEditingControllerPneuRaspado,
-              decoration: InputDecoration(
-                labelText: "Medida pneu raspado",
-              ),
-              validator: (value) =>
-                  value.length == 0 ? 'Não pode ser nulo' : null,
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              onChanged: (String newValue) async {
-                if (newValue.length >= 5) {
-                  if (_formkey.currentState.validate()) {
-                    regraSelected = null;
-                    var response = await RegraApi().consultaRegra(
-                        matrizSelected,
-                        medidaCarcaca,
-                        modeloCarcaca,
-                        paisCarcaca,
-                        double.parse(newValue));
-                    if (response is Regra && response != null) {
-                      setState(() {
-                        regraSelected = response;
-                        producao.medidaPneuRaspado = double.parse(newValue);
-                        producao.regra = regraSelected;
-                      });
-                    } else {
-                      responseMessage value = response;
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text(value.message),
-                            content: Text(value.debugMessage),
-                            actions: [
-                              TextButton(
-                                child: Text("OK"),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    }
-                  }
-                }
-                setState(() {
-                  inputMedidaPneuRapspado = newValue;
-                });
-              },
-            ),
-            Padding(
-              padding: EdgeInsets.all(5),
-            ),
-            Container(
-              child: (regraSelected != null)
-                  ? _exibirRegra(regraSelected)
-              // Text("ID1:" +
-              //         regraSelected.id.toString() +
-              //         "\n"
-              //             "Medida: " +
-              //         regraSelected.medida.descricao +
-              //         "\n"
-              //             "Camelback: " +
-              //         regraSelected.camelback.descricao +
-              //         "\n"
-              //             "Espessuramento: " +
-              //         (regraSelected.espessuramento != null
-              //             ? regraSelected.espessuramento.descricao
-              //             : 'NI') +
-              //         "\n"
-              //             "Tempo: " +
-              //         regraSelected.tempo +
-              //         "\n"
-              //             "Matriz: " +
-              //         regraSelected.matriz.descricao +
-              //         "\n"
-              //             "Antiquebra1: " +
-              //         regraSelected.antiquebra1.descricao +
-              //         "\n"
-              //             "Antiquebra2: " +
-              //         (regraSelected.antiquebra2 != null
-              //             ? regraSelected.antiquebra2.descricao
-              //             : 'NI') +
-              //         "\n"
-              //             "Antiquebra3: " +
-              //         (regraSelected.antiquebra3 != null
-              //             ? regraSelected.antiquebra3.descricao
-              //             : 'NI') +
-              //         "\n"
-              //             "Min: " +
-              //         regraSelected.tamanhoMin.toString() +
-              //         "\n"
-              //             "Max: " +
-              //         regraSelected.tamanhoMax.toString() +
-              //         "\n")
-                  : null,
-            ),
-            Padding(
-              padding: EdgeInsets.all(5),
-            ),
-            Center(child: showImage(_imageFileList, "adicionar")),
-            Row(
+              }
+              setState(() {
+                inputMedidaPneuRapspado = newValue;
+              });
+            },
+          ),
+          Padding(
+            padding: EdgeInsets.all(5),
+          ),
+          Container(
+            child: (regraSelected != null)
+                ? _exibirRegra(regraSelected)
+                // Text("ID1:" +
+                //         regraSelected.id.toString() +
+                //         "\n"
+                //             "Medida: " +
+                //         regraSelected.medida.descricao +
+                //         "\n"
+                //             "Camelback: " +
+                //         regraSelected.camelback.descricao +
+                //         "\n"
+                //             "Espessuramento: " +
+                //         (regraSelected.espessuramento != null
+                //             ? regraSelected.espessuramento.descricao
+                //             : 'NI') +
+                //         "\n"
+                //             "Tempo: " +
+                //         regraSelected.tempo +
+                //         "\n"
+                //             "Matriz: " +
+                //         regraSelected.matriz.descricao +
+                //         "\n"
+                //             "Antiquebra1: " +
+                //         regraSelected.antiquebra1.descricao +
+                //         "\n"
+                //             "Antiquebra2: " +
+                //         (regraSelected.antiquebra2 != null
+                //             ? regraSelected.antiquebra2.descricao
+                //             : 'NI') +
+                //         "\n"
+                //             "Antiquebra3: " +
+                //         (regraSelected.antiquebra3 != null
+                //             ? regraSelected.antiquebra3.descricao
+                //             : 'NI') +
+                //         "\n"
+                //             "Min: " +
+                //         regraSelected.tamanhoMin.toString() +
+                //         "\n"
+                //             "Max: " +
+                //         regraSelected.tamanhoMax.toString() +
+                //         "\n")
+                : Text("Sem regra"),
+          ),
+          Padding(
+            padding: EdgeInsets.all(5),
+          ),
+          Center(child: showImage(_imageFileList, "adicionar")),
+          Container(
+            padding: EdgeInsets.all(20),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 FloatingActionButton(
@@ -406,109 +408,109 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
                 ),
               ],
             ),
-            Row(
-              children: [
-                Expanded(
-                    child: ElevatedButton(
-                  child: Text("Cancelar"),
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(context, "/home");
-                  },
-                )),
-                Padding(padding: EdgeInsets.all(5)),
-                Expanded(
-                  child: RoundedLoadingButton(
-                    color: Colors.black,
-                    successIcon: Icons.check,
-                    failedIcon: Icons.cottage,
-                    child:
-                        Text('Salvar!', style: TextStyle(color: Colors.white)),
-                    controller: _btnController1,
-                    onPressed: () async {
-                      if (_formkey.currentState.validate()) {
-                        Map<String, String> body = {
-                          'title': 'producao',
-                        };
-                        responseMessageSimple imageResponse =
-                            await UploadApi().addImage(body, _imageFileList);
+          ),
+          Row(
+            children: [
+              Expanded(
+                  child: ElevatedButton(
+                child: Text("Cancelar"),
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, "/home");
+                },
+              )),
+              Padding(padding: EdgeInsets.all(5)),
+              Expanded(
+                child: RoundedLoadingButton(
+                  color: Colors.black,
+                  successIcon: Icons.check,
+                  failedIcon: Icons.cottage,
+                  child: Text('Salvar!', style: TextStyle(color: Colors.white)),
+                  controller: _btnController1,
+                  onPressed: () async {
+                    if (_formkey.currentState.validate()) {
+                      Map<String, String> body = {
+                        'title': 'producao',
+                      };
+                      responseMessageSimple imageResponse =
+                          await UploadApi().addImage(body, _imageFileList);
 
-                        print(imageResponse.content[0]);
-                        producao.fotos = json.encode(imageResponse.content);
+                      print(imageResponse.content[0]);
+                      producao.fotos = json.encode(imageResponse.content);
 
-                        var response = await producaoApi.create(producao);
+                      var response = await producaoApi.create(producao);
 
-                        _btnController1.success();
+                      _btnController1.success();
 
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text("Imprimir?"),
-                              content: Text("Quer ir para tela de impressão?"),
-                              actions: [
-                                ElevatedButton(
-                                  child: Text("Sim"),
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => PrintPage(
-                                                  producaoPrint: producao,
-                                                )));
-                                  },
-                                ),
-                                ElevatedButton(
-                                  child: Text("Não"),
-                                  onPressed: () {
-                                    Navigator.push(
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("Imprimir?"),
+                            content: Text("Quer ir para tela de impressão?"),
+                            actions: [
+                              ElevatedButton(
+                                child: Text("Sim"),
+                                onPressed: () {
+                                  Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => ListaProducao(),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
-                            );
-                            ;
-                          },
-                        );
-                      } else {
-                        _btnController1.reset();
-                      }
-                    },
-                  ),
+                                          builder: (context) => PrintPage(
+                                                producaoPrint: producao,
+                                              )));
+                                },
+                              ),
+                              ElevatedButton(
+                                child: Text("Não"),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ListaProducao(),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          );
+                          ;
+                        },
+                      );
+                    } else {
+                      _btnController1.reset();
+                    }
+                  },
                 ),
-                // Expanded(
-                //     child: ElevatedButton(
-                //   child: Text("Salvar"),
-                //   onPressed: () async {
-                //     Map<String, String> body = {
-                //       'title': 'producao',
-                //     };
-                //
-                //     responseMessageSimple imageResponse =
-                //         await UploadApi().addImage(body, _imageFileList);
-                //
-                //     print(imageResponse.content[0]);
-                //     producao.fotos = json.encode(imageResponse.content);
-                //
-                //     if (_formkey.currentState.validate()) {
-                //       var response = await producaoApi.create(producao);
-                //       Navigator.push(
-                //         context,
-                //         MaterialPageRoute(
-                //           builder: (context) => ListaProducao(),
-                //         ),
-                //       );
-                //     }
-                //   },
-                // )),
-              ],
-            )
-          ],
-        ),
-      );
+              ),
+              // Expanded(
+              //     child: ElevatedButton(
+              //   child: Text("Salvar"),
+              //   onPressed: () async {
+              //     Map<String, String> body = {
+              //       'title': 'producao',
+              //     };
+              //
+              //     responseMessageSimple imageResponse =
+              //         await UploadApi().addImage(body, _imageFileList);
+              //
+              //     print(imageResponse.content[0]);
+              //     producao.fotos = json.encode(imageResponse.content);
+              //
+              //     if (_formkey.currentState.validate()) {
+              //       var response = await producaoApi.create(producao);
+              //       Navigator.push(
+              //         context,
+              //         MaterialPageRoute(
+              //           builder: (context) => ListaProducao(),
+              //         ),
+              //       );
+              //     }
+              //   },
+              // )),
+            ],
+          )
+        ],
+      ),
+    );
   }
 }
 
@@ -519,130 +521,105 @@ Widget _exibirRegra(context) {
     child: ListTile(
       title: Text(
         'Matriz: ' + context.matriz.descricao,
-        style: TextStyle(
-            fontSize: 14, fontWeight: FontWeight.bold),
+        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
       ),
       subtitle: Wrap(
         children: [
-          Text.rich(
-              TextSpan(
-                  text: 'Medida: ',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                  children: <InlineSpan>[
-                    TextSpan(
-                      text:  context.medida.descricao,
-                      style: TextStyle(fontWeight: FontWeight.normal),
-                    )
-                  ]
-              )
-          ),
+          Text.rich(TextSpan(
+              text: 'Medida: ',
+              style: TextStyle(fontWeight: FontWeight.bold),
+              children: <InlineSpan>[
+                TextSpan(
+                  text: context.medida.descricao,
+                  style: TextStyle(fontWeight: FontWeight.normal),
+                )
+              ])),
           Padding(
             padding: EdgeInsets.all(3),
           ),
-          Text.rich(
-              TextSpan(
-                  text: 'Marca: ',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                  children: <InlineSpan>[
-                    TextSpan(
-                      text:  context.modelo.marca.descricao,
-                      style: TextStyle(fontWeight: FontWeight.normal),
-                    )
-                  ]
-              )
-          ),
+          Text.rich(TextSpan(
+              text: 'Marca: ',
+              style: TextStyle(fontWeight: FontWeight.bold),
+              children: <InlineSpan>[
+                TextSpan(
+                  text: context.modelo.marca.descricao,
+                  style: TextStyle(fontWeight: FontWeight.normal),
+                )
+              ])),
           Padding(
             padding: EdgeInsets.all(3),
           ),
-          Text.rich(
-              TextSpan(
-                  text: 'Modelo: ',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                  children: <InlineSpan>[
-                    TextSpan(
-                      text:  context.modelo.descricao,
-                      style: TextStyle(fontWeight: FontWeight.normal),
-                    )
-                  ]
-              )
-          ),
+          Text.rich(TextSpan(
+              text: 'Modelo: ',
+              style: TextStyle(fontWeight: FontWeight.bold),
+              children: <InlineSpan>[
+                TextSpan(
+                  text: context.modelo.descricao,
+                  style: TextStyle(fontWeight: FontWeight.normal),
+                )
+              ])),
           Padding(
             padding: EdgeInsets.all(3),
           ),
-          Text.rich(
-              TextSpan(
-                  text: 'País: ',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                  children: <InlineSpan>[
-                    TextSpan(
-                      text:  context.pais.descricao,
-                      style: TextStyle(fontWeight: FontWeight.normal),
-                    )
-                  ]
-              )
-          ),
+          Text.rich(TextSpan(
+              text: 'País: ',
+              style: TextStyle(fontWeight: FontWeight.bold),
+              children: <InlineSpan>[
+                TextSpan(
+                  text: context.pais.descricao,
+                  style: TextStyle(fontWeight: FontWeight.normal),
+                )
+              ])),
           Padding(
             padding: EdgeInsets.all(3),
           ),
-          Text.rich(
-              TextSpan(
-                  text: 'Camelback: ',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                  children: <InlineSpan>[
-                    TextSpan(
-                      text:  context.camelback.descricao,
-                      style: TextStyle(fontWeight: FontWeight.normal),
-                    )
-                  ]
-              )
-          ),
-          Text.rich(
-              TextSpan(
-                  text: 'COD: ',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                  children: <InlineSpan>[
-                    TextSpan(
-                      text:  context.id.toString(),
-                      style: TextStyle(fontWeight: FontWeight.normal),
-                    )
-                  ]
-              )
-          ),
+          Text.rich(TextSpan(
+              text: 'Camelback: ',
+              style: TextStyle(fontWeight: FontWeight.bold),
+              children: <InlineSpan>[
+                TextSpan(
+                  text: context.camelback.descricao,
+                  style: TextStyle(fontWeight: FontWeight.normal),
+                )
+              ])),
+          Text.rich(TextSpan(
+              text: 'COD: ',
+              style: TextStyle(fontWeight: FontWeight.bold),
+              children: <InlineSpan>[
+                TextSpan(
+                  text: context.id.toString(),
+                  style: TextStyle(fontWeight: FontWeight.normal),
+                )
+              ])),
           Padding(
             padding: EdgeInsets.all(3),
           ),
-          Text.rich(
-              TextSpan(
-                  text: 'Min: ',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                  children: <InlineSpan>[
-                    TextSpan(
-                      text:  context.tamanhoMin.toString(),
-                      style: TextStyle(fontWeight: FontWeight.normal),
-                    )
-                  ]
-              )
-          ),
+          Text.rich(TextSpan(
+              text: 'Min: ',
+              style: TextStyle(fontWeight: FontWeight.bold),
+              children: <InlineSpan>[
+                TextSpan(
+                  text: context.tamanhoMin.toString(),
+                  style: TextStyle(fontWeight: FontWeight.normal),
+                )
+              ])),
           Padding(
             padding: EdgeInsets.all(3),
           ),
-          Text.rich(
-              TextSpan(
-                  text: 'Máx: ',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                  children: <InlineSpan>[
-                    TextSpan(
-                      text:  context.tamanhoMax.toString(),
-                      style: TextStyle(fontWeight: FontWeight.normal),
-                    )
-                  ]
-              )
-          ),
+          Text.rich(TextSpan(
+              text: 'Máx: ',
+              style: TextStyle(fontWeight: FontWeight.bold),
+              children: <InlineSpan>[
+                TextSpan(
+                  text: context.tamanhoMax.toString(),
+                  style: TextStyle(fontWeight: FontWeight.normal),
+                )
+              ])),
         ],
       ),
     ),
   );
-  
+
   return Container(
     child: (context.regraSelected != null)
         ? Text("ID:" +

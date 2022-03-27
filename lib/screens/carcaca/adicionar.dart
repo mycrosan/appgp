@@ -278,16 +278,19 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
           ),
           Padding(padding: EdgeInsets.all(10)),
           Center(child: showImage(_imageFileList, "adicionar")),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              FloatingActionButton(
-                backgroundColor: Colors.blue,
-                onPressed: getImage,
-                tooltip: 'incrementar',
-                child: Icon(Icons.camera_alt),
-              ),
-            ],
+          Container(
+            padding: EdgeInsets.all(20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FloatingActionButton(
+                  backgroundColor: Colors.blue,
+                  onPressed: getImage,
+                  tooltip: 'incrementar',
+                  child: Icon(Icons.camera_alt),
+                ),
+              ],
+            ),
           ),
           Padding(
             padding: EdgeInsets.all(8),
