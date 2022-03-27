@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:GPPremium/components/ImagePreview.dart';
 import 'package:GPPremium/models/carcaca.dart';
 import 'package:GPPremium/models/medida.dart';
 import 'package:GPPremium/models/modelo.dart';
@@ -31,6 +32,22 @@ class AdicionarCarcacaPage extends StatefulWidget {
 }
 
 class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Carcaça'),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(20),
+          margin: const EdgeInsets.only(bottom: 70.0),
+          child: _construirFormulario(context),
+        ),
+      ),
+    );
+  }
+
   final _formkey = GlobalKey<FormState>();
 
   XFile _imageFile1;
@@ -116,29 +133,13 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: Text('Carcaça'),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: _construirFormulario(context),
-        ),
-      ),
-    );
-  }
-
-  Widget _handlePreview() {
-    if (false) {
-      // return _previewVideo();
-    } else {
-      return _previewImages();
-    }
-  }
+  // Widget _handlePreview() {
+  //   if (false) {
+  //     // return _previewVideo();
+  //   } else {
+  //     return _previewImages();
+  //   }
+  // }
 
   Future<void> retrieveLostData() async {
     final LostDataResponse response = await _picker.retrieveLostData();
@@ -168,42 +169,6 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
       return result;
     }
     return null;
-  }
-
-  Widget _previewImages() {
-    final Text retrieveError = _getRetrieveErrorWidget();
-    if (retrieveError != null) {
-      return retrieveError;
-    }
-    if (_imageFileList.length > 0) {
-      return Row(
-        children: <Widget>[
-          Expanded(
-            child: Container(
-              height: 200.0,
-              child: new ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: _imageFileList.length,
-                itemBuilder: (BuildContext ctxt, int index) {
-                  return new Image.file(File(_imageFileList[index].path));
-                },
-              ),
-            ),
-          ),
-        ],
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      );
-    } else if (_pickImageError != null) {
-      return Text(
-        'Pick image error: $_pickImageError',
-        textAlign: TextAlign.center,
-      );
-    } else {
-      return const Text(
-        'Sem imagens',
-        textAlign: TextAlign.center,
-      );
-    }
   }
 
   Widget _construirFormulario(context) {
@@ -312,38 +277,7 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
             }).toList(),
           ),
           Padding(padding: EdgeInsets.all(10)),
-          Center(
-            child: !kIsWeb && defaultTargetPlatform == TargetPlatform.android
-                ? FutureBuilder<void>(
-                    future: retrieveLostData(),
-                    builder:
-                        (BuildContext context, AsyncSnapshot<void> snapshot) {
-                      switch (snapshot.connectionState) {
-                        case ConnectionState.none:
-                        case ConnectionState.waiting:
-                          return const Text(
-                            'Sem imagens',
-                            textAlign: TextAlign.center,
-                          );
-                        case ConnectionState.done:
-                          return _handlePreview();
-                        default:
-                          if (snapshot.hasError) {
-                            return Text(
-                              'Pick image/video error: ${snapshot.error}}',
-                              textAlign: TextAlign.center,
-                            );
-                          } else {
-                            return const Text(
-                              'Sem imagens',
-                              textAlign: TextAlign.center,
-                            );
-                          }
-                      }
-                    },
-                  )
-                : _handlePreview(),
-          ),
+          Center(child: showImage(_imageFileList, "adicionar")),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -402,6 +336,9 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
                     }
                   },
                 ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: 30),
               ),
 
               // Expanded(

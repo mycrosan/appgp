@@ -3,6 +3,7 @@ import 'package:GPPremium/service/carcacaapi.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../components/ImagePreview.dart';
 import '../../service/get_image.dart';
 
 class DetalhesCarcacaPage extends StatefulWidget {
@@ -47,20 +48,13 @@ class DetalhesCarcacaPageState extends State<DetalhesCarcacaPage> {
                         snapshot.data.modelo.descricao),
                   ),
                 ),
-                Expanded(
+                Container(
                   child: FutureBuilder(
-                      future: new ImageService().showImage(snapshot.data.fotos, "carcaca"),
+                      future: new ImageService()
+                          .showImage(snapshot.data.fotos, "carcaca"),
                       builder: (context, AsyncSnapshot snapshot) {
                         if (snapshot.hasData) {
-                          return Container(
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: snapshot.data.length,
-                              itemBuilder: (BuildContext ctxt, int index) {
-                                return snapshot.data[index];
-                              },
-                            ),
-                          );
+                          return showImage(snapshot.data, "detalhar");
                         } else {
                           return CircularProgressIndicator();
                         }

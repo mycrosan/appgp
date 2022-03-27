@@ -23,6 +23,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
+import '../../components/ImagePreview.dart';
 import '../../models/responseMessageSimple.dart';
 import '../../service/uploadapi.dart';
 import 'ListaProducao.dart';
@@ -35,6 +36,21 @@ class AdicionarProducaoPage extends StatefulWidget {
 }
 
 class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Produção'),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+            padding: EdgeInsets.all(20),
+            margin: const EdgeInsets.only(bottom: 70.0),
+            child: _construirFormulario(context)),
+      ),
+    );
+  }
+
   final _formkey = GlobalKey<FormState>();
 
   XFile _imageFile1;
@@ -151,26 +167,6 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Produção'),
-      ),
-      body: SingleChildScrollView(
-        child: _construirFormulario(context),
-      ),
-    );
-  }
-
-  Widget _handlePreview() {
-    if (false) {
-      // return _previewVideo();
-    } else {
-      return _previewImages();
-    }
-  }
-
   Future<void> retrieveLostData() async {
     final LostDataResponse response = await _picker.retrieveLostData();
     if (response.isEmpty) {
@@ -201,50 +197,11 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
     return null;
   }
 
-  Widget _previewImages() {
-    final Text retrieveError = _getRetrieveErrorWidget();
-    if (retrieveError != null) {
-      return retrieveError;
-    }
-    if (_imageFileList.length > 0) {
-      return Row(
-        children: <Widget>[
-          Expanded(
-            child: Container(
-              height: 200.0,
-              child: new ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: _imageFileList.length,
-                itemBuilder: (BuildContext ctxt, int index) {
-                  return new Image.file(File(_imageFileList[index].path));
-                },
-              ),
-            ),
-          ),
-        ],
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      );
-    } else if (_pickImageError != null) {
-      return Text(
-        'Pick image error: $_pickImageError',
-        textAlign: TextAlign.center,
-      );
-    } else {
-      return const Text(
-        'Sem imagens',
-        textAlign: TextAlign.center,
-      );
-    }
-  }
-
   Widget _construirFormulario(context) {
     var producaoApi = new ProducaoApi();
-
     return Form(
       key: _formkey,
-      child: Padding(
-        padding: EdgeInsets.all(20),
-        child: Column(
+      child: Column(
           children: [
             TextFormField(
               controller: textEditingControllerCarcaca,
@@ -392,82 +349,52 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
             ),
             Container(
               child: (regraSelected != null)
-                  ? Text("ID:" +
-                      regraSelected.id.toString() +
-                      "\n"
-                          "Medida: " +
-                      regraSelected.medida.descricao +
-                      "\n"
-                          "Camelback: " +
-                      regraSelected.camelback.descricao +
-                      "\n"
-                          "Espessuramento: " +
-                      (regraSelected.espessuramento != null
-                          ? regraSelected.espessuramento.descricao
-                          : 'NI') +
-                      "\n"
-                          "Tempo: " +
-                      regraSelected.tempo +
-                      "\n"
-                          "Matriz: " +
-                      regraSelected.matriz.descricao +
-                      "\n"
-                          "Antiquebra1: " +
-                      regraSelected.antiquebra1.descricao +
-                      "\n"
-                          "Antiquebra2: " +
-                      (regraSelected.antiquebra2 != null
-                          ? regraSelected.antiquebra2.descricao
-                          : 'NI') +
-                      "\n"
-                          "Antiquebra3: " +
-                      (regraSelected.antiquebra3 != null
-                          ? regraSelected.antiquebra3.descricao
-                          : 'NI') +
-                      "\n"
-                          "Min: " +
-                      regraSelected.tamanhoMin.toString() +
-                      "\n"
-                          "Max: " +
-                      regraSelected.tamanhoMax.toString() +
-                      "\n")
+                  ? _exibirRegra(regraSelected)
+              // Text("ID1:" +
+              //         regraSelected.id.toString() +
+              //         "\n"
+              //             "Medida: " +
+              //         regraSelected.medida.descricao +
+              //         "\n"
+              //             "Camelback: " +
+              //         regraSelected.camelback.descricao +
+              //         "\n"
+              //             "Espessuramento: " +
+              //         (regraSelected.espessuramento != null
+              //             ? regraSelected.espessuramento.descricao
+              //             : 'NI') +
+              //         "\n"
+              //             "Tempo: " +
+              //         regraSelected.tempo +
+              //         "\n"
+              //             "Matriz: " +
+              //         regraSelected.matriz.descricao +
+              //         "\n"
+              //             "Antiquebra1: " +
+              //         regraSelected.antiquebra1.descricao +
+              //         "\n"
+              //             "Antiquebra2: " +
+              //         (regraSelected.antiquebra2 != null
+              //             ? regraSelected.antiquebra2.descricao
+              //             : 'NI') +
+              //         "\n"
+              //             "Antiquebra3: " +
+              //         (regraSelected.antiquebra3 != null
+              //             ? regraSelected.antiquebra3.descricao
+              //             : 'NI') +
+              //         "\n"
+              //             "Min: " +
+              //         regraSelected.tamanhoMin.toString() +
+              //         "\n"
+              //             "Max: " +
+              //         regraSelected.tamanhoMax.toString() +
+              //         "\n")
                   : null,
             ),
             Padding(
               padding: EdgeInsets.all(5),
             ),
-            Center(
-              child: !kIsWeb && defaultTargetPlatform == TargetPlatform.android
-                  ? FutureBuilder<void>(
-                      future: retrieveLostData(),
-                      builder:
-                          (BuildContext context, AsyncSnapshot<void> snapshot) {
-                        switch (snapshot.connectionState) {
-                          case ConnectionState.none:
-                          case ConnectionState.waiting:
-                            return const Text(
-                              'Sem imagens',
-                              textAlign: TextAlign.center,
-                            );
-                          case ConnectionState.done:
-                            return _handlePreview();
-                          default:
-                            if (snapshot.hasError) {
-                              return Text(
-                                'Pick image/video error: ${snapshot.error}}',
-                                textAlign: TextAlign.center,
-                              );
-                            } else {
-                              return const Text(
-                                'Sem imagens',
-                                textAlign: TextAlign.center,
-                              );
-                            }
-                        }
-                      },
-                    )
-                  : _handlePreview(),
-            ),
+            Center(child: showImage(_imageFileList, "adicionar")),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -581,13 +508,141 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
             )
           ],
         ),
-      ),
-    );
+      );
   }
 }
 
 Widget _exibirRegra(context) {
   //todo não funciona, montar isso reativo
+
+  return Card(
+    child: ListTile(
+      title: Text(
+        'Matriz: ' + context.matriz.descricao,
+        style: TextStyle(
+            fontSize: 14, fontWeight: FontWeight.bold),
+      ),
+      subtitle: Wrap(
+        children: [
+          Text.rich(
+              TextSpan(
+                  text: 'Medida: ',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                  children: <InlineSpan>[
+                    TextSpan(
+                      text:  context.medida.descricao,
+                      style: TextStyle(fontWeight: FontWeight.normal),
+                    )
+                  ]
+              )
+          ),
+          Padding(
+            padding: EdgeInsets.all(3),
+          ),
+          Text.rich(
+              TextSpan(
+                  text: 'Marca: ',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                  children: <InlineSpan>[
+                    TextSpan(
+                      text:  context.modelo.marca.descricao,
+                      style: TextStyle(fontWeight: FontWeight.normal),
+                    )
+                  ]
+              )
+          ),
+          Padding(
+            padding: EdgeInsets.all(3),
+          ),
+          Text.rich(
+              TextSpan(
+                  text: 'Modelo: ',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                  children: <InlineSpan>[
+                    TextSpan(
+                      text:  context.modelo.descricao,
+                      style: TextStyle(fontWeight: FontWeight.normal),
+                    )
+                  ]
+              )
+          ),
+          Padding(
+            padding: EdgeInsets.all(3),
+          ),
+          Text.rich(
+              TextSpan(
+                  text: 'País: ',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                  children: <InlineSpan>[
+                    TextSpan(
+                      text:  context.pais.descricao,
+                      style: TextStyle(fontWeight: FontWeight.normal),
+                    )
+                  ]
+              )
+          ),
+          Padding(
+            padding: EdgeInsets.all(3),
+          ),
+          Text.rich(
+              TextSpan(
+                  text: 'Camelback: ',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                  children: <InlineSpan>[
+                    TextSpan(
+                      text:  context.camelback.descricao,
+                      style: TextStyle(fontWeight: FontWeight.normal),
+                    )
+                  ]
+              )
+          ),
+          Text.rich(
+              TextSpan(
+                  text: 'COD: ',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                  children: <InlineSpan>[
+                    TextSpan(
+                      text:  context.id.toString(),
+                      style: TextStyle(fontWeight: FontWeight.normal),
+                    )
+                  ]
+              )
+          ),
+          Padding(
+            padding: EdgeInsets.all(3),
+          ),
+          Text.rich(
+              TextSpan(
+                  text: 'Min: ',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                  children: <InlineSpan>[
+                    TextSpan(
+                      text:  context.tamanhoMin.toString(),
+                      style: TextStyle(fontWeight: FontWeight.normal),
+                    )
+                  ]
+              )
+          ),
+          Padding(
+            padding: EdgeInsets.all(3),
+          ),
+          Text.rich(
+              TextSpan(
+                  text: 'Máx: ',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                  children: <InlineSpan>[
+                    TextSpan(
+                      text:  context.tamanhoMax.toString(),
+                      style: TextStyle(fontWeight: FontWeight.normal),
+                    )
+                  ]
+              )
+          ),
+        ],
+      ),
+    ),
+  );
+  
   return Container(
     child: (context.regraSelected != null)
         ? Text("ID:" +
