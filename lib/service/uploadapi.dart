@@ -31,19 +31,7 @@ class UploadApi {
       //for getting and decoding the response into json format
       var responsed = await http.Response.fromStream(response);
 
-      // try {
-      //   final request = await client.get(...);
-      //   final response = await request.close()
-      //       .timeout(const Duration(seconds: 2));
-      // // rest of the code
-      // ...
-      // } on TimeoutException catch (_) {
-      // // A timeout occurred.
-      // } on SocketException catch (_) {
-      // // Other exception
-      // }
       final responseData = json.decode(responsed.body);
-
 
       if (response.statusCode==200) {
         print("SUCCESS");

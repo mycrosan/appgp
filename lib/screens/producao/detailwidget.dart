@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 
+import '../../components/ImagePreview.dart';
+import '../../models/responseMessage.dart';
 import '../../service/get_image.dart';
 import 'printWidget.dart';
 
@@ -108,16 +110,10 @@ class DetalhesProducaoPageState extends State<DetalhesProducaoPage> {
                           .showImage(snapshot.data.fotos, "producao"),
                       builder: (context, AsyncSnapshot snapshot) {
                         if (snapshot.hasData) {
-                          return Container(
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: snapshot.data.length,
-                              itemBuilder: (BuildContext ctxt, int index) {
-                                return snapshot.data[index];
-                              },
-                            ),
-                          );
-
+                          if (snapshot.data is responseMessage) {
+                            return Text("Falha ao carregar imagem!");
+                          }
+                          return showImage(snapshot.data, "detalhar");
                         } else {
                           return CircularProgressIndicator();
                         }

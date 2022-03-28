@@ -1,4 +1,5 @@
 import 'package:GPPremium/models/carcaca.dart';
+import 'package:GPPremium/models/responseMessage.dart';
 import 'package:GPPremium/service/carcacaapi.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -50,10 +51,13 @@ class DetalhesCarcacaPageState extends State<DetalhesCarcacaPage> {
                 ),
                 Container(
                   child: FutureBuilder(
-                      future: new ImageService()
+                      future: ImageService()
                           .showImage(snapshot.data.fotos, "carcaca"),
                       builder: (context, AsyncSnapshot snapshot) {
                         if (snapshot.hasData) {
+                          if (snapshot.data is responseMessage) {
+                            return Text("Falha ao carregar imagem!");
+                          }
                           return showImage(snapshot.data, "detalhar");
                         } else {
                           return CircularProgressIndicator();

@@ -350,45 +350,6 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
           Container(
             child: (regraSelected != null)
                 ? _exibirRegra(regraSelected)
-                // Text("ID1:" +
-                //         regraSelected.id.toString() +
-                //         "\n"
-                //             "Medida: " +
-                //         regraSelected.medida.descricao +
-                //         "\n"
-                //             "Camelback: " +
-                //         regraSelected.camelback.descricao +
-                //         "\n"
-                //             "Espessuramento: " +
-                //         (regraSelected.espessuramento != null
-                //             ? regraSelected.espessuramento.descricao
-                //             : 'NI') +
-                //         "\n"
-                //             "Tempo: " +
-                //         regraSelected.tempo +
-                //         "\n"
-                //             "Matriz: " +
-                //         regraSelected.matriz.descricao +
-                //         "\n"
-                //             "Antiquebra1: " +
-                //         regraSelected.antiquebra1.descricao +
-                //         "\n"
-                //             "Antiquebra2: " +
-                //         (regraSelected.antiquebra2 != null
-                //             ? regraSelected.antiquebra2.descricao
-                //             : 'NI') +
-                //         "\n"
-                //             "Antiquebra3: " +
-                //         (regraSelected.antiquebra3 != null
-                //             ? regraSelected.antiquebra3.descricao
-                //             : 'NI') +
-                //         "\n"
-                //             "Min: " +
-                //         regraSelected.tamanhoMin.toString() +
-                //         "\n"
-                //             "Max: " +
-                //         regraSelected.tamanhoMax.toString() +
-                //         "\n")
                 : Text("Sem regra"),
           ),
           Padding(
