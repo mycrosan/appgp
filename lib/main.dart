@@ -2,6 +2,7 @@ import 'package:GPPremium/models/antiquebra.dart';
 import 'package:GPPremium/screens/antiquebra/ListaAntiquebra.dart';
 import 'package:GPPremium/screens/camelback/ListaCamelback.dart';
 import 'package:GPPremium/screens/carcaca/ListaCarcacas.dart';
+import 'package:GPPremium/screens/dashboard/ajustes.dart';
 import 'package:GPPremium/screens/dashboard/home.dart';
 import 'package:GPPremium/screens/espessuramento/ListaEspessuramento.dart';
 import 'package:GPPremium/screens/marca/ListaMarca.dart';
@@ -37,7 +38,7 @@ final storage = FlutterSecureStorage();
 void main() {
   const bool isProduction = bool.fromEnvironment('dart.vm.product');
   if(isProduction){
-    SERVER_IP = 'http://gppremium.com.br:8080/gp/api/';
+    SERVER_IP = 'http://143.198.182.236:8080/gp/api/';
   }else{
     SERVER_IP = 'http://192.168.0.106:8080/api/';
   }
@@ -79,6 +80,7 @@ class GpPremiumApp extends StatelessWidget {
           '/producao': (context) => ListaProducao(),
           '/pais': (context) => ListaPais(),
           '/home': (_) => Home(),
+          '/ajustes': (_) => Ajustes(),
         },
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
