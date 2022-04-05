@@ -37,7 +37,7 @@ final storage = FlutterSecureStorage();
 void main() {
   const bool isProduction = bool.fromEnvironment('dart.vm.product');
   if(isProduction){
-    SERVER_IP = 'http://gppremium.com.br:8080/gp/api/';
+    SERVER_IP = 'http://143.198.182.236:8080/gp/api/';
   }else{
     SERVER_IP = 'http://192.168.0.106:8080/api/';
   }
