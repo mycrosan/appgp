@@ -16,6 +16,22 @@ class ListaRegras extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Regras'),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AdicionarRegraPage(),
+                  ));
+              // do something
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: EdgeInsets.all(10),
@@ -128,7 +144,7 @@ class ListaRegras extends StatelessWidget {
                                       style: TextStyle(fontWeight: FontWeight.bold),
                                       children: <InlineSpan>[
                                         TextSpan(
-                                          text:  snapshot.data[index].tamanhoMin.toString(),
+                                          text:  snapshot.data[index].tamanhoMin.toStringAsFixed(3),
                                           style: TextStyle(fontWeight: FontWeight.normal),
                                         )
                                       ]
@@ -143,7 +159,7 @@ class ListaRegras extends StatelessWidget {
                                       style: TextStyle(fontWeight: FontWeight.bold),
                                       children: <InlineSpan>[
                                         TextSpan(
-                                          text:  snapshot.data[index].tamanhoMax.toString(),
+                                          text:  snapshot.data[index].tamanhoMax.toStringAsFixed(3),
                                           style: TextStyle(fontWeight: FontWeight.normal),
                                         )
                                       ]
@@ -215,18 +231,18 @@ class ListaRegras extends StatelessWidget {
               }
             }),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AdicionarRegraPage(), //AddCarcacaPage(),
-              ));
-        },
-        child: Icon(
-          Icons.add,
-        ),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     Navigator.push(
+      //         context,
+      //         MaterialPageRoute(
+      //           builder: (context) => AdicionarRegraPage(), //AddCarcacaPage(),
+      //         ));
+      //   },
+      //   child: Icon(
+      //     Icons.add,
+      //   ),
+      // ),
     );
   }
 }

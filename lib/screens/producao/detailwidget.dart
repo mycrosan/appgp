@@ -59,7 +59,9 @@ class DetalhesProducaoPageState extends State<DetalhesProducaoPage> {
                     title: Text('Etiqueta: ' +
                     snapshot.data.carcaca.numeroEtiqueta +
                     " Dot: " +
-                    snapshot.data.carcaca.dot),
+                    snapshot.data.carcaca.dot + "\n"
+                        "Medida Pneu Raspado: " +
+                        snapshot.data.medidaPneuRaspado.toStringAsFixed(3)),
                 subtitle: Text('Medida: ' +
                     snapshot.data.carcaca.medida.descricao +
                     'Modelo: ' +

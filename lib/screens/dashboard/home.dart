@@ -49,9 +49,9 @@ class Home extends StatelessWidget {
             GPMenu('Produção', Icons.construction, onClick: () {
               Navigator.pushNamed(context, '/producao');
             }),
-            GPMenu('Qualidade', Icons.check, onClick: () {
-              Navigator.pushNamed(context, '/qualidade');
-            }),
+            // GPMenu('Qualidade', Icons.check, onClick: () {
+            //   Navigator.pushNamed(context, '/qualidade');
+            // }),
             GPMenu('Ajustes', Icons.settings, onClick: () {
               Navigator.pushNamed(context, '/ajustes');
             }),
