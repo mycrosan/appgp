@@ -2,6 +2,7 @@ import 'package:GPPremium/service/matrizapi.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../components/OrderData.dart';
 import 'adicionar.dart';
 import 'detailwidget.dart';
 import 'editdatawidget.dart';
@@ -23,6 +24,7 @@ class ListaMatriz extends StatelessWidget {
         child: FutureBuilder(
             future: matrizAPI.getAll(),
             builder: (context, AsyncSnapshot<List> snapshot) {
+              alfabetSortList(snapshot.data);
               if (snapshot.hasData) {
                 return ListView.builder(
                     itemCount: snapshot.data.length,

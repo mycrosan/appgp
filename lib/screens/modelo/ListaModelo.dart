@@ -1,3 +1,4 @@
+import 'package:GPPremium/components/OrderData.dart';
 import 'package:GPPremium/service/modeloapi.dart';
 import 'package:GPPremium/service/modeloapi.dart';
 import 'package:GPPremium/service/regraapi.dart';
@@ -26,6 +27,7 @@ class ListaModelo extends StatelessWidget {
             future: modeloAPI.getAll(),
             builder: (context, AsyncSnapshot<List> snapshot) {
               if (snapshot.hasData) {
+                alfabetSortList(snapshot.data);
                 return ListView.builder(
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index) {

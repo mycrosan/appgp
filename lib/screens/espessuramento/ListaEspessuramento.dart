@@ -2,6 +2,7 @@ import 'package:GPPremium/service/espessuramento.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../components/OrderData.dart';
 import 'adicionar.dart';
 import 'detailwidget.dart';
 import 'editdatawidget.dart';
@@ -23,6 +24,7 @@ class ListaEspessuramento extends StatelessWidget {
             future: espessuramentoAPI.getAll(),
             builder: (context, AsyncSnapshot<List> snapshot) {
               if (snapshot.hasData) {
+                alfabetSortList(snapshot.data);
                 return ListView.builder(
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index) {
