@@ -357,7 +357,7 @@ class AdicionarRegraPageState extends State<AdicionarRegraPage> {
                 onChanged: (Antiquebra antiquebra) {
                   setState(() {
                     antiquebra3Selected = antiquebra;
-                    regra.antiquebra2 = antiquebra3Selected;
+                    regra.antiquebra3 = antiquebra3Selected;
                   });
                 },
                 items: antiquebraList.map((antiquebra) {

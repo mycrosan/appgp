@@ -9,7 +9,7 @@ import 'package:line_icons/line_icons.dart';
 
 import 'factory/menu.dart';
 
-class Home extends StatelessWidget {
+class Ajustes extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final title = "GP PREMIUM";
@@ -39,21 +39,29 @@ class Home extends StatelessWidget {
         child: GridView.count(
           crossAxisCount: 3,
           children: [
-            GPMenu('Carcaça', CommunityMaterialIcons.circle_double,
-                onClick: () {
-              Navigator.pushNamed(context, '/carcacas');
+            GPMenu('Pais', Icons.settings, onClick: () {
+              Navigator.pushNamed(context, '/pais');
             }),
-            GPMenu('Regra', Icons.gavel, onClick: () {
-              Navigator.pushNamed(context, '/regras');
+            GPMenu('Camelback', Icons.settings, onClick: () {
+              Navigator.pushNamed(context, '/camelback');
             }),
-            GPMenu('Produção', Icons.construction, onClick: () {
-              Navigator.pushNamed(context, '/producao');
+            GPMenu('Medidas', Icons.settings, onClick: () {
+              Navigator.pushNamed(context, '/medida');
             }),
-            // GPMenu('Qualidade', Icons.check, onClick: () {
-            //   Navigator.pushNamed(context, '/qualidade');
-            // }),
-            GPMenu('Ajustes', Icons.settings, onClick: () {
-              Navigator.pushNamed(context, '/ajustes');
+            GPMenu('Modelo', Icons.settings, onClick: () {
+              Navigator.pushNamed(context, '/modelo');
+            }),
+            GPMenu('Marca', Icons.settings, onClick: () {
+              Navigator.pushNamed(context, '/marca');
+            }),
+            GPMenu('Matriz', Icons.settings, onClick: () {
+              Navigator.pushNamed(context, '/matriz');
+            }),
+            GPMenu('Antiquebra', Icons.settings, onClick: () {
+              Navigator.pushNamed(context, '/antiquebra');
+            }),
+            GPMenu('Espessuramento', Icons.settings, onClick: () {
+              Navigator.pushNamed(context, '/espessuramento');
             }),
 
             // GPMenu('Borracha', Icons.precision_manufacturing, onClick: () {
