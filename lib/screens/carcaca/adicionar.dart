@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:GPPremium/components/ImagePreview.dart';
+import 'package:GPPremium/components/OrderData.dart';
 import 'package:GPPremium/models/carcaca.dart';
 import 'package:GPPremium/models/medida.dart';
 import 'package:GPPremium/models/modelo.dart';
@@ -98,18 +99,21 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
     ModeloApi().getAll().then((List<Modelo> value) {
       setState(() {
         modeloList = value;
+        alfabetSortList(modeloList);
       });
     });
 
     MedidaApi().getAll().then((List<Medida> value) {
       setState(() {
         medidaList = value;
+        alfabetSortList(medidaList);
       });
     });
 
     PaisApi().getAll().then((List<Pais> value) {
       setState(() {
         paisList = value;
+        alfabetSortList(paisList);
       });
     });
   }
