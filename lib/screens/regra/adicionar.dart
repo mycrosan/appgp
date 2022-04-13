@@ -19,6 +19,7 @@ import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../components/OrderData.dart';
 import 'ListaRegras.dart';
 
 class AdicionarRegraPage extends StatefulWidget {
@@ -100,18 +101,21 @@ class AdicionarRegraPageState extends State<AdicionarRegraPage> {
     MatrizApi().getAll().then((List<Matriz> value) {
       setState(() {
         matrizList = value;
+        alfabetSortList(matrizList);
       });
     });
 
     MedidaApi().getAll().then((List<Medida> value) {
       setState(() {
         medidaList = value;
+        alfabetSortList(medidaList);
       });
     });
 
     ModeloApi().getAll().then((List<Modelo> value) {
       setState(() {
         modeloList = value;
+        alfabetSortList(modeloList);
       });
     });
 
