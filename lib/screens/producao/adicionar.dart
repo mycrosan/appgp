@@ -24,6 +24,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 import '../../components/ImagePreview.dart';
+import '../../components/OrderData.dart';
 import '../../models/responseMessageSimple.dart';
 import '../../service/uploadapi.dart';
 import 'ListaProducao.dart';
@@ -129,18 +130,21 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
     CarcacaApi().getAll().then((List<Carcaca> value) {
       setState(() {
         carcacaList = value;
+        alfabetSortList(carcacaList);
       });
     });
 
     MatrizApi().getAll().then((List<Matriz> value) {
       setState(() {
         matrizList = value;
+        alfabetSortList(matrizList);
       });
     });
 
     RegraApi().getAll().then((List<Regra> value) {
       setState(() {
         regraList = value;
+        alfabetSortList(regraList);
       });
     });
     // _btnController1.stateStream.listen((value) {
