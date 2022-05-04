@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
 import '../main.dart';
+import '../models/producao.dart';
 import 'modeloapi.dart';
 
 class ConfigRequest {
@@ -74,6 +75,20 @@ class ConfigRequest {
     }
   }
 
+  Future<Response> delete(String endpoint, int id) async {
+
+    var jwt = await new AuthUtil().jwtOrEmpty;
+    if (jwt != null) {
+      http.Response response = await http.delete(Uri.parse(SERVER_IP + endpoint + "/${id}"),
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $jwt'
+          });
+      return response;
+    }
+  }
+
   Future<Response> requestQueryRegra(String endpoint, int matrizId, int medidaId, int modeloId, int paisId, double medidaPneuRaspado) async {
 
     var jwt = await new AuthUtil().jwtOrEmpty;
@@ -106,16 +121,18 @@ class ConfigRequest {
     }
   }
 
-  Future<Response> delete(String endpoint, int id) async {
+  Future<Response> requestQueryProducao(String endpoint, Producao producao) async {
 
     var jwt = await new AuthUtil().jwtOrEmpty;
     if (jwt != null) {
-      http.Response response = await http.delete(Uri.parse(SERVER_IP + endpoint + "/${id}"),
-          headers: {
-            'Content-type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $jwt'
-          });
+      http.Response response = await http.get(Uri.parse(
+          SERVER_IP + endpoint + "/pesquisa?medidaId=${producao.carcaca.medida.id}&marcaId${producao.carcaca.modelo.marca.id}&modeloId${producao.carcaca.modelo.id}&paisId${producao.carcaca.pais.id}"),
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $jwt'
+        },
+      );
       return response;
     }
   }

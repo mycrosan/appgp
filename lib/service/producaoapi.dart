@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:GPPremium/models/producao.dart';
+import 'package:GPPremium/models/responseMessage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
@@ -77,6 +78,20 @@ class ProducaoApi extends ChangeNotifier {
       return true;
     } else {
       throw Exception('Falha ao tentar excluir carcaça');
+    }
+  }
+
+  Future<Object> consultaProducao(Producao producao) async {
+
+    var objData = new ConfigRequest();
+    var response = await objData.requestQueryProducao(ENDPOINT, producao);
+
+    if (response.statusCode == 200) {
+      final map = jsonDecode(response.body);
+      List<dynamic> body = map;
+      return body.map((producaos) => Producao.fromJson(producaos)).toList();
+    } else {
+      throw Exception('Falha ao carregar producões');
     }
   }
 }
