@@ -126,7 +126,7 @@ class ConfigRequest {
     var jwt = await new AuthUtil().jwtOrEmpty;
     if (jwt != null) {
       http.Response response = await http.get(Uri.parse(
-          SERVER_IP + endpoint + "/pesquisa?medidaId=${producao.carcaca.medida.id}&marcaId${producao.carcaca.modelo.marca.id}&modeloId${producao.carcaca.modelo.id}&paisId${producao.carcaca.pais.id}"),
+          SERVER_IP + endpoint + "/pesquisa?medidaId=${producao.carcaca.medida.id}&marcaId=${producao.carcaca.modelo.marca.id}&modeloId=${producao.carcaca.modelo.id}&paisId=${producao.carcaca.pais.id}"),
         headers: {
           'Content-type': 'application/json',
           'Accept': 'application/json',

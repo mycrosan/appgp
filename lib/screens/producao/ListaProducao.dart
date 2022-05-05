@@ -39,9 +39,6 @@ class ListaProducaoState extends State<ListaProducao> {
   Producao _responseValue;
   Producao producao;
 
-  List listaCarcaca = [];
-  var _isList = ValueNotifier<bool>(true);
-
   //Modelo
   List<Modelo> modeloList = [];
   Modelo modeloSelected;
@@ -103,7 +100,12 @@ class ListaProducaoState extends State<ListaProducao> {
     var producaoAPI = new ProducaoApi();
     // final ProducaoApi producao = Provider.of(context);
 
-    var resposta = null;
+    final DinamicListCard listCards = DinamicListCard();
+
+    List listaCarcaca = [];
+    var _isList = ValueNotifier<bool>(true);
+
+    final ProducaoApi producoes = Provider.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -234,11 +236,11 @@ class ListaProducaoState extends State<ListaProducao> {
                   onPressed: () async {
                     if (true) {
                       var response =
-                          await producaoAPI.consultaProducao(producao);
+                          await ProducaoApi().consultaProducao(producao);
 
-                      print(_responseValue != null);
+                      print(response != null);
 
-                      resposta = response;
+                      listaCarcaca = response;
 
                       _isList.value = false;
 
@@ -246,194 +248,215 @@ class ListaProducaoState extends State<ListaProducao> {
                     }
                   },
                 )),
-                Expanded(
-                  child: ValueListenableBuilder(
-                      valueListenable: _isList,
-                      builder: (_, __, ___) {
-                        return Visibility(
-                          visible: _isList.value,
-                          child:
-                              _exibirListaStart(context, producaoAPI.getAll()),
-                        );
-                      }),
+                Container(
+                  child: Text(_isList.value.toString()),
                 ),
-                Expanded(
-                  child: ValueListenableBuilder(
-                      valueListenable: _isList,
-                      builder: (_, __, ___) {
-                        return Visibility(
-                          visible: !_isList.value,
-                          child: _exibirListaConsulta(context, resposta),
-                        );
-                      }),
-                ),
-                // Visibility(
-                //   visible: _isList.value,
-                //   child: _exibirListaStart(context, producaoAPI.getAll()) != null
-                //       ? _exibirListaStart(context, producaoAPI.getAll())
-                //       : Text('Lista..'),
-                // ),
-                // Visibility(
-                //   visible: !_isList.value,
-                //   child: false
-                //       ? _exibirListaConsulta(context, resposta)
-                //       : _exibirListaStart(context, producaoAPI.getAll()),
-                // ),
+                Container(
+                  child: Expanded(
+                    child: ValueListenableBuilder(
+                        valueListenable: _isList,
+                        builder: (_, __, ___) {
+                          return !_isList.value
+                              ? Visibility(
+                                  visible: !_isList.value,
+                                  child: listCards.exibirListaConsulta(
+                                              context, listaCarcaca) !=
+                                          null
+                                      ? listCards.exibirListaConsulta(
+                                          context, listaCarcaca)
+                                      : Text('Sem informações'),
+                                )
+                              : Visibility(
+                                  visible: _isList.value,
+                                  child: _exibirListaStart(
+                                              context, producaoAPI.getAll()) !=
+                                          null
+                                      ? _exibirListaStart(
+                                          context, producaoAPI.getAll())
+                                      : Text('Sem informação'),
+                                );
+                          ;
+                        }),
+                  ),
+                  // Expanded(
+                  //    child: ValueListenableBuilder(
+                  //        valueListenable: _isList,
+                  //        builder: (_, __, ___) {
+                  //          return Visibility(
+                  //            visible: _isList.value,
+                  //            child: listCards.exibirListaStart(
+                  //                        context, producaoAPI.getAll()) !=
+                  //                    null
+                  //                ? listCards.exibirListaStart(
+                  //                    context, producaoAPI.getAll())
+                  //                : Text('Sem informação'),
+                  //          );
+                  //        }),
+                  //  ),
+                )
               ],
             ),
           )),
     );
   }
+}
 
-  Widget _exibirListaStart(context, Servico) {
-    return Container(
-      height: 300.0,
-      child: FutureBuilder(
-          future: Servico,
-          builder: (context, AsyncSnapshot<List> snapshot) {
-            if (snapshot.hasData) {
-              return ListView.builder(
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      child: ListTile(
-                        title: Text('Número Etiqueta: ' +
-                            snapshot.data[index].carcaca.numeroEtiqueta),
-                        subtitle: Text('Etiqueta: ' +
-                            snapshot.data[index].medidaPneuRaspado.toString() +
-                            ' Regra: ' +
-                            snapshot.data[index].regra.id.toString()),
-                        trailing: Container(
-                          width: 100,
-                          child: Row(
-                            children: <Widget>[
-                              IconButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                EditarProducaoPage(
-                                                  producao:
-                                                      snapshot.data[index],
-                                                )));
-                                  },
-                                  icon: Icon(Icons.edit, color: Colors.orange)),
+Widget _exibirListaStart(context, Servico) {
+  return Container(
+    height: 400.0,
+    child: FutureBuilder(
+        future: Servico,
+        builder: (context, AsyncSnapshot<List> snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+                itemCount: snapshot.data.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    child: ListTile(
+                      title: Text('Número Etiqueta: ' +
+                          snapshot.data[index].carcaca.numeroEtiqueta),
+                      subtitle: Text('Etiqueta: ' +
+                          snapshot.data[index].medidaPneuRaspado.toString() +
+                          ' Regra: ' +
+                          snapshot.data[index].regra.id.toString()),
+                      trailing: Container(
+                        width: 100,
+                        child: Row(
+                          children: <Widget>[
+                            IconButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              EditarProducaoPage(
+                                                producao:
+                                                snapshot.data[index],
+                                              )));
+                                },
+                                icon: Icon(Icons.edit, color: Colors.orange)),
 
-                              IconButton(
-                                  onPressed: () async {
-                                    Provider.of<ProducaoApi>(context,
-                                            listen: false)
-                                        .delete(snapshot.data[index].id);
-                                  },
-                                  icon: Icon(
-                                    Icons.delete,
-                                    color: Colors.red,
-                                  )),
-                              // IconButton(
-                              //     onPressed: () {
-                              //       Navigator.push(
-                              //           context,
-                              //           MaterialPageRoute(
-                              //               builder: (context) =>
-                              //                   PrintPage(
-                              //                     carcacaPrint:
-                              //                     snapshot.data[index],
-                              //                   )));
-                              //     },
-                              //     icon: Icon(Icons.print, color: Colors.greenAccent)),
-                              // IconButton(onPressed: (){}, icon: Icon(Icons.arrow_right, color: Colors.black,))
-                            ],
-                          ),
+                            IconButton(
+                                onPressed: () async {
+                                  Provider.of<ProducaoApi>(context,
+                                      listen: false)
+                                      .delete(snapshot.data[index].id);
+                                },
+                                icon: Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                )),
+                            // IconButton(
+                            //     onPressed: () {
+                            //       Navigator.push(
+                            //           context,
+                            //           MaterialPageRoute(
+                            //               builder: (context) =>
+                            //                   PrintPage(
+                            //                     carcacaPrint:
+                            //                     snapshot.data[index],
+                            //                   )));
+                            //     },
+                            //     icon: Icon(Icons.print, color: Colors.greenAccent)),
+                            // IconButton(onPressed: (){}, icon: Icon(Icons.arrow_right, color: Colors.black,))
+                          ],
                         ),
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => DetalhesProducaoPage(
-                                        producao: snapshot.data[index],
-                                      )));
-                        },
                       ),
-                    );
-                  });
-            } else {
-              return CircularProgressIndicator();
-            }
-          }),
-    );
-  }
-
-  Widget _exibirListaConsulta(context, Servico) {
-    // return Text("data");
-    return Container(
-      height: 300.0,
-      child: ListView.builder(
-          itemCount: Servico.length,
-          itemBuilder: (context, index) {
-            if (Servico.length > 0) {
-              return Card(
-                child: ListTile(
-                  title: Text('Número Etiqueta: ' +
-                      Servico[index].carcaca.numeroEtiqueta),
-                  subtitle: Text('Etiqueta: ' +
-                      Servico[index].medidaPneuRaspado.toString() +
-                      ' Regra: ' +
-                      Servico[index].regra.id.toString()),
-                  trailing: Container(
-                    width: 100,
-                    child: Row(
-                      children: <Widget>[
-                        IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => EditarProducaoPage(
-                                            producao: Servico[index],
-                                          )));
-                            },
-                            icon: Icon(Icons.edit, color: Colors.orange)),
-
-                        IconButton(
-                            onPressed: () async {
-                              Provider.of<ProducaoApi>(context, listen: false)
-                                  .delete(Servico[index].id);
-                            },
-                            icon: Icon(
-                              Icons.delete,
-                              color: Colors.red,
-                            )),
-                        // IconButton(
-                        //     onPressed: () {
-                        //       Navigator.push(
-                        //           context,
-                        //           MaterialPageRoute(
-                        //               builder: (context) =>
-                        //                   PrintPage(
-                        //                     carcacaPrint:
-                        //                     snapshot.data[index],
-                        //                   )));
-                        //     },
-                        //     icon: Icon(Icons.print, color: Colors.greenAccent)),
-                        // IconButton(onPressed: (){}, icon: Icon(Icons.arrow_right, color: Colors.black,))
-                      ],
-                    ),
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => DetalhesProducaoPage(
-                                  producao: Servico[index],
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DetalhesProducaoPage(
+                                  producao: snapshot.data[index],
                                 )));
-                  },
-                ),
-              );
-            } else {
-              return CircularProgressIndicator();
-            }
-          }),
-    );
+                      },
+                    ),
+                  );
+                });
+          } else {
+            return CircularProgressIndicator();
+          }
+        }),
+  );
+}
+
+
+
+class DinamicListCard extends ChangeNotifier {
+  exibirListaConsulta(context, Servico) {
+    if (Servico.length > 0) {
+      return Container(
+        height: 400.0,
+        child: ListView.builder(
+            itemCount: Servico.length,
+            itemBuilder: (context, index) {
+              if (Servico.length > 0) {
+                return Card(
+                  child: ListTile(
+                    title: Text('Número Etiqueta: ' +
+                        Servico[index].carcaca.numeroEtiqueta),
+                    subtitle: Text('Etiqueta: ' +
+                        Servico[index].medidaPneuRaspado.toString() +
+                        ' Regra: ' +
+                        Servico[index].regra.id.toString()),
+                    trailing: Container(
+                      width: 100,
+                      child: Row(
+                        children: <Widget>[
+                          IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            EditarProducaoPage(
+                                              producao: Servico[index],
+                                            )));
+                              },
+                              icon: Icon(Icons.edit, color: Colors.orange)),
+
+                          IconButton(
+                              onPressed: () async {
+                                Provider.of<ProducaoApi>(context, listen: false)
+                                    .delete(Servico[index].id);
+                              },
+                              icon: Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                              )),
+                          // IconButton(
+                          //     onPressed: () {
+                          //       Navigator.push(
+                          //           context,
+                          //           MaterialPageRoute(
+                          //               builder: (context) =>
+                          //                   PrintPage(
+                          //                     carcacaPrint:
+                          //                     snapshot.data[index],
+                          //                   )));
+                          //     },
+                          //     icon: Icon(Icons.print, color: Colors.greenAccent)),
+                          // IconButton(onPressed: (){}, icon: Icon(Icons.arrow_right, color: Colors.black,))
+                        ],
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DetalhesProducaoPage(
+                                    producao: Servico[index],
+                                  )));
+                    },
+                  ),
+                );
+              } else {
+                return CircularProgressIndicator();
+              }
+            }),
+      );
+    } else {
+      return null;
+    }
   }
 }
