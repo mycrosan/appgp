@@ -55,6 +55,8 @@ class ListaProducaoState extends State<ListaProducao> {
   List<Marca> marcaList = [];
   Marca marcaSelected;
 
+  List<Producao> producaoList = [];
+
   @override
   void initState() {
     super.initState();
@@ -91,6 +93,12 @@ class ListaProducaoState extends State<ListaProducao> {
       setState(() {
         marcaList = value;
         alfabetSortList(marcaList);
+      });
+    });
+
+    ProducaoApi().getAll().then((List<Producao> value) {
+      setState(() {
+        producaoList = value;
       });
     });
   }
@@ -148,6 +156,7 @@ class ListaProducaoState extends State<ListaProducao> {
                       marcaSelected = modeloSelected.marca;
                       producao.carcaca.modelo.marca = marcaSelected;
                     });
+                    _isList.value = false;
                   },
                   items: modeloList.map((Modelo modelo) {
                     return DropdownMenuItem(
@@ -235,64 +244,30 @@ class ListaProducaoState extends State<ListaProducao> {
                   child: Text("Pesquisar"),
                   onPressed: () async {
                     if (true) {
-                      var response =
-                          await ProducaoApi().consultaProducao(producao);
-
-                      print(response != null);
-
-                      listaCarcaca = response;
-
-                      _isList.value = false;
-
-                      _isList.notifyListeners();
+                       producaoList = await listCards.pesquisa(producao);
+                        //
+                        _isList.value = true;
+                        //
+                        _isList.notifyListeners();
                     }
                   },
                 )),
-                Container(
-                  child: Text(_isList.value.toString()),
-                ),
                 Container(
                   child: Expanded(
                     child: ValueListenableBuilder(
                         valueListenable: _isList,
                         builder: (_, __, ___) {
-                          return !_isList.value
-                              ? Visibility(
-                                  visible: !_isList.value,
-                                  child: listCards.exibirListaConsulta(
-                                              context, listaCarcaca) !=
-                                          null
-                                      ? listCards.exibirListaConsulta(
-                                          context, listaCarcaca)
-                                      : Text('Sem informações'),
-                                )
-                              : Visibility(
-                                  visible: _isList.value,
-                                  child: _exibirListaStart(
-                                              context, producaoAPI.getAll()) !=
-                                          null
-                                      ? _exibirListaStart(
-                                          context, producaoAPI.getAll())
-                                      : Text('Sem informação'),
-                                );
-                          ;
+                          return Visibility(
+                            visible: _isList.value,
+                            child: listCards.exibirListaConsulta(
+                                        context, producaoList) !=
+                                    null
+                                ? listCards.exibirListaConsulta(
+                                    context, producaoList)
+                                : Text('Nenhuma produção encontrada'),
+                          );
                         }),
                   ),
-                  // Expanded(
-                  //    child: ValueListenableBuilder(
-                  //        valueListenable: _isList,
-                  //        builder: (_, __, ___) {
-                  //          return Visibility(
-                  //            visible: _isList.value,
-                  //            child: listCards.exibirListaStart(
-                  //                        context, producaoAPI.getAll()) !=
-                  //                    null
-                  //                ? listCards.exibirListaStart(
-                  //                    context, producaoAPI.getAll())
-                  //                : Text('Sem informação'),
-                  //          );
-                  //        }),
-                  //  ),
                 )
               ],
             ),
@@ -301,89 +276,9 @@ class ListaProducaoState extends State<ListaProducao> {
   }
 }
 
-Widget _exibirListaStart(context, Servico) {
-  return Container(
-    height: 400.0,
-    child: FutureBuilder(
-        future: Servico,
-        builder: (context, AsyncSnapshot<List> snapshot) {
-          if (snapshot.hasData) {
-            return ListView.builder(
-                itemCount: snapshot.data.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    child: ListTile(
-                      title: Text('Número Etiqueta: ' +
-                          snapshot.data[index].carcaca.numeroEtiqueta),
-                      subtitle: Text('Etiqueta: ' +
-                          snapshot.data[index].medidaPneuRaspado.toString() +
-                          ' Regra: ' +
-                          snapshot.data[index].regra.id.toString()),
-                      trailing: Container(
-                        width: 100,
-                        child: Row(
-                          children: <Widget>[
-                            IconButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              EditarProducaoPage(
-                                                producao:
-                                                snapshot.data[index],
-                                              )));
-                                },
-                                icon: Icon(Icons.edit, color: Colors.orange)),
-
-                            IconButton(
-                                onPressed: () async {
-                                  Provider.of<ProducaoApi>(context,
-                                      listen: false)
-                                      .delete(snapshot.data[index].id);
-                                },
-                                icon: Icon(
-                                  Icons.delete,
-                                  color: Colors.red,
-                                )),
-                            // IconButton(
-                            //     onPressed: () {
-                            //       Navigator.push(
-                            //           context,
-                            //           MaterialPageRoute(
-                            //               builder: (context) =>
-                            //                   PrintPage(
-                            //                     carcacaPrint:
-                            //                     snapshot.data[index],
-                            //                   )));
-                            //     },
-                            //     icon: Icon(Icons.print, color: Colors.greenAccent)),
-                            // IconButton(onPressed: (){}, icon: Icon(Icons.arrow_right, color: Colors.black,))
-                          ],
-                        ),
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => DetalhesProducaoPage(
-                                  producao: snapshot.data[index],
-                                )));
-                      },
-                    ),
-                  );
-                });
-          } else {
-            return CircularProgressIndicator();
-          }
-        }),
-  );
-}
-
-
-
 class DinamicListCard extends ChangeNotifier {
   exibirListaConsulta(context, Servico) {
+
     if (Servico.length > 0) {
       return Container(
         height: 400.0,
@@ -424,19 +319,6 @@ class DinamicListCard extends ChangeNotifier {
                                 Icons.delete,
                                 color: Colors.red,
                               )),
-                          // IconButton(
-                          //     onPressed: () {
-                          //       Navigator.push(
-                          //           context,
-                          //           MaterialPageRoute(
-                          //               builder: (context) =>
-                          //                   PrintPage(
-                          //                     carcacaPrint:
-                          //                     snapshot.data[index],
-                          //                   )));
-                          //     },
-                          //     icon: Icon(Icons.print, color: Colors.greenAccent)),
-                          // IconButton(onPressed: (){}, icon: Icon(Icons.arrow_right, color: Colors.black,))
                         ],
                       ),
                     ),
@@ -458,5 +340,10 @@ class DinamicListCard extends ChangeNotifier {
     } else {
       return null;
     }
+  }
+  pesquisa (producao){
+
+       return ProducaoApi().consultaProducao(producao);
+
   }
 }
