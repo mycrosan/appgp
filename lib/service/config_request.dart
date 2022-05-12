@@ -5,11 +5,11 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
 import '../main.dart';
+import '../models/producao.dart';
 import 'modeloapi.dart';
 
 class ConfigRequest {
   Future<Response> requestGet(String endpoint) async {
-
     var jwt = await new AuthUtil().jwtOrEmpty;
     if (jwt != null) {
       http.Response response = await http.get(
@@ -25,11 +25,10 @@ class ConfigRequest {
   }
 
   Future<Response> requestGetById(String endpoint, int id) async {
-
     var jwt = await new AuthUtil().jwtOrEmpty;
     if (jwt != null) {
-      http.Response response = await http.get(Uri.parse(
-        SERVER_IP + endpoint + "/${id}"),
+      http.Response response = await http.get(
+        Uri.parse(SERVER_IP + endpoint + "/${id}"),
         headers: {
           'Content-type': 'application/json',
           'Accept': 'application/json',
@@ -41,7 +40,6 @@ class ConfigRequest {
   }
 
   Future<Response> requestPost(String endpoint, Map dataMap) async {
-
     final String bodyData = jsonEncode(dataMap);
 
     var jwt = await new AuthUtil().jwtOrEmpty;
@@ -58,28 +56,43 @@ class ConfigRequest {
   }
 
   Future<Response> requestUpdate(String endpoint, Map dataMap, int id) async {
-
     final String bodyData = jsonEncode(dataMap);
 
     var jwt = await new AuthUtil().jwtOrEmpty;
     if (jwt != null) {
-      http.Response response = await http.put(Uri.parse(SERVER_IP + endpoint + "/${id}"),
-          headers: {
-            'Content-type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $jwt'
-          },
-          body: bodyData);
+      http.Response response =
+          await http.put(Uri.parse(SERVER_IP + endpoint + "/${id}"),
+              headers: {
+                'Content-type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': 'Bearer $jwt'
+              },
+              body: bodyData);
       return response;
     }
   }
 
-  Future<Response> requestQueryRegra(String endpoint, int matrizId, int medidaId, int modeloId, int paisId, double medidaPneuRaspado) async {
-
+  Future<Response> delete(String endpoint, int id) async {
     var jwt = await new AuthUtil().jwtOrEmpty;
     if (jwt != null) {
-      http.Response response = await http.get(Uri.parse(
-        SERVER_IP + endpoint + "/pesquisa/${matrizId}/${medidaId}/${modeloId}/${paisId}/${medidaPneuRaspado}"),
+      http.Response response = await http
+          .delete(Uri.parse(SERVER_IP + endpoint + "/${id}"), headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $jwt'
+      });
+      return response;
+    }
+  }
+
+  Future<Response> requestQueryRegra(String endpoint, int matrizId,
+      int medidaId, int modeloId, int paisId, double medidaPneuRaspado) async {
+    var jwt = await new AuthUtil().jwtOrEmpty;
+    if (jwt != null) {
+      http.Response response = await http.get(
+        Uri.parse(SERVER_IP +
+            endpoint +
+            "/pesquisa/${matrizId}/${medidaId}/${modeloId}/${paisId}/${medidaPneuRaspado}"),
         headers: {
           'Content-type': 'application/json',
           'Accept': 'application/json',
@@ -90,12 +103,12 @@ class ConfigRequest {
     }
   }
 
-  Future<Response> requestQueryCarcaca(String endpoint, String numeroEtiqueta) async {
-
+  Future<Response> requestQueryCarcaca(
+      String endpoint, String numeroEtiqueta) async {
     var jwt = await new AuthUtil().jwtOrEmpty;
     if (jwt != null) {
-      http.Response response = await http.get(Uri.parse(
-        SERVER_IP + endpoint + "/pesquisa/${numeroEtiqueta}"),
+      http.Response response = await http.get(
+        Uri.parse(SERVER_IP + endpoint + "/pesquisa/${numeroEtiqueta}"),
         headers: {
           'Content-type': 'application/json',
           'Accept': 'application/json',
@@ -106,16 +119,26 @@ class ConfigRequest {
     }
   }
 
-  Future<Response> delete(String endpoint, int id) async {
-
+  Future<Response> requestQueryProducao(
+      String endpoint, Producao producao) async {
     var jwt = await new AuthUtil().jwtOrEmpty;
+
+    var modeloId = producao.carcaca.modelo.id != null ? producao.carcaca.modelo.id : '';
+    var marcaId = producao.carcaca.modelo.marca.id != null ? producao.carcaca.modelo.marca.id : '';
+    var medidaId = producao.carcaca.medida != null ? producao.carcaca.medida.id : '';
+    var paisId = producao.carcaca.pais != null ? producao.carcaca.pais.id : '';
+
     if (jwt != null) {
-      http.Response response = await http.delete(Uri.parse(SERVER_IP + endpoint + "/${id}"),
-          headers: {
-            'Content-type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $jwt'
-          });
+      http.Response response = await http.get(
+        Uri.parse(SERVER_IP +
+            endpoint +
+            "/pesquisa?medidaId=${medidaId}&marcaId=${marcaId}&modeloId=${modeloId}&paisId=${paisId}"),
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $jwt'
+        },
+      );
       return response;
     }
   }
