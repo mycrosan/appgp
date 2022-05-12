@@ -1,3 +1,4 @@
+import 'package:GPPremium/components/Loading.dart';
 import 'package:GPPremium/service/producaoapi.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
@@ -36,8 +37,8 @@ class ListaProducaoState extends State<ListaProducao> {
   final DinamicListCard listCards = DinamicListCard();
 
   TextEditingController textEditingControllerCarcaca;
-  Producao _responseValue;
   Producao producao;
+  bool loading = true;
 
   //Modelo
   List<Modelo> modeloList = [];
@@ -99,6 +100,7 @@ class ListaProducaoState extends State<ListaProducao> {
     ProducaoApi().getAll().then((List<Producao> value) {
       setState(() {
         producaoList = value;
+        loading = false;
       });
     });
   }
@@ -156,7 +158,6 @@ class ListaProducaoState extends State<ListaProducao> {
                       marcaSelected = modeloSelected.marca;
                       producao.carcaca.modelo.marca = marcaSelected;
                     });
-                    _isList.value = false;
                   },
                   items: modeloList.map((Modelo modelo) {
                     return DropdownMenuItem(
@@ -244,11 +245,11 @@ class ListaProducaoState extends State<ListaProducao> {
                   child: Text("Pesquisar"),
                   onPressed: () async {
                     if (true) {
-                       producaoList = await listCards.pesquisa(producao);
-                        //
-                        _isList.value = true;
-                        //
-                        _isList.notifyListeners();
+                      loading = true;
+                      producaoList = await listCards.pesquisa(producao);
+                      loading = false;
+                      _isList.value = true;
+                      _isList.notifyListeners();
                     }
                   },
                 )),
@@ -258,13 +259,16 @@ class ListaProducaoState extends State<ListaProducao> {
                         valueListenable: _isList,
                         builder: (_, __, ___) {
                           return Visibility(
-                            visible: _isList.value,
                             child: listCards.exibirListaConsulta(
                                         context, producaoList) !=
                                     null
                                 ? listCards.exibirListaConsulta(
                                     context, producaoList)
-                                : Text('Nenhuma produção encontrada'),
+                                : loading
+                                    ? cicleLoading(context)
+                                    : producaoList.length == 0
+                                        ? Text('Nenhuma produção encontrada')
+                                        : '',
                           );
                         }),
                   ),
@@ -278,7 +282,6 @@ class ListaProducaoState extends State<ListaProducao> {
 
 class DinamicListCard extends ChangeNotifier {
   exibirListaConsulta(context, Servico) {
-
     if (Servico.length > 0) {
       return Container(
         height: 400.0,
@@ -309,7 +312,6 @@ class DinamicListCard extends ChangeNotifier {
                                             )));
                               },
                               icon: Icon(Icons.edit, color: Colors.orange)),
-
                           IconButton(
                               onPressed: () async {
                                 Provider.of<ProducaoApi>(context, listen: false)
@@ -341,9 +343,8 @@ class DinamicListCard extends ChangeNotifier {
       return null;
     }
   }
-  pesquisa (producao){
 
-       return ProducaoApi().consultaProducao(producao);
-
+  pesquisa(producao) {
+    return ProducaoApi().consultaProducao(producao);
   }
 }

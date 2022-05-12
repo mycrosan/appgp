@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
 import 'pais.dart';
-
-import 'borracha.dart';
 import 'medida.dart';
 import 'modelo.dart';
 
