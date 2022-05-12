@@ -314,8 +314,34 @@ class DinamicListCard extends ChangeNotifier {
                               icon: Icon(Icons.edit, color: Colors.orange)),
                           IconButton(
                               onPressed: () async {
-                                Provider.of<ProducaoApi>(context, listen: false)
-                                    .delete(Servico[index].id);
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text("Excluir"),
+                                      content: Text(
+                                          "Tem certeza que deseja excluir o item ${Servico[index].carcaca.numeroEtiqueta}"),
+                                      actions: [
+                                        ElevatedButton(
+                                          child: Text("Sim"),
+                                          onPressed: () {
+                                            Provider.of<ProducaoApi>(context,
+                                                    listen: false)
+                                                .delete(Servico[index].id);
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ElevatedButton(
+                                          child: Text("Não"),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                    notifyListeners();
+                                  },
+                                );
                               },
                               icon: Icon(
                                 Icons.delete,

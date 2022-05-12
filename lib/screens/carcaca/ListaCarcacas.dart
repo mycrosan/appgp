@@ -1,3 +1,4 @@
+import 'package:GPPremium/components/Loading.dart';
 import 'package:GPPremium/models/carcaca.dart';
 import 'package:GPPremium/screens/carcaca/adicionar.dart';
 import 'package:GPPremium/screens/carcaca/editdatawidget.dart';
@@ -174,9 +175,35 @@ class ListaCarcacaState extends State<ListaCarcaca> {
 
                               IconButton(
                                   onPressed: () async {
-                                    Provider.of<CarcacaApi>(context,
-                                            listen: false)
-                                        .delete(snapshot.data[index].id);
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: Text("Excluir"),
+                                          content: Text(
+                                              "Tem certeza que deseja excluir o item ${snapshot.data[index].numeroEtiqueta}"),
+                                          actions: [
+                                            ElevatedButton(
+                                              child: Text("Sim"),
+                                              onPressed: () {
+                                                Provider.of<CarcacaApi>(context,
+                                                        listen: false)
+                                                    .delete(snapshot
+                                                        .data[index].id);
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                            ElevatedButton(
+                                              child: Text("Não"),
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                        ;
+                                      },
+                                    );
                                   },
                                   icon: Icon(
                                     Icons.delete,
@@ -210,7 +237,7 @@ class ListaCarcacaState extends State<ListaCarcaca> {
                     );
                   });
             } else {
-              return CircularProgressIndicator();
+              return cicleLoading(context);
             }
           }),
     );
@@ -254,8 +281,33 @@ class DinamicListCard extends ChangeNotifier {
 
               IconButton(
                   onPressed: () async {
-                    Provider.of<CarcacaApi>(context, listen: false)
-                        .delete(_responseValue.id);
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text("Excluir"),
+                          content: Text(
+                              "Tem certeza que deseja excluir o item ${_responseValue.numeroEtiqueta}"),
+                          actions: [
+                            ElevatedButton(
+                              child: Text("Sim"),
+                              onPressed: () {
+                                Provider.of<CarcacaApi>(context, listen: false)
+                                    .delete(_responseValue.id);
+                                Navigator.pop(context);
+                              },
+                            ),
+                            ElevatedButton(
+                              child: Text("Não"),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        );
+                        ;
+                      },
+                    );
                   },
                   icon: Icon(
                     Icons.delete,
