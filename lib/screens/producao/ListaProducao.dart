@@ -324,11 +324,19 @@ class DinamicListCard extends ChangeNotifier {
                                       actions: [
                                         ElevatedButton(
                                           child: Text("Sim"),
-                                          onPressed: () {
-                                            Provider.of<ProducaoApi>(context,
-                                                    listen: false)
-                                                .delete(Servico[index].id);
-                                            Navigator.pop(context);
+                                          onPressed: () async {
+                                            var response =
+                                                await Provider.of<ProducaoApi>(
+                                                        context,
+                                                        listen: false)
+                                                    .delete(Servico[index].id)
+                                                    .then((value) {
+                                              return value;
+                                            });
+                                            if(response){
+                                              Servico.removeAt(index);
+                                              Navigator.pop(context);
+                                            }
                                           },
                                         ),
                                         ElevatedButton(
@@ -361,7 +369,7 @@ class DinamicListCard extends ChangeNotifier {
                   ),
                 );
               } else {
-                return CircularProgressIndicator();
+                return cicleLoading(context);
               }
             }),
       );
