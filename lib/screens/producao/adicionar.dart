@@ -144,7 +144,6 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
     RegraApi().getAll().then((List<Regra> value) {
       setState(() {
         regraList = value;
-        alfabetSortList(regraList);
       });
     });
     // _btnController1.stateStream.listen((value) {

@@ -42,7 +42,7 @@ void main() {
   }else{
     SERVER_IP = 'http://192.168.0.107:8080/api/';
   }
-  print(isProduction);
+  print("Produção?${isProduction}");
   runApp(GpPremiumApp());
 }
 
