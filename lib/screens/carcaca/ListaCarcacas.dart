@@ -8,6 +8,8 @@ import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../components/snackBar.dart';
+import '../../models/responseMessage.dart';
 import 'detailwidget.dart';
 
 class ListaCarcaca extends StatefulWidget {
@@ -75,22 +77,22 @@ class ListaCarcacaState extends State<ListaCarcaca> {
                 onChanged: (String newValue) async {
                   if (newValue.length >= 6) {
                     var response = await CarcacaApi().consultaCarcaca(newValue);
-                    print(_responseValue != null);
 
-                    _responseValue = response;
+                    if (response is Carcaca && response != null) {
+                      _responseValue = response;
 
-                    _isList.value = false;
+                      _isList.value = false;
 
-                    _isList.notifyListeners();
-
-                    if (_responseValue != null) {
-                      print('chegou no nulo');
+                      _isList.notifyListeners();
                     } else {
+                      responseMessage value =
+                      response != null ? response : null;
+                      ScaffoldMessenger.of(context).showSnackBar(warningMessage(context, value.message));
                       // showDialog(
                       //   context: context,
                       //   builder: (BuildContext context) {
                       //     return AlertDialog(
-                      //       title: Text(value.message),
+                      //       title: Text("Atenção! \n" + value.message),
                       //       content: Text(value.debugMessage),
                       //       actions: [
                       //         TextButton(
@@ -190,6 +192,7 @@ class ListaCarcacaState extends State<ListaCarcaca> {
                                                         listen: false)
                                                     .delete(snapshot
                                                         .data[index].id);
+                                                ScaffoldMessenger.of(context).showSnackBar(deleteMessage(context));
                                                 Navigator.pop(context);
                                               },
                                             ),
@@ -294,6 +297,7 @@ class DinamicListCard extends ChangeNotifier {
                               onPressed: () {
                                 Provider.of<CarcacaApi>(context, listen: false)
                                     .delete(_responseValue.id);
+                                ScaffoldMessenger.of(context).showSnackBar(deleteMessage(context));
                                 Navigator.pop(context);
                               },
                             ),

@@ -1,4 +1,5 @@
 import 'package:GPPremium/components/Loading.dart';
+import 'package:GPPremium/components/snackBar.dart';
 import 'package:GPPremium/service/producaoapi.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,8 @@ class ListaProducao extends StatefulWidget {
 }
 
 class ListaProducaoState extends State<ListaProducao> {
+
+
   final _formkey = GlobalKey<FormState>();
 
   TextEditingController textEditingControllerModelo;
@@ -291,9 +294,9 @@ class DinamicListCard extends ChangeNotifier {
               if (Servico.length > 0) {
                 return Card(
                   child: ListTile(
-                    title: Text('Número Etiqueta: ' +
+                    title: Text('Etiqueta: ' +
                         Servico[index].carcaca.numeroEtiqueta),
-                    subtitle: Text('Etiqueta: ' +
+                    subtitle: Text('Med. Pneu Rasp.: ' +
                         Servico[index].medidaPneuRaspado.toString() +
                         ' Regra: ' +
                         Servico[index].regra.id.toString()),
@@ -334,6 +337,7 @@ class DinamicListCard extends ChangeNotifier {
                                               return value;
                                             });
                                             if(response){
+                                              ScaffoldMessenger.of(context).showSnackBar(deleteMessage(context));
                                               Servico.removeAt(index);
                                               Navigator.pop(context);
                                             }

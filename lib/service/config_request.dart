@@ -19,7 +19,7 @@ class ConfigRequest {
           'Accept': 'application/json',
           'Authorization': 'Bearer $jwt'
         },
-      );
+      ).timeout(Duration(seconds: 15));
       return response;
     }
   }
@@ -34,7 +34,7 @@ class ConfigRequest {
           'Accept': 'application/json',
           'Authorization': 'Bearer $jwt'
         },
-      );
+      ).timeout(Duration(seconds: 15));
       return response;
     }
   }
@@ -50,7 +50,7 @@ class ConfigRequest {
             'Accept': 'application/json',
             'Authorization': 'Bearer $jwt'
           },
-          body: bodyData);
+          body: bodyData).timeout(Duration(seconds: 15));
       return response;
     }
   }
@@ -67,7 +67,7 @@ class ConfigRequest {
                 'Accept': 'application/json',
                 'Authorization': 'Bearer $jwt'
               },
-              body: bodyData);
+              body: bodyData).timeout(Duration(seconds: 15));
       return response;
     }
   }
@@ -80,7 +80,7 @@ class ConfigRequest {
         'Content-type': 'application/json',
         'Accept': 'application/json',
         'Authorization': 'Bearer $jwt'
-      });
+      }).timeout(Duration(seconds: 15));
       return response;
     }
   }
@@ -98,7 +98,7 @@ class ConfigRequest {
           'Accept': 'application/json',
           'Authorization': 'Bearer $jwt'
         },
-      );
+      ).timeout(Duration(seconds: 15));
       return response;
     }
   }
@@ -138,7 +138,7 @@ class ConfigRequest {
           'Accept': 'application/json',
           'Authorization': 'Bearer $jwt'
         },
-      );
+      ).timeout(Duration(seconds: 15));
       return response;
     }
   }

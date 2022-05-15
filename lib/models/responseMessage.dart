@@ -1,10 +1,10 @@
 class responseMessage {
-  bool status;
+  String status;
   String timestamp;
   String message;
   String error;
   String debugMessage;
-  Null subErrors;
+  String subErrors;
 
   responseMessage(
       {this.status,
