@@ -21,7 +21,7 @@ class ImageService {
         final ByteData imageData = await NetworkAssetBundle(
                 Uri.parse(SERVER_IP + "image/${place}/${i}"))
             .load("")
-            .timeout(const Duration(seconds: 10));
+            .timeout(const Duration(seconds: 60));
         final Uint8List bytes = imageData.buffer.asUint8List();
         butter.add(Image.memory(bytes));
       } on TimeoutException catch (e) {

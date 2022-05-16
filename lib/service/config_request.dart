@@ -15,11 +15,11 @@ class ConfigRequest {
       http.Response response = await http.get(
         Uri.parse(SERVER_IP + endpoint),
         headers: {
-          'Content-type': 'application/json; charset=utf-8',
+          'Content-type': 'application/json',
           'Accept': 'application/json',
           'Authorization': 'Bearer $jwt'
         },
-      ).timeout(Duration(seconds: 15));
+      ).timeout(Duration(seconds: 60));
       return response;
     }
   }
@@ -34,7 +34,7 @@ class ConfigRequest {
           'Accept': 'application/json',
           'Authorization': 'Bearer $jwt'
         },
-      ).timeout(Duration(seconds: 15));
+      ).timeout(Duration(seconds: 60));
       return response;
     }
   }
@@ -50,7 +50,7 @@ class ConfigRequest {
             'Accept': 'application/json',
             'Authorization': 'Bearer $jwt'
           },
-          body: bodyData).timeout(Duration(seconds: 15));
+          body: bodyData);
       return response;
     }
   }
@@ -67,7 +67,7 @@ class ConfigRequest {
                 'Accept': 'application/json',
                 'Authorization': 'Bearer $jwt'
               },
-              body: bodyData).timeout(Duration(seconds: 15));
+              body: bodyData);
       return response;
     }
   }
@@ -80,7 +80,7 @@ class ConfigRequest {
         'Content-type': 'application/json',
         'Accept': 'application/json',
         'Authorization': 'Bearer $jwt'
-      }).timeout(Duration(seconds: 15));
+      }).timeout(Duration(seconds: 60));
       return response;
     }
   }
@@ -98,7 +98,7 @@ class ConfigRequest {
           'Accept': 'application/json',
           'Authorization': 'Bearer $jwt'
         },
-      ).timeout(Duration(seconds: 15));
+      ).timeout(Duration(seconds: 60));
       return response;
     }
   }
@@ -114,7 +114,7 @@ class ConfigRequest {
           'Accept': 'application/json',
           'Authorization': 'Bearer $jwt'
         },
-      ).timeout(const Duration(seconds: 15));
+      ).timeout(const Duration(seconds: 60));
       return response;
     }
   }
@@ -138,7 +138,7 @@ class ConfigRequest {
           'Accept': 'application/json',
           'Authorization': 'Bearer $jwt'
         },
-      ).timeout(Duration(seconds: 15));
+      ).timeout(Duration(seconds: 60));
       return response;
     }
   }
