@@ -123,16 +123,24 @@ class ConfigRequest {
       String endpoint, Producao producao) async {
     var jwt = await new AuthUtil().jwtOrEmpty;
 
-    var modeloId = producao.carcaca.modelo.id != null ? producao.carcaca.modelo.id : '';
-    var marcaId = producao.carcaca.modelo.marca.id != null ? producao.carcaca.modelo.marca.id : '';
-    var medidaId = producao.carcaca.medida != null ? producao.carcaca.medida.id : '';
-    var paisId = producao.carcaca.pais != null ? producao.carcaca.pais.id : '';
+    var modeloId =
+        producao.carcaca.modelo.id != null ? producao.carcaca.modelo.id : null;
+    var marcaId = producao.carcaca.modelo.marca.id != null
+        ? producao.carcaca.modelo.marca.id
+        : null;
+    var medidaId =
+        producao.carcaca.medida != null ? producao.carcaca.medida.id : null;
+    var paisId = producao.carcaca.pais != null ? producao.carcaca.pais.id : null;
 
     if (jwt != null) {
+      var url = Uri.parse(SERVER_IP +
+          endpoint +
+          "/pesquisa?medidaId=${medidaId}&marcaId=${marcaId}&modeloId=${modeloId}&paisId=${paisId}");
+
+
+
       http.Response response = await http.get(
-        Uri.parse(SERVER_IP +
-            endpoint +
-            "/pesquisa?medidaId=${medidaId}&marcaId=${marcaId}&modeloId=${modeloId}&paisId=${paisId}"),
+        url,
         headers: {
           'Content-type': 'application/json',
           'Accept': 'application/json',

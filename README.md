@@ -49,3 +49,7 @@ Sistema Exclusivo GP Premium
 - Code review changes	👌 :ok_hand:
 - Accessibility	♿ :wheelchair:
 - Move/rename repository	🚚 :truck:
+
+Comandos para iniciar o AVD - Emulador
+cd ~/Library/Android/sdk/emulator
+./emulator -avd Pixel_5_API_30   
