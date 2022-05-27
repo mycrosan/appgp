@@ -2,12 +2,10 @@ import 'package:GPPremium/components/Loading.dart';
 import 'package:GPPremium/models/carcaca.dart';
 import 'package:GPPremium/screens/carcaca/adicionar.dart';
 import 'package:GPPremium/screens/carcaca/editdatawidget.dart';
-import 'package:GPPremium/screens/producao/printWidget.dart';
 import 'package:GPPremium/service/carcacaapi.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../components/snackBar.dart';
 import '../../models/responseMessage.dart';
 import 'detailwidget.dart';
@@ -86,25 +84,9 @@ class ListaCarcacaState extends State<ListaCarcaca> {
                       _isList.notifyListeners();
                     } else {
                       responseMessage value =
-                      response != null ? response : null;
-                      ScaffoldMessenger.of(context).showSnackBar(warningMessage(context, value.message));
-                      // showDialog(
-                      //   context: context,
-                      //   builder: (BuildContext context) {
-                      //     return AlertDialog(
-                      //       title: Text("Atenção! \n" + value.message),
-                      //       content: Text(value.debugMessage),
-                      //       actions: [
-                      //         TextButton(
-                      //           child: Text("OK"),
-                      //           onPressed: () {
-                      //             Navigator.pop(context);
-                      //           },
-                      //         ),
-                      //       ],
-                      //     );
-                      //   },
-                      // );
+                          response != null ? response : null;
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(warningMessage(context, value.message));
                     }
                   } else {
                     _isList.value = true;
@@ -192,7 +174,9 @@ class ListaCarcacaState extends State<ListaCarcaca> {
                                                         listen: false)
                                                     .delete(snapshot
                                                         .data[index].id);
-                                                ScaffoldMessenger.of(context).showSnackBar(deleteMessage(context));
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                        deleteMessage(context));
                                                 Navigator.pop(context);
                                               },
                                             ),
@@ -297,7 +281,8 @@ class DinamicListCard extends ChangeNotifier {
                               onPressed: () {
                                 Provider.of<CarcacaApi>(context, listen: false)
                                     .delete(_responseValue.id);
-                                ScaffoldMessenger.of(context).showSnackBar(deleteMessage(context));
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(deleteMessage(context));
                                 Navigator.pop(context);
                               },
                             ),

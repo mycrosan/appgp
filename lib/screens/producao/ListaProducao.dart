@@ -29,8 +29,6 @@ class ListaProducao extends StatefulWidget {
 }
 
 class ListaProducaoState extends State<ListaProducao> {
-
-
   final _formkey = GlobalKey<FormState>();
 
   TextEditingController textEditingControllerModelo;
@@ -41,7 +39,9 @@ class ListaProducaoState extends State<ListaProducao> {
 
   TextEditingController textEditingControllerCarcaca;
   Producao producao;
-  bool loading = true;
+
+  // bool loading = true;
+  var loading = ValueNotifier<bool>(true);
 
   //Modelo
   List<Modelo> modeloList = [];
@@ -103,7 +103,7 @@ class ListaProducaoState extends State<ListaProducao> {
     ProducaoApi().getAll().then((List<Producao> value) {
       setState(() {
         producaoList = value;
-        loading = false;
+        loading.value = false;
       });
     });
   }
@@ -115,6 +115,9 @@ class ListaProducaoState extends State<ListaProducao> {
 
     final DinamicListCard listCards = DinamicListCard();
 
+    TextEditingController textEditingControllerCarcaca;
+    textEditingControllerCarcaca = MaskedTextController(mask: '000000');
+
     List listaCarcaca = [];
     var _isList = ValueNotifier<bool>(true);
 
@@ -122,7 +125,42 @@ class ListaProducaoState extends State<ListaProducao> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Produção'),
+        title: Container(
+          width: double.infinity,
+          child: Row(children: [
+            Expanded(child: Text("Produção")),
+            Expanded(
+              child: Container(
+                color: Colors.white,
+                height: 30.0,
+                child: TextFormField(
+                  controller: textEditingControllerCarcaca,
+                  decoration: InputDecoration(
+                    hintText: 'Nº Etiqueta',
+                    contentPadding: EdgeInsets.all(10.0),
+                    // prefixIcon: Icon(Icons.search),
+                  ),
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  onChanged: (String newValue) async {
+                    if (newValue.length >= 6) {
+                      loading.value = true;
+                      producao.carcaca.numeroEtiqueta = newValue;
+                      producaoList = await listCards.pesquisa(producao);
+                      loading.value = false;
+                      _isList.value = true;
+                      listCards.exibirListaConsulta(context, producaoList);
+                      _isList.notifyListeners();
+                      loading.notifyListeners();
+                    } else {
+                      _isList.value = true;
+                      _isList.notifyListeners();
+                    }
+                  },
+                ),
+              ),
+            )
+          ]),
+        ),
         actions: [
           IconButton(
             icon: Icon(
@@ -248,9 +286,9 @@ class ListaProducaoState extends State<ListaProducao> {
                   child: Text("Pesquisar"),
                   onPressed: () async {
                     if (true) {
-                      loading = true;
+                      loading.value = true;
                       producaoList = await listCards.pesquisa(producao);
-                      loading = false;
+                      loading.value = false;
                       _isList.value = true;
                       _isList.notifyListeners();
                     }
@@ -267,7 +305,7 @@ class ListaProducaoState extends State<ListaProducao> {
                                     null
                                 ? listCards.exibirListaConsulta(
                                     context, producaoList)
-                                : loading
+                                : loading.value
                                     ? cicleLoading(context)
                                     : producaoList.length == 0
                                         ? Text('Nenhuma produção encontrada')
@@ -294,8 +332,8 @@ class DinamicListCard extends ChangeNotifier {
               if (Servico.length > 0) {
                 return Card(
                   child: ListTile(
-                    title: Text('Etiqueta: ' +
-                        Servico[index].carcaca.numeroEtiqueta),
+                    title: Text(
+                        'Etiqueta: ' + Servico[index].carcaca.numeroEtiqueta),
                     subtitle: Text('Med. Pneu Rasp.: ' +
                         Servico[index].medidaPneuRaspado.toString() +
                         ' Regra: ' +
@@ -336,8 +374,10 @@ class DinamicListCard extends ChangeNotifier {
                                                     .then((value) {
                                               return value;
                                             });
-                                            if(response){
-                                              ScaffoldMessenger.of(context).showSnackBar(deleteMessage(context));
+                                            if (response) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                      deleteMessage(context));
                                               Servico.removeAt(index);
                                               Navigator.pop(context);
                                             }

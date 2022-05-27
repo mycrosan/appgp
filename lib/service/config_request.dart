@@ -123,21 +123,21 @@ class ConfigRequest {
       String endpoint, Producao producao) async {
     var jwt = await new AuthUtil().jwtOrEmpty;
 
-    var modeloId =
-        producao.carcaca.modelo.id != null ? producao.carcaca.modelo.id : null;
-    var marcaId = producao.carcaca.modelo.marca.id != null
-        ? producao.carcaca.modelo.marca.id
-        : null;
-    var medidaId =
-        producao.carcaca.medida != null ? producao.carcaca.medida.id : null;
+    var modeloId = producao.carcaca.modelo.id != null ? producao.carcaca.modelo.id : null;
+
+    var marcaId = producao.carcaca.modelo.marca.id != null ? producao.carcaca.modelo.marca.id : null;
+
+    var medidaId = producao.carcaca.medida != null ? producao.carcaca.medida.id : null;
+
     var paisId = producao.carcaca.pais != null ? producao.carcaca.pais.id : null;
 
+    var numeroEtiqueta = producao.carcaca.numeroEtiqueta != null ? producao.carcaca.numeroEtiqueta : null;
+
     if (jwt != null) {
+
       var url = Uri.parse(SERVER_IP +
           endpoint +
-          "/pesquisa?medidaId=${medidaId}&marcaId=${marcaId}&modeloId=${modeloId}&paisId=${paisId}");
-
-
+          "/pesquisa?medidaId=${medidaId}&marcaId=${marcaId}&modeloId=${modeloId}&paisId=${paisId}&numeroEtiqueta=${numeroEtiqueta}");
 
       http.Response response = await http.get(
         url,
