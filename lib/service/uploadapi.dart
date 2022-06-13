@@ -27,7 +27,7 @@ class UploadApi {
           await http.MultipartFile.fromPath('files', i.path));
     }
     try {
-      var response = await request.send().timeout(const Duration(seconds: 30));
+      var response = await request.send().timeout(const Duration(seconds: 60));
       //for getting and decoding the response into json format
       var responsed = await http.Response.fromStream(response);
 
