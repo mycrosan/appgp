@@ -32,24 +32,33 @@ class AuthApi {
       } else {
         // print('falha no login');
         // throw Exception('Falha ao tentar logar 1');
-        return responseMessage.fromJson({"status": false, "timestamp": "",
+        return responseMessage.fromJson({
+          "status": "false",
+          "timestamp": "",
           "message": "Falha no login!",
           "error": response.body,
           "debugMessage": "debug",
-          "subErrors": null});
+          "subErrors": null
+        });
       }
     } on TimeoutException catch (e) {
-      return responseMessage.fromJson({"status": false, "timestamp": "",
+      return responseMessage.fromJson({
+        "status": "false",
+        "timestamp": "",
         "message": "O servidor não respondeu, tente novamente!",
         "error": e.message,
         "debugMessage": "debug",
-        "subErrors": null});
+        "subErrors": null
+      });
     } on SocketException catch (e) {
-      return responseMessage.fromJson({"status": false, "timestamp": "",
+      return responseMessage.fromJson({
+        "status": "false",
+        "timestamp": "",
         "message": "Falha na comunicação com o servidor",
         "error": e.message,
         "debugMessage": "debug",
-        "subErrors": null});
+        "subErrors": null
+      });
 
       throw Exception('Falha na comunicação com o servidor!' + e.message);
     }

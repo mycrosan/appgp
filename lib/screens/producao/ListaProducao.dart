@@ -150,6 +150,7 @@ class ListaProducaoState extends State<ListaProducao> {
                       _isList.value = true;
                       listCards.exibirListaConsulta(context, producaoList);
                       _isList.notifyListeners();
+                      listCards.notifyListeners();
                       loading.notifyListeners();
                     } else {
                       _isList.value = true;
