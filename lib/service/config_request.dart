@@ -6,6 +6,7 @@ import 'package:http/http.dart';
 
 import '../main.dart';
 import '../models/producao.dart';
+import '../models/regra.dart';
 import 'modeloapi.dart';
 
 class ConfigRequest {
@@ -138,6 +139,38 @@ class ConfigRequest {
       var url = Uri.parse(SERVER_IP +
           endpoint +
           "/pesquisa?medidaId=${medidaId}&marcaId=${marcaId}&modeloId=${modeloId}&paisId=${paisId}&numeroEtiqueta=${numeroEtiqueta}");
+
+      http.Response response = await http.get(
+        url,
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $jwt'
+        },
+      ).timeout(Duration(seconds: 60));
+      return response;
+    }
+  }
+
+  Future<Response> requestPesquisaRegra(
+      String endpoint, Regra regra) async {
+    var jwt = await new AuthUtil().jwtOrEmpty;
+
+    var modeloId = regra.modelo != null ? regra.modelo.id : null;
+
+    var marcaId = regra.modelo.marca != null ? regra.modelo.marca.id : null;
+
+    var medidaId = regra.medida != null ? regra.medida.id : null;
+
+    var paisId = regra.pais != null ? regra.pais.id : null;
+
+    var numeroRegra = regra.id != null ? regra.id : null;
+
+    if (jwt != null) {
+
+      var url = Uri.parse(SERVER_IP +
+          endpoint +
+          "/pesquisa?medidaId=${medidaId}&marcaId=${marcaId}&modeloId=${modeloId}&paisId=${paisId}&numeroRegra=${numeroRegra}");
 
       http.Response response = await http.get(
         url,

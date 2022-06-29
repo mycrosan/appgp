@@ -83,7 +83,7 @@ class RegraApi extends ChangeNotifier {
       throw Exception('Falha ao tentar salvar Regra');
     }
   }
-
+  //Verifica se uma regra existe de acordo com os parametros que são enviados.
   Future<Object> consultaRegra(
       matriz, medida, modelo, pais, double medidaPneuRapstado) async {
     var objData = new ConfigRequest();
@@ -117,6 +117,20 @@ class RegraApi extends ChangeNotifier {
       print('Aqui');
     } else {
       throw Exception('Falha ao tentar excluir carcaça');
+    }
+  }
+  //Pesquisa e retorna regra
+  Future<Object> pesquisaRegra(Regra regra) async {
+
+    var objData = new ConfigRequest();
+    var response = await objData.requestPesquisaRegra(ENDPOINT, regra);
+
+    if (response.statusCode == 200) {
+      final map = jsonDecode(response.body);
+      List<dynamic> body = map;
+      return body.map((regras) => Regra.fromJson(regras)).toList();
+    } else {
+      throw Exception('Falha ao carregar producões');
     }
   }
 }

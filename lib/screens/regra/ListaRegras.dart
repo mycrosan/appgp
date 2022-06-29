@@ -2,7 +2,9 @@ import 'package:GPPremium/service/regraapi.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../components/Loading.dart';
 import '../../components/OrderData.dart';
+import '../../components/snackBar.dart';
 import '../../models/marca.dart';
 import '../../models/medida.dart';
 import '../../models/modelo.dart';
@@ -32,9 +34,9 @@ class ListaRegraState extends State<ListaRegras> {
   TextEditingController textEditingControllerMarca;
   TextEditingController textEditingControllerMedida;
 
-  final DinamicListCard listCards = DinamicListCard();
+  final DinamicListRegra listRegras = DinamicListRegra();
 
-  TextEditingController textEditingControllerCarcaca;
+  TextEditingController textEditingControllerRegra;
   Regra regra;
 
   // bool loading = true;
@@ -65,9 +67,9 @@ class ListaRegraState extends State<ListaRegras> {
     textEditingControllerMarca = TextEditingController();
     textEditingControllerMedida = TextEditingController();
     regra = new Regra();
-    // producao.carcaca = new Carcaca();
-    // producao.carcaca.modelo = new Modelo();
-    // producao.carcaca.modelo.marca = new Marca();
+    regra.medida = new Medida();
+    regra.modelo = new Modelo();
+    regra.modelo.marca = new Marca();
 
     ModeloApi().getAll().then((List<Modelo> value) {
       setState(() {
@@ -97,19 +99,20 @@ class ListaRegraState extends State<ListaRegras> {
       });
     });
 
-    // ProducaoApi().getAll().then((List<Regra> value) {
-    //   setState(() {
-    //     regraList = value;
-    //     loading.value = false;
-    //   });
-    // });
+    RegraApi().getAll().then((List<Regra> value) {
+      setState(() {
+        regraList = value;
+        loading.value = false;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     var regraAPI = new RegraApi();
 
-    final RegraApi producao = Provider.of(context);
+    final RegraApi regras = Provider.of(context);
+    var _isList = ValueNotifier<bool>(true);
 
     return Scaffold(
       appBar: AppBar(
@@ -122,7 +125,7 @@ class ListaRegraState extends State<ListaRegras> {
                 color: Colors.white,
                 height: 30.0,
                 child: TextFormField(
-                  controller: textEditingControllerCarcaca,
+                  controller: textEditingControllerRegra,
                   decoration: InputDecoration(
                     hintText: 'Nº Regra',
                     contentPadding: EdgeInsets.all(10.0),
@@ -130,19 +133,19 @@ class ListaRegraState extends State<ListaRegras> {
                   ),
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                   onChanged: (String newValue) async {
-                    if (newValue.length >= 6) {
+                    if (newValue.length >= 1) {
                       loading.value = true;
-                      //   producao.carcaca.numeroEtiqueta = newValue;
-                      //   producaoList = await listCards.pesquisa(producao);
-                      //   loading.value = false;
-                      //   _isList.value = true;
-                      //   listCards.exibirListaConsulta(context, producaoList);
-                      //   _isList.notifyListeners();
-                      //   listCards.notifyListeners();
-                      //   loading.notifyListeners();
-                      // } else {
-                      //   _isList.value = true;
-                      //   _isList.notifyListeners();
+                      regra.id = int.parse(newValue);
+                      regraList = await listRegras.pesquisa(regra);
+                      loading.value = false;
+                      _isList.value = true;
+                      listRegras.exibirListaConsulta(context, regraList);
+                      _isList.notifyListeners();
+                      listRegras.notifyListeners();
+                      loading.notifyListeners();
+                    } else {
+                      _isList.value = true;
+                      _isList.notifyListeners();
                     }
                   },
                 ),
@@ -170,60 +173,59 @@ class ListaRegraState extends State<ListaRegras> {
       body: Padding(
         padding: EdgeInsets.all(8.0),
         child: Column(children: [
-        Row(children: [
-          Expanded(
-            child: DropdownButtonFormField(
+          Row(children: [
+            Expanded(
+              child: DropdownButtonFormField(
+                decoration: InputDecoration(
+                  labelText: "Modelo",
+                ),
+                validator: (value) =>
+                    value == null ? 'Não pode ser nulo' : null,
+                value: modeloSelected,
+                isExpanded: true,
+                onChanged: (Modelo modelo) {
+                  setState(() {
+                    modeloSelected = modelo;
+                    marcaSelected = modeloSelected.marca;
+                    regra.modelo.marca = marcaSelected;
+                  });
+                },
+                items: modeloList.map((Modelo modelo) {
+                  return DropdownMenuItem(
+                    value: modelo,
+                    child: Text(modelo.descricao),
+                  );
+                }).toList(),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(5),
+            ),
+            Expanded(
+                child: DropdownButtonFormField(
               decoration: InputDecoration(
-                labelText: "Modelo",
+                labelText: "Marca",
               ),
               validator: (value) => value == null ? 'Não pode ser nulo' : null,
-              value: modeloSelected,
+              value: marcaSelected,
               isExpanded: true,
-              onChanged: (Modelo modelo) {
+              onChanged: (Marca marca) {
                 setState(() {
-                  modeloSelected = modelo;
-                  // producao.carcaca.modelo = modeloSelected;
-                  marcaSelected = modeloSelected.marca;
-                  // producao.carcaca.modelo.marca = marcaSelected;
+                  marcaSelected = marca;
+                  regra.modelo.marca = marcaSelected;
                 });
               },
-              items: modeloList.map((Modelo modelo) {
+              items: marcaList.map((Marca marca) {
                 return DropdownMenuItem(
-                  value: modelo,
-                  child: Text(modelo.descricao),
+                  value: marca,
+                  child: Text(marca.descricao),
                 );
               }).toList(),
+            )),
+            Padding(
+              padding: EdgeInsets.all(5),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(5),
-          ),
-          Expanded(
-              child: DropdownButtonFormField(
-            decoration: InputDecoration(
-              labelText: "Marca",
-            ),
-            validator: (value) => value == null ? 'Não pode ser nulo' : null,
-            value: marcaSelected,
-            isExpanded: true,
-            onChanged: (Marca marca) {
-              setState(() {
-                marcaSelected = marca;
-                // producao.carcaca.modelo.marca = marcaSelected;
-              });
-            },
-            items: marcaList.map((Marca marca) {
-              return DropdownMenuItem(
-                value: marca,
-                child: Text(marca.descricao),
-              );
-            }).toList(),
-          )),
-          Padding(
-            padding: EdgeInsets.all(5),
-          ),
           ]),
-          
           Row(children: [
             Expanded(
                 child: DropdownButtonFormField(
@@ -236,7 +238,7 @@ class ListaRegraState extends State<ListaRegras> {
               onChanged: (Medida medida) {
                 setState(() {
                   medidaSelected = medida;
-                  // producao.carcaca.medida = medidaSelected;
+                  regra.medida = medidaSelected;
                 });
               },
               items: medidaList.map((Medida medida) {
@@ -257,7 +259,7 @@ class ListaRegraState extends State<ListaRegras> {
               onChanged: (Pais pais) {
                 setState(() {
                   paisSelected = pais;
-                  // producao.carcaca.pais = paisSelected;
+                  regra.pais = paisSelected;
                 });
               },
               items: paisList.map((Pais pais) {
@@ -268,239 +270,209 @@ class ListaRegraState extends State<ListaRegras> {
               }).toList(),
             )),
           ]),
-
           Padding(
             padding: EdgeInsets.all(5),
           ),
           Container(
               child: ElevatedButton(
-                child: Text("Pesquisar"),
-                onPressed: () async {
-                  if (true) {
-                    loading.value = true;
-                    // producaoList = await listCards.pesquisa(producao);
-                    // loading.value = false;
-                    // _isList.value = true;
-                    // _isList.notifyListeners();
-                  }
-                },
-              )),
-
+            child: Text("Pesquisar"),
+            onPressed: () async {
+              if (true) {
+                loading.value = true;
+                regraList = await listRegras.pesquisa(regra);
+                loading.value = false;
+                _isList.value = true;
+                _isList.notifyListeners();
+              }
+            },
+          )),
           Container(
-            height: 500.0,
-            padding: EdgeInsets.all(10),
-            child: FutureBuilder(
-                future: regraAPI.getAll(),
-                builder: (context, AsyncSnapshot<List> snapshot) {
-                  if (snapshot.hasData) {
-                    return ListView.builder(
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (context, index) {
-                          return Card(
-                            child: ListTile(
-                              title: Text(
-                                'Matriz: ' +
-                                    snapshot.data[index].matriz.descricao,
-                                style: TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.bold),
-                              ),
-                              subtitle: Wrap(
-                                children: [
-                                  Text.rich(TextSpan(
-                                      text: 'Medida: ',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                      children: <InlineSpan>[
-                                        TextSpan(
-                                          text: snapshot
-                                              .data[index].medida.descricao,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.normal),
-                                        )
-                                      ])),
-                                  Padding(
-                                    padding: EdgeInsets.all(3),
-                                  ),
-                                  Text.rich(TextSpan(
-                                      text: 'Marca: ',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                      children: <InlineSpan>[
-                                        TextSpan(
-                                          text: snapshot.data[index].modelo
-                                              .marca.descricao,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.normal),
-                                        )
-                                      ])),
-                                  Padding(
-                                    padding: EdgeInsets.all(3),
-                                  ),
-                                  Text.rich(TextSpan(
-                                      text: 'Modelo: ',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                      children: <InlineSpan>[
-                                        TextSpan(
-                                          text: snapshot
-                                              .data[index].modelo.descricao,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.normal),
-                                        )
-                                      ])),
-                                  Padding(
-                                    padding: EdgeInsets.all(3),
-                                  ),
-                                  Text.rich(TextSpan(
-                                      text: 'País: ',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                      children: <InlineSpan>[
-                                        TextSpan(
-                                          text: snapshot
-                                              .data[index].pais.descricao,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.normal),
-                                        )
-                                      ])),
-                                  Padding(
-                                    padding: EdgeInsets.all(3),
-                                  ),
-                                  Text.rich(TextSpan(
-                                      text: 'Camelback: ',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                      children: <InlineSpan>[
-                                        TextSpan(
-                                          text: snapshot
-                                              .data[index].camelback.descricao,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.normal),
-                                        )
-                                      ])),
-                                  Text.rich(TextSpan(
-                                      text: 'COD: ',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                      children: <InlineSpan>[
-                                        TextSpan(
-                                          text: snapshot.data[index].id
-                                              .toString(),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.normal),
-                                        )
-                                      ])),
-                                  Padding(
-                                    padding: EdgeInsets.all(3),
-                                  ),
-                                  Text.rich(TextSpan(
-                                      text: 'Min: ',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                      children: <InlineSpan>[
-                                        TextSpan(
-                                          text: snapshot.data[index].tamanhoMin
-                                              .toStringAsFixed(3),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.normal),
-                                        )
-                                      ])),
-                                  Padding(
-                                    padding: EdgeInsets.all(3),
-                                  ),
-                                  Text.rich(TextSpan(
-                                      text: 'Máx: ',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                      children: <InlineSpan>[
-                                        TextSpan(
-                                          text: snapshot.data[index].tamanhoMax
-                                              .toStringAsFixed(3),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.normal),
-                                        )
-                                      ])),
-                                ],
-                              ),
-                              // subtitle: Text('COD: ' +
-                              //     snapshot.data[index].id.toString() +
-                              //     ' Min: ' +
-                              //     snapshot.data[index].tamanhoMin.toString() +
-                              //     ' Min: ' +
-                              //     snapshot.data[index].tamanhoMax.toString() +
-                              //     '\n' +
-                              //     'Marca: ' +
-                              //     snapshot.data[index].modelo.marca.descricao +
-                              //     '\n' +
-                              //     'Modelo: ' +
-                              //     snapshot.data[index].modelo.descricao +
-                              //     '\n' +
-                              //     'Pais: ' +
-                              //     snapshot.data[index].pais.descricao + ' | Camelback: ' +
-                              //     snapshot.data[index].camelback.descricao
-                              // ),
-                              trailing: Container(
-                                width: 100,
-                                child: Row(
-                                  children: <Widget>[
-                                    IconButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      EditarRegraPage(
-                                                        regra: snapshot
-                                                            .data[index],
-                                                      )));
-                                        },
-                                        icon: Icon(Icons.edit,
-                                            color: Colors.orange)),
-
-                                    IconButton(
-                                        onPressed: () async {
-                                          Provider.of<RegraApi>(context,
-                                                  listen: false)
-                                              .delete(snapshot.data[index].id);
-                                        },
-                                        icon: Icon(
-                                          Icons.delete,
-                                          color: Colors.red,
-                                        )),
-                                    // IconButton(onPressed: (){}, icon: Icon(Icons.arrow_right, color: Colors.black,))
-                                  ],
-                                ),
-                              ),
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => DetalhesRegraPage(
-                                              id: snapshot.data[index].id,
-                                            )));
-                              },
-                            ),
-                          );
-                        });
-                  } else {
-                    return CircularProgressIndicator();
-                  }
-                }),
+            child: Expanded(
+              child: ValueListenableBuilder(
+                  valueListenable: _isList,
+                  builder: (_, __, ___) {
+                    return Visibility(
+                      child: listRegras.exibirListaConsulta(
+                                  context, regraList) !=
+                              null
+                          ? listRegras.exibirListaConsulta(context, regraList)
+                          : loading.value
+                              ? cicleLoading(context)
+                              : regraList.length == 0
+                                  ? Text('Nenhuma produção encontrada')
+                                  : '',
+                    );
+                  }),
+            ),
           )
         ]),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     Navigator.push(
-      //         context,
-      //         MaterialPageRoute(
-      //           builder: (context) => AdicionarRegraPage(), //AddCarcacaPage(),
-      //         ));
-      //   },
-      //   child: Icon(
-      //     Icons.add,
-      //   ),
-      // ),
     );
+  }
+}
+
+class DinamicListRegra extends ChangeNotifier {
+  exibirListaConsulta(context, Servico) {
+    if (Servico.length > 0) {
+      return Container(
+        height: 400.0,
+        child: ListView.builder(
+            itemCount: Servico.length,
+            itemBuilder: (context, index) {
+              if (Servico.length > 0) {
+                return Card(
+                  child: ListTile(
+                    title: Text(
+                      'Matriz: ' + Servico[index].matriz.descricao,
+                      style:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Wrap(
+                      children: [
+                        Text.rich(TextSpan(
+                            text: 'Medida: ',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            children: <InlineSpan>[
+                              TextSpan(
+                                text: Servico[index].medida.descricao,
+                                style: TextStyle(fontWeight: FontWeight.normal),
+                              )
+                            ])),
+                        Padding(
+                          padding: EdgeInsets.all(3),
+                        ),
+                        Text.rich(TextSpan(
+                            text: 'Marca: ',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            children: <InlineSpan>[
+                              TextSpan(
+                                text:
+                                    Servico[index].modelo.marca.descricao,
+                                style: TextStyle(fontWeight: FontWeight.normal),
+                              )
+                            ])),
+                        Padding(
+                          padding: EdgeInsets.all(3),
+                        ),
+                        Text.rich(TextSpan(
+                            text: 'Modelo: ',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            children: <InlineSpan>[
+                              TextSpan(
+                                text: Servico[index].modelo.descricao,
+                                style: TextStyle(fontWeight: FontWeight.normal),
+                              )
+                            ])),
+                        Padding(
+                          padding: EdgeInsets.all(3),
+                        ),
+                        Text.rich(TextSpan(
+                            text: 'País: ',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            children: <InlineSpan>[
+                              TextSpan(
+                                text: Servico[index].pais.descricao,
+                                style: TextStyle(fontWeight: FontWeight.normal),
+                              )
+                            ])),
+                        Padding(
+                          padding: EdgeInsets.all(3),
+                        ),
+                        Text.rich(TextSpan(
+                            text: 'Camelback: ',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            children: <InlineSpan>[
+                              TextSpan(
+                                text: Servico[index].camelback.descricao,
+                                style: TextStyle(fontWeight: FontWeight.normal),
+                              )
+                            ])),
+                        Text.rich(TextSpan(
+                            text: 'COD: ',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            children: <InlineSpan>[
+                              TextSpan(
+                                text: Servico[index].id.toString(),
+                                style: TextStyle(fontWeight: FontWeight.normal),
+                              )
+                            ])),
+                        Padding(
+                          padding: EdgeInsets.all(3),
+                        ),
+                        Text.rich(TextSpan(
+                            text: 'Min: ',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            children: <InlineSpan>[
+                              TextSpan(
+                                text: Servico[index].tamanhoMin
+                                    .toStringAsFixed(3),
+                                style: TextStyle(fontWeight: FontWeight.normal),
+                              )
+                            ])),
+                        Padding(
+                          padding: EdgeInsets.all(3),
+                        ),
+                        Text.rich(TextSpan(
+                            text: 'Máx: ',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            children: <InlineSpan>[
+                              TextSpan(
+                                text: Servico[index].tamanhoMax
+                                    .toStringAsFixed(3),
+                                style: TextStyle(fontWeight: FontWeight.normal),
+                              )
+                            ])),
+                      ],
+                    ),
+                    trailing: Container(
+                      width: 100,
+                      child: Row(
+                        children: <Widget>[
+                          IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => EditarRegraPage(
+                                              regra: Servico[index],
+                                            )));
+                              },
+                              icon: Icon(Icons.edit, color: Colors.orange)),
+
+                          IconButton(
+                              onPressed: () async {
+                                Provider.of<RegraApi>(context, listen: false)
+                                    .delete(Servico[index].id);
+                              },
+                              icon: Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                              )),
+                          // IconButton(onPressed: (){}, icon: Icon(Icons.arrow_right, color: Colors.black,))
+                        ],
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DetalhesRegraPage(
+                                    id: Servico[index].id,
+                                  )));
+                    },
+                  ),
+                );
+              } else {
+                return cicleLoading(context);
+              }
+            }),
+      );
+    } else {
+      return null;
+    }
+  }
+
+  pesquisa(regra) {
+    return RegraApi().pesquisaRegra(regra);
   }
 }
