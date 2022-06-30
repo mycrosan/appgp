@@ -186,6 +186,7 @@ class ListaRegraState extends State<ListaRegras> {
                 onChanged: (Modelo modelo) {
                   setState(() {
                     modeloSelected = modelo;
+                    regra.modelo = modeloSelected;
                     marcaSelected = modeloSelected.marca;
                     regra.modelo.marca = marcaSelected;
                   });

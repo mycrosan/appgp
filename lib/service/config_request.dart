@@ -170,7 +170,7 @@ class ConfigRequest {
 
       var url = Uri.parse(SERVER_IP +
           endpoint +
-          "/pesquisa?medidaId=${medidaId}&marcaId=${marcaId}&modeloId=${modeloId}&paisId=${paisId}&numeroRegra=${numeroRegra}");
+          "/consulta?medidaId=${medidaId}&marcaId=${marcaId}&modeloId=${modeloId}&paisId=${paisId}&numeroRegra=${numeroRegra}");
 
       http.Response response = await http.get(
         url,
