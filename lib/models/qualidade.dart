@@ -1,38 +1,49 @@
+import 'package:GPPremium/models/producao.dart';
+
 import 'carcaca.dart';
+import 'classificacao.dart';
+import 'observacao.dart';
 import 'regra.dart';
 
 class Qualidade {
   int id;
-  Carcaca carcaca;
-  double medidaPneuRaspado;
-  String dados;
-  Regra regra;
+  Producao producao;
+  String observacao;
+  TipoClassificacao tipoClassificacao;
   String fotos;
+  TipoObservacao tipoObservacao;
 
   Qualidade(
-      {this.id, this.carcaca, this.medidaPneuRaspado, this.dados, this.regra, this.fotos});
+      {this.id, this.producao, this.observacao, this.tipoClassificacao, this.fotos, this.tipoObservacao});
 
   Qualidade.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    carcaca = json['carcaca'] != null ? new Carcaca.fromJson(json['carcaca']) : null;
-    medidaPneuRaspado = json['medida_pneu_raspado'];
-    dados = json['dados'];
-    regra = json['regra'] != null ? new Regra.fromJson(json['regra']) : null;
+    producao = json['producao'] != null ? new Producao.fromJson(json['producao']) : null;
+    observacao = json['observacao'];
+    tipoClassificacao = json['dados'];
     fotos = json["fotos"];
+    tipoObservacao = json['tipoObservacao'] != null ? new TipoObservacao.fromJson(json['tipoObservacao']) : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+
     data['id'] = this.id;
-    if (this.carcaca != null) {
-      data['carcaca'] = this.carcaca.toJson();
+
+    if (this.producao != null) {
+      data['producao'] = this.producao.toJson();
     }
-    data['medida_pneu_raspado'] = this.medidaPneuRaspado;
-    data['dados'] = this.dados;
-    if (this.regra != null) {
-      data['regra'] = this.regra.toJson();
+    data['observacao'] = this.observacao;
+
+    if (this.tipoClassificacao != null) {
+      data['tipoClassificacao'] = this.tipoClassificacao.toJson();
     }
     data['fotos'] = this.fotos;
+
+    if (this.tipoObservacao != null) {
+      data['tipoObservacao'] = this.tipoObservacao.toJson();
+    }
+
     return data;
   }
 }

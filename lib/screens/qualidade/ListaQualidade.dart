@@ -1,108 +1,429 @@
-// import 'package:GPPremium/screens/carcaca/editdatawidget.dart';
-// import 'package:GPPremium/service/producaoapi.dart';
-// import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
-//
-// import 'adicionar.dart';
-// import 'detailwidget.dart';
-// import 'editdatawidget.dart';
-//
-// class ListaProducao extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     var producaoAPI = new ProducaoApi();
-//     final ProducaoApi producao = Provider.of(context);
-//
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Produção'),
-//         actions: [
-//           IconButton(
-//             icon: Icon(
-//               Icons.add,
-//               color: Colors.white,
-//             ),
-//             onPressed: () {
-//               Navigator.push(
-//                   context,
-//                   MaterialPageRoute(
-//                     builder: (context) => AdicionarProducaoPage(),
-//                   ));
-//               // do something
-//             },
-//           ),
-//         ],
-//       ),
-//       body: Padding(
-//         padding: EdgeInsets.all(10),
-//         child: FutureBuilder(
-//             future: producaoAPI.getAll(),
-//             builder: (context, AsyncSnapshot<List> snapshot) {
-//               if (snapshot.hasData) {
-//                 return ListView.builder(
-//                     itemCount: snapshot.data.length,
-//                     itemBuilder: (context, index) {
-//                       return Card(
-//                         child: ListTile(
-//                           title: Text('Número Etiqueta: ' +
-//                               snapshot.data[index].carcaca.numeroEtiqueta),
-//                           subtitle: Text('Etiqueta: ' +
-//                               snapshot.data[index].medidaPneuRaspado.toString() +
-//                               ' Regra: ' +
-//                               snapshot.data[index].regra.id.toString()
-//                           ),
-//                           trailing: Container(
-//                             width: 100,
-//                             child: Row(
-//                               children: <Widget>[
-//                                 IconButton(onPressed: (){
-//                                   Navigator.push(
-//                                       context,
-//                                       MaterialPageRoute(
-//                                           builder: (context) => EditarProducaoPage(
-//                                             producao: snapshot.data[index],
-//                                           )));
-//                                 }, icon: Icon(Icons.edit, color: Colors.orange)),
-//
-//                                 IconButton(onPressed: () async {
-//
-//                                   Provider.of<ProducaoApi>(context, listen: false).delete(snapshot.data[index].id);
-//
-//                                 }, icon: Icon(Icons.delete, color: Colors.red,)),
-//                                 // IconButton(onPressed: (){}, icon: Icon(Icons.arrow_right, color: Colors.black,))
-//                               ],
-//                             ),
-//                           ),
-//
-//                           onTap: () {
-//                             Navigator.push(
-//                                 context,
-//                                 MaterialPageRoute(
-//                                     builder: (context) => DetalhesProducaoPage(
-//                                       producao: snapshot.data[index],
-//                                     )));
-//                           },
-//                         ),
-//                       );
-//                     });
-//               } else {
-//                 return CircularProgressIndicator();
-//               }
-//             }),
-//       ),
-//       // floatingActionButton: FloatingActionButton(
-//       //   onPressed: () {
-//       //     Navigator.push(
-//       //         context,
-//       //         MaterialPageRoute(
-//       //           builder: (context) =>
-//       //               AdicionarProducaoPage(), //AddCarcacaPage(),
-//       //         ));
-//       //   },
-//       //   child: Icon(
-//       //     Icons.add,
-//       //   ),
-//       // ),
-//     );
-//   }
-// }
+import 'package:GPPremium/components/Loading.dart';
+import 'package:GPPremium/components/snackBar.dart';
+import 'package:GPPremium/models/classificacao.dart';
+import 'package:GPPremium/models/observacao.dart';
+import 'package:GPPremium/models/producao.dart';
+// import 'package:GPPremium/service/qualidadeapi.dart';
+import 'package:extended_masked_text/extended_masked_text.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../components/OrderData.dart';
+import '../../models/marca.dart';
+import '../../models/medida.dart';
+import '../../models/modelo.dart';
+import '../../models/pais.dart';
+import '../../models/qualidade.dart';
+import '../../service/Qualidadeapi.dart';
+import '../../service/marcaapi.dart';
+import '../../service/medidaapi.dart';
+import '../../service/modeloapi.dart';
+import '../../service/paisapi.dart';
+
+
+class ListaQualidade extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return ListaQualidadeState();
+  }
+}
+
+class ListaQualidadeState extends State<ListaQualidade> {
+  final _formkey = GlobalKey<FormState>();
+
+  TextEditingController textEditingControllerModelo;
+  TextEditingController textEditingControllerMarca;
+  TextEditingController textEditingControllerMedida;
+
+  // final DinamicListCard listCards = DinamicListCard();
+
+  TextEditingController textEditingControllerCarcaca;
+  Qualidade qualidade;
+
+  // bool loading = true;
+  var loading = ValueNotifier<bool>(true);
+
+  //Modelo
+  List<Modelo> modeloList = [];
+  Modelo modeloSelected;
+
+  //Medida
+  List<Medida> medidaList = [];
+  Medida medidaSelected;
+
+  //Pais
+  List<Pais> paisList = [];
+  Pais paisSelected;
+
+  //Marca
+  List<Marca> marcaList = [];
+  Marca marcaSelected;
+
+  List<Qualidade> qualidadeList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    textEditingControllerModelo = TextEditingController();
+    textEditingControllerMarca = TextEditingController();
+    textEditingControllerMedida = TextEditingController();
+    qualidade = new Qualidade();
+    qualidade.producao = new Producao();
+    qualidade.tipoClassificacao = new TipoClassificacao();
+    qualidade.tipoObservacao = new TipoObservacao();
+
+    ModeloApi().getAll().then((List<Modelo> value) {
+      setState(() {
+        modeloList = value;
+        alfabetSortList(modeloList);
+      });
+    });
+
+    MedidaApi().getAll().then((List<Medida> value) {
+      setState(() {
+        medidaList = value;
+        alfabetSortList(medidaList);
+      });
+    });
+
+    PaisApi().getAll().then((List<Pais> value) {
+      setState(() {
+        paisList = value;
+        alfabetSortList(paisList);
+      });
+    });
+
+    MarcaApi().getAll().then((List<Marca> value) {
+      setState(() {
+        marcaList = value;
+        alfabetSortList(marcaList);
+      });
+    });
+
+    QualidadeApi().getAll().then((List<Qualidade> value) {
+      setState(() {
+        qualidadeList = value;
+        loading.value = false;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // var qualidadeAPI = new QualidadeApi();
+    // final QualidadeApi qualidade = Provider.of(context);
+
+    final DinamicListCard listCards = DinamicListCard();
+
+    TextEditingController textEditingControllerCarcaca;
+    textEditingControllerCarcaca = MaskedTextController(mask: '000000');
+
+    List listaQualidade = [];
+    var _isList = ValueNotifier<bool>(true);
+
+    // final QualidadeApi producoes = Provider.of(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Container(
+          width: double.infinity,
+          child: Row(children: [
+            Expanded(child: Text("Classificar")),
+            Expanded(
+              child: Container(
+                color: Colors.white,
+                height: 30.0,
+                child: TextFormField(
+                  controller: textEditingControllerCarcaca,
+                  decoration: InputDecoration(
+                    hintText: 'Nº Etiqueta',
+                    contentPadding: EdgeInsets.all(10.0),
+                    // prefixIcon: Icon(Icons.search),
+                  ),
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  onChanged: (String newValue) async {
+                    if (newValue.length >= 6) {
+                      // loading.value = true;
+                      // qualidade.carcaca.numeroEtiqueta = newValue;
+                      // qualidadeList = await listCards.pesquisa(qualidade);
+                      // loading.value = false;
+                      // _isList.value = true;
+                      // listCards.exibirListaConsulta(context, qualidadeList);
+                      // _isList.notifyListeners();
+                      // listCards.notifyListeners();
+                      loading.notifyListeners();
+                    } else {
+                      _isList.value = true;
+                      _isList.notifyListeners();
+                    }
+                  },
+                ),
+              ),
+            )
+          ]),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              // Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder: (context) => AdicionarQualidadePage(),
+              //     ));
+              // do something
+            },
+          ),
+        ],
+      ),
+      body: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Form(
+            key: _formkey,
+            child: Column(
+              children: [
+      //           DropdownButtonFormField(
+      //             decoration: InputDecoration(
+      //               labelText: "Modelo",
+      //             ),
+      //             validator: (value) =>
+      //             value == null ? 'Não pode ser nulo' : null,
+      //             value: modeloSelected,
+      //             isExpanded: true,
+      //             onChanged: (Modelo modelo) {
+      //               // setState(() {
+      //               //   modeloSelected = modelo;
+      //               //   qualidade.carcaca.modelo = modeloSelected;
+      //               //   marcaSelected = modeloSelected.marca;
+      //               //   qualidade.carcaca.modelo.marca = marcaSelected;
+      //               // });
+      //             },
+      //             items: modeloList.map((Modelo modelo) {
+      //               return DropdownMenuItem(
+      //                 value: modelo,
+      //                 child: Text(modelo.descricao),
+      //               );
+      //             }).toList(),
+      //           ),
+      //           Padding(
+      //             padding: EdgeInsets.all(5),
+      //           ),
+      //           Row(children: [
+      //             Expanded(
+      //                 child: DropdownButtonFormField(
+      //                   decoration: InputDecoration(
+      //                     labelText: "Medida",
+      //                   ),
+      //                   validator: (value) =>
+      //                   value == null ? 'Não pode ser nulo' : null,
+      //                   value: medidaSelected,
+      //                   isExpanded: true,
+      //                   onChanged: (Medida medida) {
+      //                     // setState(() {
+      //                     //   medidaSelected = medida;
+      //                     //   qualidade.carcaca.medida = medidaSelected;
+      //                     // });
+      //                   },
+      //                   items: medidaList.map((Medida medida) {
+      //                     return DropdownMenuItem(
+      //                       value: medida,
+      //                       child: Text(medida.descricao),
+      //                     );
+      //                   }).toList(),
+      //                 )),
+      //             Expanded(
+      //                 child: DropdownButtonFormField(
+      //                   decoration: InputDecoration(
+      //                     labelText: "País",
+      //                   ),
+      //                   validator: (value) =>
+      //                   value == null ? 'Não pode ser nulo' : null,
+      //                   value: paisSelected,
+      //                   isExpanded: true,
+      //                   onChanged: (Pais pais) {
+      //                     // setState(() {
+      //                     //   paisSelected = pais;
+      //                     //   qualidade.carcaca.pais = paisSelected;
+      //                     // });
+      //                   },
+      //                   items: paisList.map((Pais pais) {
+      //                     return DropdownMenuItem(
+      //                       value: pais,
+      //                       child: Text(pais.descricao),
+      //                     );
+      //                   }).toList(),
+      //                 )),
+      //             Expanded(
+      //                 child: DropdownButtonFormField(
+      //                   decoration: InputDecoration(
+      //                     labelText: "Marca",
+      //                   ),
+      //                   validator: (value) =>
+      //                   value == null ? 'Não pode ser nulo' : null,
+      //                   value: marcaSelected,
+      //                   isExpanded: true,
+      //                   onChanged: (Marca marca) {
+      //                     // setState(() {
+      //                     //   marcaSelected = marca;
+      //                     //   qualidade.carcaca.modelo.marca = marcaSelected;
+      //                     // });
+      //                   },
+      //                   items: marcaList.map((Marca marca) {
+      //                     return DropdownMenuItem(
+      //                       value: marca,
+      //                       child: Text(marca.descricao),
+      //                     );
+      //                   }).toList(),
+      //                 )),
+      //           ]),
+      //           Padding(
+      //             padding: EdgeInsets.all(5),
+      //           ),
+      //           Container(
+      //               child: ElevatedButton(
+      //                 child: Text("Pesquisar"),
+      //                 onPressed: () async {
+      //                   if (true) {
+      //                     // loading.value = true;
+      //                     // qualidadeList = await listCards.pesquisa(qualidade);
+      //                     // loading.value = false;
+      //                     // _isList.value = true;
+      //                     // _isList.notifyListeners();
+      //                   }
+      //                 },
+      //               )),
+                Container(
+                  child: Expanded(
+                    child: ValueListenableBuilder(
+                        valueListenable: _isList,
+                        builder: (_, __, ___) {
+                          return Visibility(
+                            child: listCards.exibirListaConsulta(
+                                context, qualidadeList) !=
+                                null
+                                ? listCards.exibirListaConsulta(
+                                context, qualidadeList)
+                                : loading.value
+                                ? cicleLoading(context)
+                                : qualidadeList.length == 0
+                                ? Text('Nenhuma produção encontrada')
+                                : '',
+                          );
+                        }),
+                  ),
+                )
+              ],
+            ),
+          )),
+    );
+  }
+}
+
+class DinamicListCard extends ChangeNotifier {
+  exibirListaConsulta(context, Servico) {
+    if (Servico.length > 0) {
+      return Container(
+        height: 400.0,
+        child: ListView.builder(
+            itemCount: Servico.length,
+            itemBuilder: (context, index) {
+              if (Servico.length > 0) {
+                return Card(
+                  child: ListTile(
+                    title: Text(
+                        'Etiqueta: ' + Servico[index].producao.carcaca.numeroEtiqueta),
+                    subtitle: Text('Med. Pneu Rasp.: ' +
+                        Servico[index].producao.medidaPneuRaspado.toString() +
+                        ' Regra: ' +
+                        Servico[index].producao.regra.id.toString()),
+                    trailing: Container(
+                      width: 100,
+                      child: Row(
+                        children: <Widget>[
+                          IconButton(
+                              onPressed: () {
+                                // Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (context) =>
+                                //             EditarQualidadePage(
+                                //               qualidade: Servico[index],
+                                //             )));
+                              },
+                              icon: Icon(Icons.edit, color: Colors.orange)),
+                          IconButton(
+                              onPressed: () async {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text("Excluir"),
+                                      content: Text(
+                                          "Tem certeza que deseja excluir o item ${Servico[index].carcaca.numeroEtiqueta}"),
+                                      actions: [
+                                        ElevatedButton(
+                                          child: Text("Sim"),
+                                          onPressed: () async {
+                                            var response =
+                                            await Provider.of<QualidadeApi>(
+                                                context,
+                                                listen: false)
+                                                .delete(Servico[index].id)
+                                                .then((value) {
+                                              return value;
+                                            });
+                                            if (response) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                  deleteMessage(context));
+                                              Servico.removeAt(index);
+                                              Navigator.pop(context);
+                                            }
+                                          },
+                                        ),
+                                        ElevatedButton(
+                                          child: Text("Não"),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                    notifyListeners();
+                                  },
+                                );
+                              },
+                              icon: Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                              )),
+                        ],
+                      ),
+                    ),
+                    onTap: () {
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => DetalhesQualidadePage(
+                      //           qualidade: Servico[index],
+                      //         )));
+                    },
+                  ),
+                );
+              } else {
+                return cicleLoading(context);
+              }
+            }),
+      );
+    } else {
+      return null;
+    }
+  }
+
+  pesquisa(qualidade) {
+    // return QualidadeApi().consultaQualidade(qualidade);
+  }
+}

@@ -35,7 +35,7 @@ class ListaProducaoState extends State<ListaProducao> {
   TextEditingController textEditingControllerMarca;
   TextEditingController textEditingControllerMedida;
 
-  final DinamicListCard listCards = DinamicListCard();
+  // final DinamicListCard listCards = DinamicListCard();
 
   TextEditingController textEditingControllerCarcaca;
   Producao producao;

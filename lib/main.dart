@@ -11,6 +11,7 @@ import 'package:GPPremium/screens/medida/ListaMedida.dart';
 import 'package:GPPremium/screens/modelo/ListaModelo.dart';
 import 'package:GPPremium/screens/pais/ListaPais.dart';
 import 'package:GPPremium/screens/producao/ListaProducao.dart';
+import 'package:GPPremium/screens/qualidade/ListaQualidade.dart';
 import 'package:GPPremium/screens/regra/ListaRegras.dart';
 import 'package:GPPremium/service/antiquebraapi.dart';
 import 'package:GPPremium/service/camelbackapi.dart';
@@ -40,7 +41,7 @@ void main() {
   if(isProduction){
     SERVER_IP = 'http://192.168.0.220:8080/gp/api/';
   }else{
-    SERVER_IP = 'http://192.168.0.220:8080/gp/api/';
+    SERVER_IP = 'http://192.168.0.107:8080/api/';
   }
   print("Produção?${isProduction}");
   runApp(GpPremiumApp());
@@ -80,6 +81,7 @@ class GpPremiumApp extends StatelessWidget {
           '/producao': (context) => ListaProducao(),
           '/pais': (context) => ListaPais(),
           '/home': (_) => Home(),
+          '/qualidade': (_) => ListaQualidade(),
           '/ajustes': (_) => Ajustes(),
         },
         debugShowCheckedModeBanner: false,
