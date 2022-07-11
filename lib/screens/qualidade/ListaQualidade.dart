@@ -3,22 +3,16 @@ import 'package:GPPremium/components/snackBar.dart';
 import 'package:GPPremium/models/classificacao.dart';
 import 'package:GPPremium/models/observacao.dart';
 import 'package:GPPremium/models/producao.dart';
-// import 'package:GPPremium/service/qualidadeapi.dart';
+import 'package:GPPremium/service/tipo_classificacaoapi.dart';
+import 'package:GPPremium/service/tipo_observacacaoapi.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/OrderData.dart';
-import '../../models/marca.dart';
-import '../../models/medida.dart';
-import '../../models/modelo.dart';
-import '../../models/pais.dart';
 import '../../models/qualidade.dart';
 import '../../service/Qualidadeapi.dart';
-import '../../service/marcaapi.dart';
-import '../../service/medidaapi.dart';
-import '../../service/modeloapi.dart';
-import '../../service/paisapi.dart';
+import 'adicionar.dart';
 
 
 class ListaQualidade extends StatefulWidget {
@@ -43,21 +37,13 @@ class ListaQualidadeState extends State<ListaQualidade> {
   // bool loading = true;
   var loading = ValueNotifier<bool>(true);
 
-  //Modelo
-  List<Modelo> modeloList = [];
-  Modelo modeloSelected;
+  //Classificacão
+  List<TipoClassificacao> classificacaoList = [];
+  TipoClassificacao classificacaoSelected;
 
-  //Medida
-  List<Medida> medidaList = [];
-  Medida medidaSelected;
-
-  //Pais
-  List<Pais> paisList = [];
-  Pais paisSelected;
-
-  //Marca
-  List<Marca> marcaList = [];
-  Marca marcaSelected;
+  //Observacação
+  List<TipoObservacao> observacaoList = [];
+  TipoObservacao observavaoSelected;
 
   List<Qualidade> qualidadeList = [];
 
@@ -72,31 +58,17 @@ class ListaQualidadeState extends State<ListaQualidade> {
     qualidade.tipoClassificacao = new TipoClassificacao();
     qualidade.tipoObservacao = new TipoObservacao();
 
-    ModeloApi().getAll().then((List<Modelo> value) {
+    TipoClassificacaoApi().getAll().then((List<TipoClassificacao> value) {
       setState(() {
-        modeloList = value;
-        alfabetSortList(modeloList);
+        classificacaoList = value;
+        alfabetSortList(classificacaoList);
       });
     });
 
-    MedidaApi().getAll().then((List<Medida> value) {
+    TipoObservacacaoApi().getAll().then((List<TipoObservacao> value) {
       setState(() {
-        medidaList = value;
-        alfabetSortList(medidaList);
-      });
-    });
-
-    PaisApi().getAll().then((List<Pais> value) {
-      setState(() {
-        paisList = value;
-        alfabetSortList(paisList);
-      });
-    });
-
-    MarcaApi().getAll().then((List<Marca> value) {
-      setState(() {
-        marcaList = value;
-        alfabetSortList(marcaList);
+        observacaoList = value;
+        alfabetSortList(observacaoList);
       });
     });
 
@@ -128,7 +100,7 @@ class ListaQualidadeState extends State<ListaQualidade> {
         title: Container(
           width: double.infinity,
           child: Row(children: [
-            Expanded(child: Text("Classificar")),
+            Expanded(child: Text("Qualidade")),
             Expanded(
               child: Container(
                 color: Colors.white,
@@ -169,11 +141,11 @@ class ListaQualidadeState extends State<ListaQualidade> {
               color: Colors.white,
             ),
             onPressed: () {
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //       builder: (context) => AdicionarQualidadePage(),
-              //     ));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AdicionarQualidadePage(),
+                  ));
               // do something
             },
           ),

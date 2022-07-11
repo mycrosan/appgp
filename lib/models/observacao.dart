@@ -1,30 +1,25 @@
-class TipoObservacao {
-  TipoObservacao({
-    this.id,
-    this.descricao,
-  });
+import 'classificacao.dart';
 
+class TipoObservacao {
   int id;
   String descricao;
+  TipoClassificacao tipoClassificacao;
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is TipoObservacao &&
-              runtimeType == other.runtimeType &&
-              descricao == other.descricao &&
-              id == other.id;
+  TipoObservacao({this.id, this.descricao, this.tipoClassificacao});
 
-  @override
-  int get hashCode => descricao.hashCode ^ id.hashCode;
+  TipoObservacao.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    descricao = json['descricao'];
+    tipoClassificacao = json['tipo_classificacao'] != null ? new TipoClassificacao.fromJson(json['tipo_classificacao']) : null;
+  }
 
-  factory TipoObservacao.fromJson(Map<String, dynamic> json) => TipoObservacao(
-    id: json["id"],
-    descricao: json["descricao"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "descricao": descricao,
-  };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['descricao'] = this.descricao;
+    if (this.tipoClassificacao != null) {
+      data['tipo_classificacao'] = this.tipoClassificacao.toJson();
+    }
+    return data;
+  }
 }

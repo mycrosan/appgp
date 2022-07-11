@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:GPPremium/autenticacao/authutil.dart';
+import 'package:GPPremium/models/classificacao.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
@@ -183,4 +184,25 @@ class ConfigRequest {
       return response;
     }
   }
+//Pesquisa observação por classificação
+  Future<Response> requestPesquisaObservacao(
+      String endpoint,  classificacaoId) async {
+    var jwt = await new AuthUtil().jwtOrEmpty;
+
+    if (jwt != null) {
+      var url = Uri.parse(SERVER_IP +
+          endpoint +
+          "/pesquisa?tipoClassificacaoId=${classificacaoId}");
+      http.Response response = await http.get(
+        url,
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $jwt'
+        },
+      ).timeout(Duration(seconds: 60));
+      return response;
+    }
+  }
+
 }

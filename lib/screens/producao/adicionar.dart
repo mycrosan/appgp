@@ -17,7 +17,6 @@ import 'package:GPPremium/service/producaoapi.dart';
 import 'package:GPPremium/service/regraapi.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
