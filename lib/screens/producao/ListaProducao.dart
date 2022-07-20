@@ -1,5 +1,6 @@
 import 'package:GPPremium/components/Loading.dart';
 import 'package:GPPremium/components/snackBar.dart';
+import 'package:GPPremium/screens/producao/qualificar.dart';
 import 'package:GPPremium/service/producaoapi.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ import '../../service/medidaapi.dart';
 import '../../service/modeloapi.dart';
 import '../../service/paisapi.dart';
 import '../carcaca/ListaCarcacas.dart';
+import '../qualidade/adicionar.dart';
 import 'adicionar.dart';
 import 'detailwidget.dart';
 import 'editdatawidget.dart';
@@ -340,7 +342,7 @@ class DinamicListCard extends ChangeNotifier {
                         ' Regra: ' +
                         Servico[index].regra.id.toString()),
                     trailing: Container(
-                      width: 100,
+                      width: 150,
                       child: Row(
                         children: <Widget>[
                           IconButton(
@@ -400,6 +402,17 @@ class DinamicListCard extends ChangeNotifier {
                                 Icons.delete,
                                 color: Colors.red,
                               )),
+                          IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            AdicionarQualificarPage(
+                                              producao: Servico[index],
+                                            )));
+                              },
+                              icon: Icon(Icons.check_rounded, color: Colors.green))
                         ],
                       ),
                     ),

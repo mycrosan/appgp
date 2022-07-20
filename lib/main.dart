@@ -41,7 +41,7 @@ void main() {
   if(isProduction){
     SERVER_IP = 'http://192.168.0.220:8080/gp/api/';
   }else{
-    SERVER_IP = 'http://192.168.0.107:8080/api/';
+    SERVER_IP = 'http://192.168.0.104:8080/api/';
   }
   print("Produção?${isProduction}");
   runApp(GpPremiumApp());

@@ -125,9 +125,9 @@ class ConfigRequest {
       String endpoint, Producao producao) async {
     var jwt = await new AuthUtil().jwtOrEmpty;
 
-    var modeloId = producao.carcaca.modelo.id != null ? producao.carcaca.modelo.id : null;
-
-    var marcaId = producao.carcaca.modelo.marca.id != null ? producao.carcaca.modelo.marca.id : null;
+    var modeloId = producao.carcaca.modelo != null ? producao.carcaca.modelo.id : null;
+    // if(producao.carcaca.modelo.marca != null)
+    var marcaId = producao.carcaca.modelo != null ? producao.carcaca.modelo.marca.id : null;
 
     var medidaId = producao.carcaca.medida != null ? producao.carcaca.medida.id : null;
 

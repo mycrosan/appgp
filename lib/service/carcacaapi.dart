@@ -1,13 +1,8 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:GPPremium/models/carcaca.dart';
 import 'package:GPPremium/service/config_request.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:GPPremium/models/responseMessage.dart';
-
-import '../main.dart';
-import 'medidaapi.dart';
 
 class CarcacaApi extends ChangeNotifier {
   static const ENDPOINT = 'carcaca';

@@ -10,8 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/OrderData.dart';
+import '../../models/carcaca.dart';
 import '../../models/qualidade.dart';
 import '../../service/Qualidadeapi.dart';
+import '../../service/producaoapi.dart';
 import 'adicionar.dart';
 
 
@@ -46,6 +48,7 @@ class ListaQualidadeState extends State<ListaQualidade> {
   TipoObservacao observavaoSelected;
 
   List<Qualidade> qualidadeList = [];
+  List<Producao> producaoList = [];
 
   @override
   void initState() {
@@ -55,7 +58,7 @@ class ListaQualidadeState extends State<ListaQualidade> {
     textEditingControllerMedida = TextEditingController();
     qualidade = new Qualidade();
     qualidade.producao = new Producao();
-    qualidade.tipoClassificacao = new TipoClassificacao();
+    qualidade.producao.carcaca = new Carcaca();
     qualidade.tipoObservacao = new TipoObservacao();
 
     TipoClassificacaoApi().getAll().then((List<TipoClassificacao> value) {
@@ -85,7 +88,7 @@ class ListaQualidadeState extends State<ListaQualidade> {
     // var qualidadeAPI = new QualidadeApi();
     // final QualidadeApi qualidade = Provider.of(context);
 
-    final DinamicListCard listCards = DinamicListCard();
+    final DinamicShowCards listCards = DinamicShowCards();
 
     TextEditingController textEditingControllerCarcaca;
     textEditingControllerCarcaca = MaskedTextController(mask: '000000');
@@ -115,14 +118,14 @@ class ListaQualidadeState extends State<ListaQualidade> {
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                   onChanged: (String newValue) async {
                     if (newValue.length >= 6) {
-                      // loading.value = true;
-                      // qualidade.carcaca.numeroEtiqueta = newValue;
-                      // qualidadeList = await listCards.pesquisa(qualidade);
-                      // loading.value = false;
-                      // _isList.value = true;
-                      // listCards.exibirListaConsulta(context, qualidadeList);
-                      // _isList.notifyListeners();
-                      // listCards.notifyListeners();
+                      loading.value = true;
+                      qualidade.producao.carcaca.numeroEtiqueta = newValue;
+                      producaoList = await listCards.pesquisa(qualidade.producao);
+                      loading.value = false;
+                      _isList.value = true;
+                      listCards.exibirProducao(context, qualidadeList);
+                      _isList.notifyListeners();
+                      listCards.notifyListeners();
                       loading.notifyListeners();
                     } else {
                       _isList.value = true;
@@ -294,7 +297,7 @@ class ListaQualidadeState extends State<ListaQualidade> {
   }
 }
 
-class DinamicListCard extends ChangeNotifier {
+class DinamicShowCards extends ChangeNotifier {
   exibirListaConsulta(context, Servico) {
     if (Servico.length > 0) {
       return Container(
@@ -395,7 +398,97 @@ class DinamicListCard extends ChangeNotifier {
     }
   }
 
-  pesquisa(qualidade) {
-    // return QualidadeApi().consultaQualidade(qualidade);
+  exibirProducao(context, Servico) {
+              if (Servico.length > 0) {
+                return Card(
+                  child: ListTile(
+                    title: Text(
+                        'Etiqueta: ' + Servico.carcaca.numeroEtiqueta),
+                    subtitle: Text('Med. Pneu Rasp.: ' +
+                        Servico.medidaPneuRaspado.toString() +
+                        ' Regra: ' +
+                        Servico.regra.id.toString()),
+                    trailing: Container(
+                      width: 100,
+                      child: Row(
+                        children: <Widget>[
+                          IconButton(
+                              onPressed: () {
+                                // Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (context) =>
+                                //             EditarQualidadePage(
+                                //               qualidade: Servico[index],
+                                //             )));
+                              },
+                              icon: Icon(Icons.edit, color: Colors.orange)),
+                          IconButton(
+                              onPressed: () async {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text("Excluir"),
+                                      content: Text(
+                                          "Tem certeza que deseja excluir o item ${Servico.carcaca.numeroEtiqueta}"),
+                                      actions: [
+                                        ElevatedButton(
+                                          child: Text("Sim"),
+                                          onPressed: () async {
+                                            var response =
+                                            await Provider.of<QualidadeApi>(
+                                                context,
+                                                listen: false)
+                                                .delete(Servico.id)
+                                                .then((value) {
+                                              return value;
+                                            });
+                                            if (response) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                  deleteMessage(context));
+                                              // Servico.removeAt(index);
+                                              Navigator.pop(context);
+                                            }
+                                          },
+                                        ),
+                                        ElevatedButton(
+                                          child: Text("Não"),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                    notifyListeners();
+                                  },
+                                );
+                              },
+                              icon: Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                              )),
+                        ],
+                      ),
+                    ),
+                    onTap: () {
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => DetalhesQualidadePage(
+                      //           qualidade: Servico[index],
+                      //         )));
+                    },
+                  ),
+                );
+              } else {
+                return cicleLoading(context);
+              }
+            }
+
+
+  pesquisa(producao) {
+    return ProducaoApi().consultaProducao(producao);
   }
 }

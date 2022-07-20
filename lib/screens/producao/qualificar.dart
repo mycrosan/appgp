@@ -2,17 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:GPPremium/models/carcaca.dart';
-import 'package:GPPremium/models/matriz.dart';
 import 'package:GPPremium/models/medida.dart';
 import 'package:GPPremium/models/modelo.dart';
 import 'package:GPPremium/models/pais.dart';
 import 'package:GPPremium/models/qualidade.dart';
-import 'package:GPPremium/models/regra.dart';
 import 'package:GPPremium/models/responseMessage.dart';
 import 'package:GPPremium/service/carcacaapi.dart';
-import 'package:GPPremium/service/matrizapi.dart';
 import 'package:GPPremium/service/producaoapi.dart';
-import 'package:GPPremium/service/regraapi.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,28 +20,32 @@ import '../../components/ImagePreview.dart';
 import '../../components/OrderData.dart';
 import '../../models/classificacao.dart';
 import '../../models/observacao.dart';
+import '../../models/producao.dart';
 import '../../models/responseMessageSimple.dart';
 import '../../service/Qualidadeapi.dart';
 import '../../service/tipo_classificacaoapi.dart';
 import '../../service/tipo_observacacaoapi.dart';
 import '../../service/uploadapi.dart';
 
-class AdicionarQualidadePage extends StatefulWidget {
+class AdicionarQualificarPage extends StatefulWidget {
 
+  int id;
+  Producao producao;
 
+  AdicionarQualificarPage({Key key, this.producao}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return AdicionarQualidadePageState();
+    return AdicionarQualificarPageState();
   }
 }
 
-class AdicionarQualidadePageState extends State<AdicionarQualidadePage> {
+class AdicionarQualificarPageState extends State<AdicionarQualificarPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Qualidade'),
+        title: Text('Qualificar'),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -80,26 +80,8 @@ class AdicionarQualidadePageState extends State<AdicionarQualidadePage> {
 
   final ImagePicker _picker = ImagePicker();
 
-  TextEditingController textEditingControllerCarcaca;
-  MaskedTextController textEditingControllerPneuRaspado;
-  TextEditingController textEditingControllerDados;
-  TextEditingController textEditingControllerRegra;
-
-  Medida medidaCarcaca;
-  Modelo modeloCarcaca;
-  Pais paisCarcaca;
-  bool mostrarCarcacaSelecionada = false;
-
-  TextEditingController camelBackASerUsado;
-  TextEditingController antiquebra1;
-  TextEditingController antiquebra2;
-  TextEditingController antiquebra3;
-  TextEditingController espessuraemnto;
-  TextEditingController tempo;
-
+  TextEditingController textEditingControllerQualidade;
   Qualidade qualidade;
-
-  bool idRegra = false;
 
   var loading = ValueNotifier<bool>(true);
 
@@ -118,18 +100,8 @@ class AdicionarQualidadePageState extends State<AdicionarQualidadePage> {
   @override
   void initState() {
     super.initState();
-    textEditingControllerCarcaca = MaskedTextController(mask: '000000');
-    textEditingControllerPneuRaspado = MaskedTextController(mask: '0.000');
-    textEditingControllerDados = TextEditingController();
-    textEditingControllerRegra = TextEditingController();
+    textEditingControllerQualidade = TextEditingController();
     qualidade = Qualidade();
-
-    camelBackASerUsado = TextEditingController();
-    antiquebra1 = TextEditingController();
-    antiquebra2 = TextEditingController();
-    antiquebra3 = TextEditingController();
-    espessuraemnto = TextEditingController();
-    tempo = TextEditingController();
 
     TipoClassificacaoApi().getAll().then((List<TipoClassificacao> value) {
       setState(() {
@@ -138,12 +110,6 @@ class AdicionarQualidadePageState extends State<AdicionarQualidadePage> {
       });
     });
 
-    // TipoObservacacaoApi().getAll().then((List<TipoObservacao> value) {
-    //   setState(() {
-    //     observacaoList = value;
-    //     alfabetSortList(observacaoList);
-    //   });
-    // });
 
     QualidadeApi().getAll().then((List<Qualidade> value) {
       setState(() {
@@ -151,10 +117,7 @@ class AdicionarQualidadePageState extends State<AdicionarQualidadePage> {
         loading.value = false;
       });
     });
-    // _btnController1.stateStream.listen((value) {
-    //   print(value);
-    //
-    // });
+
   }
 
   dynamic _pickImageError;
@@ -206,11 +169,12 @@ class AdicionarQualidadePageState extends State<AdicionarQualidadePage> {
   }
 
   Widget _construirFormulario(context) {
-    var producaoApi = new ProducaoApi();
+    var qualidadeApi = new QualidadeApi();
     return Form(
       key: _formkey,
       child: Column(
         children: [
+          Text(widget.producao.carcaca.numeroEtiqueta),
           DropdownButtonFormField(
             decoration: InputDecoration(
               labelText: "Situação",
@@ -251,6 +215,7 @@ class AdicionarQualidadePageState extends State<AdicionarQualidadePage> {
             onChanged: (TipoObservacao observacao) {
               setState(() {
                 observacaoSelected = observacao;
+                qualidade.tipoObservacao = observacao;
               });
             },
             items: observacaoList.map((TipoObservacao observacao) {
@@ -264,113 +229,17 @@ class AdicionarQualidadePageState extends State<AdicionarQualidadePage> {
             padding: EdgeInsets.all(5),
           ),
           TextFormField(
-            controller: textEditingControllerCarcaca,
+            controller: textEditingControllerQualidade,
             decoration: InputDecoration(
               labelText: "Observação",
             ),
             // validator: (value) =>
             // value.length == 0 ? 'Não pode ser nulo' : null,
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
             onChanged: (String newValue) async {
               setState(() {
-                qualidade.producao.carcaca = null;
-                medidaCarcaca = null;
-                modeloCarcaca = null;
-                paisCarcaca = null;
-                mostrarCarcacaSelecionada = false;
               });
-              if (newValue.length >= 6) {
-                var response = await CarcacaApi().consultaCarcaca(newValue);
-                if (response is Carcaca && response != null) {
-                  setState(() {
-                    qualidade.producao.carcaca = response;
-                    medidaCarcaca = response.medida;
-                    modeloCarcaca = response.modelo;
-                    paisCarcaca = response.pais;
-                    mostrarCarcacaSelecionada = true;
-                  });
-                } else {
-                  responseMessage value = response;
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text(value.message),
-                        content: Text(value.debugMessage),
-                        actions: [
-                          TextButton(
-                            child: Text("OK"),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                }
-              }
             },
           ),
-          // TextFormField(
-          //   controller: textEditingControllerPneuRaspado,
-          //   decoration: InputDecoration(
-          //     labelText: "Medida pneu raspado",
-          //   ),
-          //   validator: (value) =>
-          //   value.length == 0 ? 'Não pode ser nulo' : null,
-          //   keyboardType: TextInputType.numberWithOptions(decimal: true),
-          //   onChanged: (String newValue) async {
-          //     if (newValue.length >= 5) {
-          //       if (_formkey.currentState.validate()) {
-          //         regraSelected = null;
-          //         var response = await RegraApi().consultaRegra(
-          //             matrizSelected,
-          //             medidaCarcaca,
-          //             modeloCarcaca,
-          //             paisCarcaca,
-          //             double.parse(newValue));
-          //         if (response is Regra && response != null) {
-          //           setState(() {
-          //             // regraSelected = response;
-          //             // qualidade.medidaPneuRaspado = double.parse(newValue);
-          //             // qualidade.regra = regraSelected;
-          //           });
-          //         } else {
-          //           responseMessage value = response;
-          //           showDialog(
-          //             context: context,
-          //             builder: (BuildContext context) {
-          //               return AlertDialog(
-          //                 title: Text(value.message),
-          //                 content: Text(value.debugMessage),
-          //                 actions: [
-          //                   TextButton(
-          //                     child: Text("OK"),
-          //                     onPressed: () {
-          //                       Navigator.pop(context);
-          //                     },
-          //                   ),
-          //                 ],
-          //               );
-          //             },
-          //           );
-          //         }
-          //       }
-          //     }
-          //     setState(() {
-          //       inputMedidaPneuRapspado = newValue;
-          //     });
-          //   },
-          // ),
-          Padding(
-            padding: EdgeInsets.all(5),
-          ),
-          // Container(
-          //   child: (regraSelected != null)
-          //       ? _exibirRegra(regraSelected)
-          //       : Text("Sem regra"),
-          // ),
           Padding(
             padding: EdgeInsets.all(5),
           ),
@@ -408,6 +277,7 @@ class AdicionarQualidadePageState extends State<AdicionarQualidadePage> {
                   controller: _btnController1,
                   onPressed: () async {
                     if (_formkey.currentState.validate()) {
+
                       Map<String, String> body = {
                         'title': 'qualidade',
                       };
@@ -417,44 +287,12 @@ class AdicionarQualidadePageState extends State<AdicionarQualidadePage> {
                       print(imageResponse.content[0]);
                       qualidade.fotos = json.encode(imageResponse.content);
 
-                      // var response = await QualidadeApi.create(qualidade);
+                      qualidade.producao = widget.producao;
+
+                      var response = await qualidadeApi.create(qualidade);
 
                       _btnController1.success();
 
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text("Imprimir?"),
-                            content: Text("Quer ir para tela de impressão?"),
-                            actions: [
-                              ElevatedButton(
-                                child: Text("Sim"),
-                                onPressed: () {
-                                  // Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (context) => PrintPage(
-                                  //           producaoPrint: qualidade,
-                                  //         )));
-                                },
-                              ),
-                              ElevatedButton(
-                                child: Text("Não"),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      // builder: (context) => ListaProducao(),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          );
-                          ;
-                        },
-                      );
                     } else {
                       _btnController1.reset();
                     }

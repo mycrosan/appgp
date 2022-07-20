@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:GPPremium/models/qualidade.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:GPPremium/models/responseMessage.dart';
 
 import 'config_request.dart';
 
@@ -79,4 +80,5 @@ class QualidadeApi extends ChangeNotifier {
       throw Exception('Falha ao tentar excluir carcaça');
     }
   }
+
 }
