@@ -7,17 +7,17 @@ class Qualidade {
   Producao producao;
   String observacao;
   String fotos;
-  TipoObservacao tipoObservacao;
+  TipoObservacao tipo_observacao;
 
   Qualidade(
-      {this.id, this.producao, this.observacao, this.fotos, this.tipoObservacao});
+      {this.id, this.producao, this.observacao, this.fotos, this.tipo_observacao});
 
   Qualidade.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     producao = json['producao'] != null ? new Producao.fromJson(json['producao']) : null;
     observacao = json['observacao'];
     fotos = json["fotos"];
-    tipoObservacao = json['tipoObservacao'] != null ? new TipoObservacao.fromJson(json['tipoObservacao']) : null;
+    tipo_observacao = json['tipo_observacao'] != null ? new TipoObservacao.fromJson(json['tipo_observacao']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -33,8 +33,8 @@ class Qualidade {
 
     data['fotos'] = this.fotos;
 
-    if (this.tipoObservacao != null) {
-      data['tipoObservacao'] = this.tipoObservacao.toJson();
+    if (this.tipo_observacao != null) {
+      data['tipo_observacao'] = this.tipo_observacao.toJson();
     }
 
     return data;

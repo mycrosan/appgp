@@ -83,23 +83,12 @@ class EditarProducaoPageState extends State<EditarProducaoPage> {
     espessuraemnto = TextEditingController();
     tempo = TextEditingController();
 
-    // CarcacaApi().getAll().then((List<Carcaca> value) {
-    //   setState(() {
-    //     carcacaList = value;
-    //   });
-    // });
-
     MatrizApi().getAll().then((List<Matriz> value) {
       setState(() {
         matrizList = value;
       });
     });
 
-    // RegraApi().getAll().then((List<Regra> value) {
-    //   setState(() {
-    //     regraList = value;
-    //   });
-    // });
 
     setState(() {
       producao = widget.producao;

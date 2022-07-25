@@ -1,6 +1,6 @@
 import 'package:GPPremium/components/Loading.dart';
 import 'package:GPPremium/components/snackBar.dart';
-import 'package:GPPremium/screens/producao/qualificar.dart';
+import 'package:GPPremium/screens/qualidade/qualificar.dart';
 import 'package:GPPremium/service/producaoapi.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
@@ -342,7 +342,7 @@ class DinamicListCard extends ChangeNotifier {
                         ' Regra: ' +
                         Servico[index].regra.id.toString()),
                     trailing: Container(
-                      width: 150,
+                      width: 100,
                       child: Row(
                         children: <Widget>[
                           IconButton(
@@ -402,17 +402,6 @@ class DinamicListCard extends ChangeNotifier {
                                 Icons.delete,
                                 color: Colors.red,
                               )),
-                          IconButton(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            AdicionarQualificarPage(
-                                              producao: Servico[index],
-                                            )));
-                              },
-                              icon: Icon(Icons.check_rounded, color: Colors.green))
                         ],
                       ),
                     ),

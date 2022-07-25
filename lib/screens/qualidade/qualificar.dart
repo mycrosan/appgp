@@ -85,8 +85,6 @@ class AdicionarQualificarPageState extends State<AdicionarQualificarPage> {
 
   var loading = ValueNotifier<bool>(true);
 
-  String inputMedidaPneuRapspado;
-
   //Classificacão
   List<TipoClassificacao> classificacaoList = [];
   TipoClassificacao classificacaoSelected;
@@ -215,7 +213,7 @@ class AdicionarQualificarPageState extends State<AdicionarQualificarPage> {
             onChanged: (TipoObservacao observacao) {
               setState(() {
                 observacaoSelected = observacao;
-                qualidade.tipoObservacao = observacao;
+                qualidade.tipo_observacao = observacao;
               });
             },
             items: observacaoList.map((TipoObservacao observacao) {
@@ -299,31 +297,6 @@ class AdicionarQualificarPageState extends State<AdicionarQualificarPage> {
                   },
                 ),
               ),
-              // Expanded(
-              //     child: ElevatedButton(
-              //   child: Text("Salvar"),
-              //   onPressed: () async {
-              //     Map<String, String> body = {
-              //       'title': 'qualidade',
-              //     };
-              //
-              //     responseMessageSimple imageResponse =
-              //         await UploadApi().addImage(body, _imageFileList);
-              //
-              //     print(imageResponse.content[0]);
-              //     qualidade.fotos = json.encode(imageResponse.content);
-              //
-              //     if (_formkey.currentState.validate()) {
-              //       var response = await producaoApi.create(qualidade);
-              //       Navigator.push(
-              //         context,
-              //         MaterialPageRoute(
-              //           builder: (context) => ListaProducao(),
-              //         ),
-              //       );
-              //     }
-              //   },
-              // )),
             ],
           )
         ],
