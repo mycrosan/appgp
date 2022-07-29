@@ -1,18 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:GPPremium/models/carcaca.dart';
-import 'package:GPPremium/models/medida.dart';
-import 'package:GPPremium/models/modelo.dart';
-import 'package:GPPremium/models/pais.dart';
+
 import 'package:GPPremium/models/qualidade.dart';
-import 'package:GPPremium/models/responseMessage.dart';
-import 'package:GPPremium/service/carcacaapi.dart';
-import 'package:GPPremium/service/producaoapi.dart';
-import 'package:extended_masked_text/extended_masked_text.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
@@ -67,11 +60,11 @@ class AdicionarQualificarPageState extends State<AdicionarQualificarPage> {
     _imageFileList = value == null ? null : [value];
   }
 
-  void _doSomething(RoundedLoadingButtonController controller) async {
-    Timer(Duration(seconds: 10), () {
-      controller.success();
-    });
-  }
+  // void _doSomething(RoundedLoadingButtonController controller) async {
+  //   Timer(Duration(seconds: 10), () {
+  //     controller.success();
+  //   });
+  // }
 
   final RoundedLoadingButtonController _btnController1 =
   RoundedLoadingButtonController();
@@ -80,7 +73,7 @@ class AdicionarQualificarPageState extends State<AdicionarQualificarPage> {
 
   final ImagePicker _picker = ImagePicker();
 
-  TextEditingController textEditingControllerQualidade;
+  TextEditingController textEditingControllerObservacao;
   Qualidade qualidade;
 
   var loading = ValueNotifier<bool>(true);
@@ -98,7 +91,7 @@ class AdicionarQualificarPageState extends State<AdicionarQualificarPage> {
   @override
   void initState() {
     super.initState();
-    textEditingControllerQualidade = TextEditingController();
+    textEditingControllerObservacao = TextEditingController();
     qualidade = Qualidade();
 
     TipoClassificacaoApi().getAll().then((List<TipoClassificacao> value) {
@@ -227,7 +220,7 @@ class AdicionarQualificarPageState extends State<AdicionarQualificarPage> {
             padding: EdgeInsets.all(5),
           ),
           TextFormField(
-            controller: textEditingControllerQualidade,
+            controller: textEditingControllerObservacao,
             decoration: InputDecoration(
               labelText: "Observação",
             ),
@@ -303,143 +296,4 @@ class AdicionarQualificarPageState extends State<AdicionarQualificarPage> {
       ),
     );
   }
-}
-
-Widget _exibirRegra(context) {
-  //todo não funciona, montar isso reativo
-
-  return Card(
-    child: ListTile(
-      title: Text(
-        'Matriz: ' + context.matriz.descricao,
-        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-      ),
-      subtitle: Wrap(
-        children: [
-          Text.rich(TextSpan(
-              text: 'Medida: ',
-              style: TextStyle(fontWeight: FontWeight.bold),
-              children: <InlineSpan>[
-                TextSpan(
-                  text: context.medida.descricao,
-                  style: TextStyle(fontWeight: FontWeight.normal),
-                )
-              ])),
-          Padding(
-            padding: EdgeInsets.all(3),
-          ),
-          Text.rich(TextSpan(
-              text: 'Marca: ',
-              style: TextStyle(fontWeight: FontWeight.bold),
-              children: <InlineSpan>[
-                TextSpan(
-                  text: context.modelo.marca.descricao,
-                  style: TextStyle(fontWeight: FontWeight.normal),
-                )
-              ])),
-          Padding(
-            padding: EdgeInsets.all(3),
-          ),
-          Text.rich(TextSpan(
-              text: 'Modelo: ',
-              style: TextStyle(fontWeight: FontWeight.bold),
-              children: <InlineSpan>[
-                TextSpan(
-                  text: context.modelo.descricao,
-                  style: TextStyle(fontWeight: FontWeight.normal),
-                )
-              ])),
-          Padding(
-            padding: EdgeInsets.all(3),
-          ),
-          Text.rich(TextSpan(
-              text: 'País: ',
-              style: TextStyle(fontWeight: FontWeight.bold),
-              children: <InlineSpan>[
-                TextSpan(
-                  text: context.pais.descricao,
-                  style: TextStyle(fontWeight: FontWeight.normal),
-                )
-              ])),
-          Padding(
-            padding: EdgeInsets.all(3),
-          ),
-          Text.rich(TextSpan(
-              text: 'Camelback: ',
-              style: TextStyle(fontWeight: FontWeight.bold),
-              children: <InlineSpan>[
-                TextSpan(
-                  text: context.camelback.descricao,
-                  style: TextStyle(fontWeight: FontWeight.normal),
-                )
-              ])),
-          Text.rich(TextSpan(
-              text: 'COD: ',
-              style: TextStyle(fontWeight: FontWeight.bold),
-              children: <InlineSpan>[
-                TextSpan(
-                  text: context.id.toString(),
-                  style: TextStyle(fontWeight: FontWeight.normal),
-                )
-              ])),
-          Padding(
-            padding: EdgeInsets.all(3),
-          ),
-          Text.rich(TextSpan(
-              text: 'Min: ',
-              style: TextStyle(fontWeight: FontWeight.bold),
-              children: <InlineSpan>[
-                TextSpan(
-                  text: context.tamanhoMin.toString(),
-                  style: TextStyle(fontWeight: FontWeight.normal),
-                )
-              ])),
-          Padding(
-            padding: EdgeInsets.all(3),
-          ),
-          Text.rich(TextSpan(
-              text: 'Máx: ',
-              style: TextStyle(fontWeight: FontWeight.bold),
-              children: <InlineSpan>[
-                TextSpan(
-                  text: context.tamanhoMax.toString(),
-                  style: TextStyle(fontWeight: FontWeight.normal),
-                )
-              ])),
-        ],
-      ),
-    ),
-  );
-
-  return Container(
-    child: (context.regraSelected != null)
-        ? Text("ID:" +
-        context.id.toString() +
-        "\n"
-            "Medida: " +
-        context.regraSelected.medida.descricao +
-        "\n"
-            "Camelback: " +
-        context.regraSelected.camelback.toString() +
-        "\n"
-            "Espessuramento: " +
-        context.regraSelected.espessuramento +
-        "\n"
-            "Tempo: " +
-        context.regraSelected.tempo +
-        "\n"
-            "Matriz: " +
-        context.regraSelected.matriz.descricao +
-        "\n"
-            "Antiquebra: " +
-        context.regraSelected.antiquebra1 +
-        "\n"
-            "Min: " +
-        context.regraSelected.tamanhoMin.toString() +
-        "\n"
-            "Max: " +
-        context.regraSelected.tamanhoMax.toString() +
-        "\n")
-        : null,
-  );
 }

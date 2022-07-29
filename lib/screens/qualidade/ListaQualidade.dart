@@ -15,7 +15,6 @@ import '../../models/carcaca.dart';
 import '../../models/qualidade.dart';
 import '../../service/Qualidadeapi.dart';
 import '../../service/producaoapi.dart';
-import 'adicionar.dart';
 import 'editdatawidget.dart';
 
 class ListaQualidade extends StatefulWidget {
@@ -149,7 +148,7 @@ class ListaQualidadeState extends State<ListaQualidade> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => AdicionarQualidadePage(),
+                    builder: (context) => AdicionarQualificarPage(),
                   ));
               // do something
             },
@@ -307,13 +306,13 @@ class DinamicShowCards extends ChangeNotifier {
               children: <Widget>[
                 IconButton(
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  AdicionarQualificarPage(
-                                    producao: Servico,
-                                  )));
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) =>
+                      //             AdicionarQualificarPage(
+                      //               producao: Servico,
+                      //             )));
                     },
                     icon: Icon(Icons.check_rounded, color: Colors.green))
 

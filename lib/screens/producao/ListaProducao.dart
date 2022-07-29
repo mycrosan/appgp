@@ -1,6 +1,5 @@
 import 'package:GPPremium/components/Loading.dart';
 import 'package:GPPremium/components/snackBar.dart';
-import 'package:GPPremium/screens/qualidade/qualificar.dart';
 import 'package:GPPremium/service/producaoapi.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +16,6 @@ import '../../service/marcaapi.dart';
 import '../../service/medidaapi.dart';
 import '../../service/modeloapi.dart';
 import '../../service/paisapi.dart';
-import '../carcaca/ListaCarcacas.dart';
-import '../qualidade/adicionar.dart';
 import 'adicionar.dart';
 import 'detailwidget.dart';
 import 'editdatawidget.dart';

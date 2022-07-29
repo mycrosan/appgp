@@ -103,7 +103,7 @@ class TipoObservacacaoApi extends ChangeNotifier {
     }
   }
 
-  Future<Object> consulta(tipoClassificacaoId) async {
+  Future<List<TipoObservacao>> consulta(tipoClassificacaoId) async {
     var objData = new ConfigRequest();
     var response = await objData.requestPesquisaObservacao(ENDPOINT, tipoClassificacaoId);
 
