@@ -69,6 +69,23 @@ class QualidadeApi extends ChangeNotifier {
     }
   }
 
+  Future<Qualidade> update(Qualidade qualidade) async {
+    var map = qualidade.toJson();
+
+    var objData = new ConfigRequest();
+    var response = await objData.requestUpdate(ENDPOINT, map, qualidade.id);
+
+    if (response.statusCode == 200) {
+      var values = response.body;
+      var jsonData = jsonDecode(values);
+      // var mapValues= jsonData as Map;
+      return Qualidade.fromJson(jsonData);
+      print('Aqui');
+    } else {
+      throw Exception('Falha ao tentar salvar qualidade');
+    }
+  }
+
   Future<bool> delete(int id) async {
     var objData = new ConfigRequest();
     var response = await objData.delete(ENDPOINT, id);

@@ -231,7 +231,6 @@ class EditarProducaoPageState extends State<EditarProducaoPage> {
                   value.length == 0 ? 'Não pode ser nulo' : null,
               keyboardType: TextInputType.numberWithOptions(decimal: true),
               onChanged: (String newValue) async {
-                print(newValue);
                 if (newValue.length >= 5) {
                   if (_formkey.currentState.validate()) {
                     regraSelected = null;
@@ -365,7 +364,7 @@ class EditarProducaoPageState extends State<EditarProducaoPage> {
                   child: Text("Atualizar"),
                   onPressed: () async {
                     if (_formkey.currentState.validate()) {
-                      var response = await producaoApi.create(producao);
+                      var response = await producaoApi.update(producao);
                       Navigator.push(
                         context,
                         MaterialPageRoute(

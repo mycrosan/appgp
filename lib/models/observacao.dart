@@ -7,27 +7,35 @@ class TipoObservacao {
 
   TipoObservacao({this.id, this.descricao, this.tipoClassificacao});
 
-  bool operator ==(dynamic other) =>
-      other != null && other is TipoObservacao && this.id == other.id && this.descricao == other.descricao;
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is TipoObservacao &&
+              runtimeType == other.runtimeType &&
+              descricao == other.descricao &&
+              id == other.id &&
+              tipoClassificacao == other.tipoClassificacao;
 
   @override
-  int get hashCode => super.hashCode;
+  int get hashCode => descricao.hashCode ^ id.hashCode ^ tipoClassificacao.hashCode;
 
-  TipoObservacao.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    descricao = json['descricao'];
-    tipoClassificacao = json['tipo_classificacao'] != null
-        ? new TipoClassificacao.fromJson(json['tipo_classificacao'])
-        : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['descricao'] = this.descricao;
-    if (this.tipoClassificacao != null) {
-      data['tipo_classificacao'] = this.tipoClassificacao.toJson();
-    }
-    return data;
-  }
+  factory TipoObservacao.fromJson(Map<String, dynamic> json) => TipoObservacao(
+    id: json["id"],
+    descricao: json["descricao"],
+    tipoClassificacao: TipoClassificacao.fromJson(json["tipo_classificacao"]),
+  );
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "descricao": descricao,
+    "tipo_classificacao": tipoClassificacao.toJson(),
+  };
+  // Map<String, dynamic> toJson() {
+  //   final Map<String, dynamic> data = new Map<String, dynamic>();
+  //   data['id'] = this.id;
+  //   data['descricao'] = this.descricao;
+  //   if (this.tipoClassificacao != null) {
+  //     data['tipo_classificacao'] = this.tipoClassificacao.toJson();
+  //   }
+  //   return data;
+  // }
 }

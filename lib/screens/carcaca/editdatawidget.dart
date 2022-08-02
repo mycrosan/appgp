@@ -93,32 +93,10 @@ class EditarCarcacaPageState extends State<EditarCarcacaPage> {
     });
   }
 
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  // }
-
   @override
   void dispose() {
-    // textEditingControllerEtiqueta.dispose();
-    // textEditingControllerDot.dispose();
     super.dispose();
   }
-
-  // showImage(img) async {
-  //   var images = json.decode(img);
-  //   List butter = [];
-  //
-  //   for (final i in images) {
-  //     final ByteData imageData =
-  //         await NetworkAssetBundle(Uri.parse(SERVER_IP + "carcaca/image/${i}"))
-  //             .load("");
-  //     final Uint8List bytes = imageData.buffer.asUint8List();
-  //     butter.add(Image.memory(bytes));
-  //   }
-  //   image_ok = true;
-  //   return butter;
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -277,7 +255,6 @@ class EditarCarcacaPageState extends State<EditarCarcacaPage> {
                         onPressed: () async {
                           var carcacaApi = new CarcacaApi();
                           var response = await carcacaApi.update(carcaca);
-                          print(response);
                           Navigator.push(
                             context,
                             MaterialPageRoute(

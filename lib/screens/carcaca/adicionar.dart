@@ -317,7 +317,8 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
                   child: Text('Salvar!', style: TextStyle(color: Colors.white)),
                   controller: _btnController1,
                   onPressed: () async {
-                    if (_formkey.currentState.validate()) {
+                    if (_formkey.currentState.validate() && _imageFileList.length > 0) {
+
                       Map<String, String> body = {
                         'title': 'carcaca',
                       };
@@ -347,32 +348,6 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
               Padding(
                 padding: EdgeInsets.only(bottom: 30),
               ),
-
-              // Expanded(
-              //     child: ElevatedButton(
-              //   child: Text("Salvar"),
-              //   onPressed: () async {
-              //     Map<String, String> body = {
-              //       'title': 'carcaca',
-              //     };
-              //
-              //     responseMessageSimple imageResponse =
-              //         await UploadApi().addImage(body, _imageFileList);
-              //
-              //     print(imageResponse.content[0]);
-              //     carcaca.fotos = json.encode(imageResponse.content);
-              //
-              //     if (_formkey.currentState.validate()) {
-              //       var response = await CarcacaApi().create(carcaca);
-              //       Navigator.push(
-              //         context,
-              //         MaterialPageRoute(
-              //           builder: (context) => ListaCarcaca(),
-              //         ),
-              //       );
-              //     }
-              //   },
-              // )),
             ],
           )
         ],

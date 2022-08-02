@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:GPPremium/models/qualidade.dart';
+import 'package:GPPremium/screens/qualidade/ListaQualidade.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,6 +12,7 @@ import '../../models/classificacao.dart';
 import '../../models/observacao.dart';
 import '../../models/responseMessageSimple.dart';
 import '../../service/Qualidadeapi.dart';
+import '../../service/get_image.dart';
 import '../../service/tipo_classificacaoapi.dart';
 import '../../service/tipo_observacacaoapi.dart';
 import '../../service/uploadapi.dart';
@@ -143,6 +145,7 @@ class EditarQualidadePageState extends State<EditarQualidadePage> {
               onChanged: (TipoClassificacao classificacao) {
                 setState(() {
                   classificacaoSelected = classificacao;
+                  observacaoSelected = null;
                 });
 
                 TipoObservacacaoApi().consulta(classificacao.id).then((Object value) {
@@ -173,6 +176,7 @@ class EditarQualidadePageState extends State<EditarQualidadePage> {
               onChanged: (TipoObservacao observacao) {
                 setState(() {
                   observacaoSelected = observacao;
+                  qualidade.tipo_observacao = observacao;
                 });
               },
               items: observacaoList.map((TipoObservacao observacao) {
@@ -194,26 +198,50 @@ class EditarQualidadePageState extends State<EditarQualidadePage> {
               // value.length == 0 ? 'Não pode ser nulo' : null,
               onChanged: (String newValue) async {
                 setState(() {
+                  qualidade.observacao = newValue;
                 });
               },
             ),
             Padding(
-              padding: EdgeInsets.all(5),
+              padding: EdgeInsets.all(10),
             ),
-            Center(child: showImage(_imageFileList, "adicionar")),
+            // Center(child: showImage(_imageFileList, "adicionar")),
+            // Container(
+            //   padding: EdgeInsets.all(20),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.end,
+            //     children: [
+            //       FloatingActionButton(
+            //         backgroundColor: Colors.blue,
+            //         onPressed: getImage,
+            //         tooltip: 'incrementar',
+            //         child: Icon(Icons.camera_alt),
+            //       ),
+            //     ],
+            //   ),
+            // ),
             Container(
-              padding: EdgeInsets.all(20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  FloatingActionButton(
-                    backgroundColor: Colors.blue,
-                    onPressed: getImage,
-                    tooltip: 'incrementar',
-                    child: Icon(Icons.camera_alt),
-                  ),
-                ],
-              ),
+              child: FutureBuilder(
+                  future: new ImageService().showImage(qualidade.fotos, "qualidade"),
+                  builder: (context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      return Container(
+                        height: 200.0,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (BuildContext ctxt, int index) {
+                            return snapshot.data[index];
+                          },
+                        ),
+                      );
+                    } else {
+                      return CircularProgressIndicator();
+                    }
+                  }),
+            ),
+            Padding(
+              padding: EdgeInsets.all(5),
             ),
             Row(
               children: [
@@ -230,25 +258,21 @@ class EditarQualidadePageState extends State<EditarQualidadePage> {
                     color: Colors.black,
                     successIcon: Icons.check,
                     failedIcon: Icons.cottage,
-                    child: Text('Salvar!', style: TextStyle(color: Colors.white)),
+                    child: Text('Atualizar!', style: TextStyle(color: Colors.white)),
                     controller: _btnController1,
                     onPressed: () async {
                       if (_formkey.currentState.validate()) {
 
-                        Map<String, String> body = {
-                          'title': 'qualidade',
-                        };
-                        responseMessageSimple imageResponse =
-                        await UploadApi().addImage(body, _imageFileList);
-
-                        print(imageResponse.content[0]);
-                        qualidade.fotos = json.encode(imageResponse.content);
-
-                        qualidade.producao = widget.qualidade.producao;
-
-                        var response = await qualidadeApi.create(qualidade);
+                        var response = await qualidadeApi.update(qualidade);
 
                         _btnController1.success();
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ListaQualidade(),
+                          ),
+                        );
 
                       } else {
                         _btnController1.reset();

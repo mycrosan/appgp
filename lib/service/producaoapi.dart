@@ -69,6 +69,23 @@ class ProducaoApi extends ChangeNotifier {
     }
   }
 
+  Future<Producao> update(Producao producao) async {
+    var map = producao.toJson();
+
+    var objData = new ConfigRequest();
+    var response = await objData.requestUpdate(ENDPOINT, map, producao.id);
+
+    if (response.statusCode == 200) {
+      var values = response.body;
+      var jsonData = jsonDecode(values);
+      // var mapValues= jsonData as Map;
+      return Producao.fromJson(jsonData);
+      print('Aqui');
+    } else {
+      throw Exception('Falha ao tentar salvar carcaça');
+    }
+  }
+
   Future<bool> delete(int id) async {
     var objData = new ConfigRequest();
     var response = await objData.delete(ENDPOINT, id);

@@ -306,13 +306,13 @@ class DinamicShowCards extends ChangeNotifier {
               children: <Widget>[
                 IconButton(
                     onPressed: () {
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) =>
-                      //             AdicionarQualificarPage(
-                      //               producao: Servico,
-                      //             )));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  AdicionarQualificarPage(
+                                    producao: Servico,
+                                  )));
                     },
                     icon: Icon(Icons.check_rounded, color: Colors.green))
 

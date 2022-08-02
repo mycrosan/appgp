@@ -60,11 +60,6 @@ class AdicionarQualificarPageState extends State<AdicionarQualificarPage> {
     _imageFileList = value == null ? null : [value];
   }
 
-  // void _doSomething(RoundedLoadingButtonController controller) async {
-  //   Timer(Duration(seconds: 10), () {
-  //     controller.success();
-  //   });
-  // }
 
   final RoundedLoadingButtonController _btnController1 =
   RoundedLoadingButtonController();
@@ -267,7 +262,7 @@ class AdicionarQualificarPageState extends State<AdicionarQualificarPage> {
                   child: Text('Salvar!', style: TextStyle(color: Colors.white)),
                   controller: _btnController1,
                   onPressed: () async {
-                    if (_formkey.currentState.validate()) {
+                    if (_formkey.currentState.validate() && _imageFileList.length > 0) {
 
                       Map<String, String> body = {
                         'title': 'qualidade',
