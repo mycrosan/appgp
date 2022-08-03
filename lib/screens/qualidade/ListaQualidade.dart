@@ -85,8 +85,6 @@ class ListaQualidadeState extends State<ListaQualidade> {
 
   @override
   Widget build(BuildContext context) {
-    // var qualidadeAPI = new QualidadeApi();
-    // final QualidadeApi qualidade = Provider.of(context);
 
     final DinamicShowCards listCards = DinamicShowCards();
 
@@ -95,8 +93,6 @@ class ListaQualidadeState extends State<ListaQualidade> {
 
     List listaQualidade = [];
     var _isList = ValueNotifier<bool>(true);
-
-    // final QualidadeApi producoes = Provider.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -138,22 +134,22 @@ class ListaQualidadeState extends State<ListaQualidade> {
             )
           ]),
         ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AdicionarQualificarPage(),
-                  ));
-              // do something
-            },
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     icon: Icon(
+        //       Icons.add,
+        //       color: Colors.white,
+        //     ),
+        //     onPressed: () {
+        //       Navigator.push(
+        //           context,
+        //           MaterialPageRoute(
+        //             builder: (context) => AdicionarQualificarPage(),
+        //           ));
+        //       // do something
+        //     },
+        //   ),
+        // ],
       ),
       body: Padding(
           padding: EdgeInsets.all(8.0),
