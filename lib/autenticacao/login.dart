@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'package:GPPremium/screens/dashboard/home.dart';
 import 'package:GPPremium/service/authapi.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +49,7 @@ class Login extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        'v1.0.47',
+                        'v1.0.48',
                         style: TextStyle(color: Colors.white),
                       ),
                     ])
