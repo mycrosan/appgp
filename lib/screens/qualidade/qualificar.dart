@@ -3,6 +3,7 @@ import 'dart:convert';
 
 
 import 'package:GPPremium/models/qualidade.dart';
+import 'package:GPPremium/screens/qualidade/ListaQualidade.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -278,6 +279,13 @@ class AdicionarQualificarPageState extends State<AdicionarQualificarPage> {
                       var response = await qualidadeApi.create(qualidade);
 
                       _btnController1.success();
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ListaQualidade(),
+                        ),
+                      );
 
                     } else {
                       _btnController1.reset();
