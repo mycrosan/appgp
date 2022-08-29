@@ -43,45 +43,43 @@ class DetalhesQualidadePageState extends State<DetalhesQualidadePage> {
                         snapshot.data.producao.medidaPneuRaspado.toStringAsFixed(3)),
                     subtitle: Text('Medida: ' +
                         snapshot.data.producao.carcaca.medida.descricao +
-                        'Modelo: ' +
+                        ' Modelo: ' +
                         snapshot.data.producao.carcaca.modelo.descricao +
                         "\n"
                             'Marca: ' +
                         snapshot.data.producao.carcaca.modelo.marca.descricao +
                         "\n"
-                            'Matriz: ' +
-                        snapshot.data.producao.regra.matriz.descricao +
+                            'Situação: ' +
+                        snapshot.data.tipo_observacao.tipoClassificacao.descricao +
                         "\n"
-                            'Tamanho mínimo: ' +
-                        snapshot.data.producao.regra.tamanhoMin.toString() +
+                            'Classificação: ' +
+                        snapshot.data.tipo_observacao.descricao +
                         "\n"
-                            'Tamanho máximo: ' +
-                        snapshot.data.producao.regra.tamanhoMax.toString() +
-                        "\n"
-                            'Anti quebra 1: ' +
-                        ((snapshot.data.producao.regra.antiquebra1 != null)
-                            ? snapshot.data.producao.regra.antiquebra1.descricao
-                            : "SI") +
-                        "\n"
-                            'Anti quebra 2: ' +
-                        ((snapshot.data.producao.regra.antiquebra2 != null)
-                            ? snapshot.data.producao.regra.antiquebra2.descricao
-                            : "SI") +
-                        "\n"
-                            'Anti quebra 3: ' +
-                        ((snapshot.data.producao.regra.antiquebra3 != null)
-                            ? snapshot.data.producao.regra.antiquebra3.descricao
-                            : "SI") +
-                        "\n"
-                            'Espessuramento: ' +
-                        ((snapshot.data.producao.regra.espessuramento != null) ? snapshot.data
-                            .producao.regra.espessuramento.descricao : "SI") +
-                        "\n"
-                            'Tempo: ' +
-                        snapshot.data.producao.regra.tempo.toString() +
-                        "\n"
-                            'Camelback: ' +
-                        snapshot.data.producao.regra.camelback.descricao),
+                            // 'Tamanho máximo: ' +
+                        // snapshot.data.producao.regra.tamanhoMax.toString() +
+                        // "\n"
+                        //     'Anti quebra 1: ' +
+                        // ((snapshot.data.producao.regra.antiquebra1 != null)
+                        //     ? snapshot.data.producao.regra.antiquebra1.descricao
+                        //     : "SI") +
+                        // "\n"
+                        //     'Anti quebra 2: ' +
+                        // ((snapshot.data.producao.regra.antiquebra2 != null)
+                        //     ? snapshot.data.producao.regra.antiquebra2.descricao
+                        //     : "SI") +
+                        // "\n"
+                        //     'Anti quebra 3: ' +
+                        // ((snapshot.data.producao.regra.antiquebra3 != null)
+                        //     ? snapshot.data.producao.regra.antiquebra3.descricao
+                        //     : "SI") +
+                        // "\n"
+                        //     'Espessuramento: ' +
+                        // ((snapshot.data.producao.regra.espessuramento != null) ? snapshot.data
+                        //     .producao.regra.espessuramento.descricao : "SI") +
+                        // "\n"
+                        //     'Tempo: ' +
+                        // snapshot.data.producao.regra.tempo.toString() +
+                      ),
                   ),
                 ),
                 Container(
