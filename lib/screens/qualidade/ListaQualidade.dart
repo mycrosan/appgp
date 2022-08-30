@@ -15,6 +15,7 @@ import '../../models/carcaca.dart';
 import '../../models/qualidade.dart';
 import '../../service/Qualidadeapi.dart';
 import '../../service/producaoapi.dart';
+import 'detailwidget.dart';
 import 'editdatawidget.dart';
 
 class ListaQualidade extends StatefulWidget {
@@ -196,12 +197,18 @@ class DinamicShowCards extends ChangeNotifier {
               if (Servico.length > 0) {
                 return Card(
                   child: ListTile(
-                    title: Text('Etiqueta: ' +
+                    title: Text('Etiquetas: ' +
                         Servico[index].producao.carcaca.numeroEtiqueta),
                     subtitle: Text('Med. Pneu Rasp.: ' +
                         Servico[index].producao.medidaPneuRaspado.toString() +
                         ' Regra: ' +
-                        Servico[index].producao.regra.id.toString()),
+                        Servico[index].producao.regra.id.toString() +
+                        ' Situação: ' +
+                        Servico[index].tipo_observacao.tipoClassificacao.descricao +
+                        ' Classificação: ' +
+                        Servico[index].tipo_observacao.descricao
+
+                    ),
                     trailing: Container(
                       width: 100,
                       child: Row(
@@ -267,12 +274,12 @@ class DinamicShowCards extends ChangeNotifier {
                       ),
                     ),
                     onTap: () {
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => DetalhesQualidadePage(
-                      //           qualidade: Servico[index],
-                      //         )));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DetalhesQualidadePage(
+                                qualidade: Servico[index],
+                              )));
                     },
                   ),
                 );
