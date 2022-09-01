@@ -1,0 +1,325 @@
+import 'package:GPPremium/components/Loading.dart';
+import 'package:extended_masked_text/extended_masked_text.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../components/snackBar.dart';
+import '../../models/rejeitadas.dart';
+import '../../service/rejeitadasapi.dart';
+import 'adicionar.dart';
+import 'detailwidget.dart';
+import 'editdatawidget.dart';
+
+class ListaRejeitadas extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return ListaRejeitadasState();
+  }
+}
+
+class ListaRejeitadasState extends State<ListaRejeitadas> {
+  @override
+  Widget build(BuildContext context) {
+    var rejeitadasAPI = new RejeitadasApi();
+
+    final DinamicListCard listCards = DinamicListCard();
+
+    TextEditingController textEditingControllerRejeitadas;
+    textEditingControllerRejeitadas = MaskedTextController(mask: '000000');
+    Rejeitadas _responseValue;
+    List listaRejeitadas = [];
+    var _isList = ValueNotifier<bool>(true);
+
+    //Fica escutando as mudanças
+    final RejeitadasApi rejeitadas = Provider.of(context);
+
+    @override
+    void initState() {
+      super.initState();
+
+      this.setState(() {});
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Proibidas'),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AdicionarRejeitadasPage(),
+                  ));
+              // do something
+            },
+          ),
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            // Container(
+            //   padding: EdgeInsets.only(bottom: 20.0),
+            //   child: TextFormField(
+            //     controller: textEditingControllerRejeitadas,
+            //     decoration: InputDecoration(
+            //       labelText: "Informe o número da etiqueta",
+            //     ),
+            //     keyboardType: TextInputType.numberWithOptions(decimal: true),
+            //     onChanged: (String newValue) async {
+            //       if (newValue.length >= 6) {
+            //         var response = await RejeitadasApi().consultaRejeitadas(newValue);
+            //
+            //         if (response is Rejeitadas && response != null) {
+            //           _responseValue = response;
+            //
+            //           _isList.value = false;
+            //
+            //           _isList.notifyListeners();
+            //         } else {
+            //           responseMessage value =
+            //               response != null ? response : null;
+            //           ScaffoldMessenger.of(context)
+            //               .showSnackBar(warningMessage(context, value.message));
+            //         }
+            //       } else {
+            //         _isList.value = true;
+            //         _isList.notifyListeners();
+            //       }
+            //     },
+            //   ),
+            // ),
+            ValueListenableBuilder(
+                valueListenable: _isList,
+                builder: (_, __, ___) {
+                  return Visibility(
+                      visible: !_isList.value,
+                      child: _responseValue != null
+                          ? listCards.cardResponse(_responseValue, context)
+                          : Text('Sem Informações'));
+                }),
+            Visibility(
+              visible: _isList.value,
+              child: _exibirLista(context, rejeitadasAPI) != null
+                  ? _exibirLista(context, rejeitadasAPI)
+                  : 'Aguardando..',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _exibirLista(context, obj) {
+    // return Text("data");
+    return Expanded(
+      child: FutureBuilder(
+          future: obj.getAll(),
+          builder: (context, AsyncSnapshot<List> snapshot) {
+            if (snapshot.hasData) {
+              return ListView.builder(
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      child: ListTile(
+                        title: Text('id: ' +
+                            snapshot.data[index].id.toString() +
+                            " Modelo: " +
+                            snapshot.data[index].id.toString()),
+                        subtitle: Text('Medida: ' +
+                            snapshot.data[index].medida.descricao +
+                            "\n"
+                                'Pais: ' +
+                            snapshot.data[index].pais.descricao +
+                            "\n"
+                                'Motivo: ' +
+                            ((snapshot.data[index].motivo != null)
+                                ? snapshot.data[index].motivo.toString()
+                                : "NI") +
+                            "\n"
+                                'Observacao: ' +
+                            ((snapshot.data[index].descricao != null)
+                                ? snapshot.data[index].descricao.toString()
+                                : "NI")),
+                        trailing: Container(
+                          width: 100,
+                          child: Row(
+                            children: <Widget>[
+                              IconButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                EditarRejeitadasPage(
+                                                  carcacaEdit:
+                                                      snapshot.data[index],
+                                                )));
+                                  },
+                                  icon: Icon(Icons.edit, color: Colors.orange)),
+
+                              IconButton(
+                                  onPressed: () async {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: Text("Excluir"),
+                                          content: Text(
+                                              "Tem certeza que deseja excluir o item ${snapshot.data[index].numeroEtiqueta}"),
+                                          actions: [
+                                            ElevatedButton(
+                                              child: Text("Sim"),
+                                              onPressed: () {
+                                                Provider.of<RejeitadasApi>(
+                                                        context,
+                                                        listen: false)
+                                                    .delete(snapshot
+                                                        .data[index].id);
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                        deleteMessage(context));
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                            ElevatedButton(
+                                              child: Text("Não"),
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                        ;
+                                      },
+                                    );
+                                  },
+                                  icon: Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  )),
+                              // IconButton(
+                              //     onPressed: () {
+                              //       Navigator.push(
+                              //           context,
+                              //           MaterialPageRoute(
+                              //               builder: (context) =>
+                              //                   PrintPage(
+                              //                     carcacaPrint:
+                              //                     snapshot.data[index],
+                              //                   )));
+                              //     },
+                              //     icon: Icon(Icons.print, color: Colors.greenAccent)),
+                              // IconButton(onPressed: (){}, icon: Icon(Icons.arrow_right, color: Colors.black,))
+                            ],
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => DetalhesRejeitadasPage(
+                                        id: snapshot.data[index].id,
+                                      )));
+                        },
+                      ),
+                    );
+                  });
+            } else {
+              return cicleLoading(context);
+            }
+          }),
+    );
+  }
+}
+
+class DinamicListCard extends ChangeNotifier {
+  cardResponse(_responseValue, context) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      color: Colors.white70,
+      child: ListTile(
+        title: Text('Etiqueta: ' +
+            _responseValue.toString() +
+            " id: " +
+            _responseValue.id.toString()),
+        subtitle: Text('Medida: ' +
+            _responseValue.medida.descricao +
+            "\n"
+                'Modelo: ' +
+            _responseValue.modelo.descricao),
+        trailing: Container(
+          width: 100,
+          child: Row(
+            children: <Widget>[
+              IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EditarRejeitadasPage(
+                                  carcacaEdit: _responseValue,
+                                )));
+                  },
+                  icon: Icon(Icons.edit, color: Colors.orange)),
+
+              IconButton(
+                  onPressed: () async {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text("Excluir"),
+                          content: Text(
+                              "Tem certeza que deseja excluir o item ${_responseValue.numeroEtiqueta}"),
+                          actions: [
+                            ElevatedButton(
+                              child: Text("Sim"),
+                              onPressed: () {
+                                Provider.of<RejeitadasApi>(context,
+                                        listen: false)
+                                    .delete(_responseValue.id);
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(deleteMessage(context));
+                                Navigator.pop(context);
+                              },
+                            ),
+                            ElevatedButton(
+                              child: Text("Não"),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        );
+                        ;
+                      },
+                    );
+                  },
+                  icon: Icon(
+                    Icons.delete,
+                    color: Colors.red,
+                  )),
+              // IconButton(onPressed: (){}, icon: Icon(Icons.arrow_right, color: Colors.black,))
+            ],
+          ),
+        ),
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => DetalhesRejeitadasPage(
+                        id: _responseValue.id,
+                      )));
+        },
+      ),
+    );
+  }
+}
