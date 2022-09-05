@@ -238,21 +238,22 @@ class AdicionarRejeitadasPageState extends State<AdicionarRejeitadasPage> {
             }).toList(),
           ),
           Padding(padding: EdgeInsets.all(10)),
-          Center(child: showImage(_imageFileList, "adicionar")),
-          Container(
-            padding: EdgeInsets.all(20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                FloatingActionButton(
-                  backgroundColor: Colors.blue,
-                  onPressed: getImage,
-                  tooltip: 'incrementar',
-                  child: Icon(Icons.camera_alt),
-                ),
-              ],
-            ),
-          ),
+          // Center(child: showImage(_imageFileList, "adicionar")),
+          // Adicionar foto
+          // Container(
+          //   padding: EdgeInsets.all(20),
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.end,
+          //     children: [
+          //       FloatingActionButton(
+          //         backgroundColor: Colors.blue,
+          //         onPressed: getImage,
+          //         tooltip: 'incrementar',
+          //         child: Icon(Icons.camera_alt),
+          //       ),
+          //     ],
+          //   ),
+          // ),
           Padding(
             padding: EdgeInsets.all(8),
           ),
@@ -274,15 +275,16 @@ class AdicionarRejeitadasPageState extends State<AdicionarRejeitadasPage> {
                   child: Text('Salvar!', style: TextStyle(color: Colors.white)),
                   controller: _btnController1,
                   onPressed: () async {
-                    if (_formkey.currentState.validate() && _imageFileList.length > 0) {
+                    if (_formkey.currentState.validate()) {
 
-                      Map<String, String> body = {
-                        'title': 'carcaca_rejeitada',
-                      };
+                    // if (_formkey.currentState.validate() && _imageFileList.length > 0) {
 
-                      responseMessageSimple imageResponse =
-                          await UploadApi().addImage(body, _imageFileList);
-
+                      // Map<String, String> body = {
+                      //   'title': 'carcaca_rejeitada',
+                      // };
+                      //
+                      // responseMessageSimple imageResponse =
+                      //     await UploadApi().addImage(body, _imageFileList);
 
                       var response = await RejeitadasApi().create(carcaca);
 

@@ -171,7 +171,7 @@ class ListaRejeitadasState extends State<ListaRejeitadas> {
                                         return AlertDialog(
                                           title: Text("Excluir"),
                                           content: Text(
-                                              "Tem certeza que deseja excluir o item ${snapshot.data[index].numeroEtiqueta}"),
+                                              "Tem certeza que deseja excluir o item ${snapshot.data[index].id}"),
                                           actions: [
                                             ElevatedButton(
                                               child: Text("Sim"),

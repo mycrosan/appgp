@@ -23,6 +23,7 @@ import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
+import '../../models/responseMessage.dart';
 import 'ListaCarcacas.dart';
 
 class AdicionarCarcacaPage extends StatefulWidget {
@@ -327,18 +328,56 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
                           await UploadApi().addImage(body, _imageFileList);
 
                       print(imageResponse.content[0]);
+
                       carcaca.fotos = json.encode(imageResponse.content);
 
                       var response = await CarcacaApi().create(carcaca);
 
-                      _btnController1.success();
+                      if (response is Carcaca && response != null) {
 
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ListaCarcaca(),
-                        ),
-                      );
+                        _btnController1.success();
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ListaCarcaca(),
+                          ),
+                        );
+
+                      } else {
+                        responseMessage value =
+                        response != null ? response : null;
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text("Atenção! \n" + value.message),
+                              content: Text(value.debugMessage),
+                              actions: [
+                                TextButton(
+                                  child: Text("OK"),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ListaCarcaca(),
+                                      ),
+                                    );
+                                    // _btnController1.reset();
+                                    // Navigator.pop(context);
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+
+
+
+
+
+
                     } else {
                       _btnController1.reset();
                     }
