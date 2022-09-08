@@ -4,10 +4,12 @@ import 'package:GPPremium/service/config_request.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:GPPremium/models/responseMessage.dart';
 
-class CarcacaApi extends ChangeNotifier {
-  static const ENDPOINT = 'carcaca';
+import '../models/rejeitadas.dart';
 
-  Future<List<Carcaca>> getAll() async {
+class RejeitadasApi extends ChangeNotifier {
+  static const ENDPOINT = 'carcacarejeitada';
+
+  Future<List<Rejeitadas>> getAll() async {
     var objData = new ConfigRequest();
     var response = await objData.requestGet(ENDPOINT);
 
@@ -15,64 +17,54 @@ class CarcacaApi extends ChangeNotifier {
       final map = jsonDecode(response.body);
       List<dynamic> body = map;
       // print(body[0]['_links']['self']);
-      return body.map((carcacas) => Carcaca.fromJson(carcacas)).toList();
+      return body.map((carcacas) => Rejeitadas.fromJson(carcacas)).toList();
     } else {
       throw Exception('Falha ao carregar carcaças');
     }
   }
 
-  Future<Carcaca> getById(int id) async {
+  Future<Rejeitadas> getById(int id) async {
     var objData = new ConfigRequest();
     var response = await objData.requestGetById(ENDPOINT, id);
 
     if (response.statusCode == 200) {
-      return Carcaca.fromJson(jsonDecode(response.body));
+      return Rejeitadas.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Falha ao carregar um post');
     }
   }
 
-  Future<Object> create(Carcaca carcaca) async {
+  Future<Rejeitadas> create(Rejeitadas carcaca) async {
     var map = carcaca.toJson();
 
     var objData = new ConfigRequest();
     var response = await objData.requestPost(ENDPOINT, map);
 
     if (response.statusCode == 200) {
-      try {
-        var value = Carcaca.fromJson(jsonDecode(response.body));
-        if (value.id != null) {
-          return value;
-        } else {
-          return responseMessage.fromJson(jsonDecode(response.body));
-        }
-      } catch (e) {
-        return responseMessage.fromJson(jsonDecode(response.body));
-      }
+      var values = response.body;
+      var jsonData = jsonDecode(values);
+      // var mapValues= jsonData as Map;
+      return Rejeitadas.fromJson(jsonData);
+      print('Aqui');
     } else {
-      throw Exception('Falha ao tentar salvar');
+      throw Exception('Falha ao tentar salvar carcaça');
     }
   }
 
-  Future<Object> update(Carcaca carcaca) async {
+  Future<Rejeitadas> update(Rejeitadas carcaca) async {
     var map = carcaca.toJson();
 
     var objData = new ConfigRequest();
     var response = await objData.requestUpdate(ENDPOINT, map, carcaca.id);
 
     if (response.statusCode == 200) {
-      try {
-        var value = Carcaca.fromJson(jsonDecode(response.body));
-        if (value.id != null) {
-          return value;
-        } else {
-          return responseMessage.fromJson(jsonDecode(response.body));
-        }
-      } catch (e) {
-        return responseMessage.fromJson(jsonDecode(response.body));
-      }
+      var values = response.body;
+      var jsonData = jsonDecode(values);
+      // var mapValues= jsonData as Map;
+      return Rejeitadas.fromJson(jsonData);
+      print('Aqui');
     } else {
-      throw Exception('Falha ao tentar atualizar');
+      throw Exception('Falha ao tentar salvar carcaça');
     }
   }
 
@@ -90,13 +82,13 @@ class CarcacaApi extends ChangeNotifier {
     }
   }
 
-  Future<Object> consultaCarcaca(numeroEtiqueta) async {
+  Future<Object> consultaRejeitadas(numeroEtiqueta) async {
     var objData = new ConfigRequest();
-    var response = await objData.requestQueryCarcaca(ENDPOINT, numeroEtiqueta);
+    var response = await objData.requestQueryRejeitadas(ENDPOINT, numeroEtiqueta);
 
     if (response.statusCode == 200) {
       try {
-        var value = Carcaca.fromJson(jsonDecode(response.body));
+        var value = Rejeitadas.fromJson(jsonDecode(response.body));
         if (value.id != null) {
           return value;
         } else {
@@ -109,4 +101,6 @@ class CarcacaApi extends ChangeNotifier {
       throw Exception('Falha ao carregar Carcaça');
     }
   }
+
+
 }

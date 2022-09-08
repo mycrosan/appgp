@@ -121,6 +121,22 @@ class ConfigRequest {
     }
   }
 
+  Future<Response> requestQueryRejeitadas(
+      String endpoint, String numeroEtiqueta) async {
+    var jwt = await new AuthUtil().jwtOrEmpty;
+    if (jwt != null) {
+      http.Response response = await http.get(
+        Uri.parse(SERVER_IP + endpoint + "/pesquisa/${numeroEtiqueta}"),
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $jwt'
+        },
+      ).timeout(const Duration(seconds: 60));
+      return response;
+    }
+  }
+
   Future<Response> requestQueryProducao(
       String endpoint, Producao producao) async {
     var jwt = await new AuthUtil().jwtOrEmpty;

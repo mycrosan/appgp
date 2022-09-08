@@ -16,27 +16,28 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 import '../../main.dart';
-import '../../models/responseMessage.dart';
-import 'ListaCarcacas.dart';
+import '../../models/rejeitadas.dart';
+import '../../service/rejeitadasapi.dart';
+import 'ListaRejeitadas.dart';
 
-class EditarCarcacaPage extends StatefulWidget {
+class EditarRejeitadasPage extends StatefulWidget {
   int id;
-  Carcaca carcacaEdit;
+  Rejeitadas carcacaEdit;
 
-  EditarCarcacaPage({Key key, this.carcacaEdit, producao}) : super(key: key);
+  EditarRejeitadasPage({Key key, this.carcacaEdit, producao}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return EditarCarcacaPageState();
+    return EditarRejeitadasPageState();
   }
 }
 
-class EditarCarcacaPageState extends State<EditarCarcacaPage> {
+class EditarRejeitadasPageState extends State<EditarRejeitadasPage> {
   final _formkey = GlobalKey<FormState>();
 
   TextEditingController textEditingControllerEtiqueta;
   TextEditingController textEditingControllerDot;
-  Carcaca carcaca;
+  Rejeitadas carcaca;
   Image _image;
   bool image_ok = false;
 
@@ -57,7 +58,7 @@ class EditarCarcacaPageState extends State<EditarCarcacaPage> {
     super.initState();
     textEditingControllerEtiqueta = new TextEditingController();
     textEditingControllerDot = new TextEditingController();
-    carcaca = new Carcaca();
+    carcaca = new Rejeitadas();
     // image = showImage( widget.carcacaEdit.fotos);
 
     ModeloApi().getAll().then((List<Modelo> value) {
@@ -80,14 +81,12 @@ class EditarCarcacaPageState extends State<EditarCarcacaPage> {
 
     setState(() {
       carcaca.id = widget.carcacaEdit.id;
-      textEditingControllerEtiqueta.text = widget.carcacaEdit.numeroEtiqueta;
-      carcaca.numeroEtiqueta = widget.carcacaEdit.numeroEtiqueta;
-      textEditingControllerDot.text = widget.carcacaEdit.dot;
-      carcaca.dot = widget.carcacaEdit.dot;
+
       carcaca.modelo = widget.carcacaEdit.modelo;
       carcaca.medida = widget.carcacaEdit.medida;
       carcaca.pais = widget.carcacaEdit.pais;
-      carcaca.fotos = widget.carcacaEdit.fotos;
+      carcaca.motivo = widget.carcacaEdit.motivo;
+      carcaca.descricao = widget.carcacaEdit.descricao;
       modeloSelected = carcaca.modelo;
       medidaSelected = carcaca.medida;
       paisSelected = carcaca.pais;
@@ -101,11 +100,11 @@ class EditarCarcacaPageState extends State<EditarCarcacaPage> {
 
   @override
   Widget build(BuildContext context) {
-    var carcacaApi = new CarcacaApi();
+    var carcacaApi = new RejeitadasApi();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Editar Carcaça'),
+        title: Text('Editar Carcaça Proibida'),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -115,39 +114,6 @@ class EditarCarcacaPageState extends State<EditarCarcacaPage> {
               key: _formkey,
               child: Column(
                 children: [
-                  TextFormField(
-                    controller: textEditingControllerEtiqueta,
-                    decoration: InputDecoration(
-                      labelText: "Etiqueta",
-                    ),
-                    validator: (value) =>
-                        value.length == 0 ? 'Não pode ser nulo' : null,
-                    keyboardType:
-                        TextInputType.numberWithOptions(decimal: true),
-                    onChanged: (String newValue) {
-                      setState(() {
-                        carcaca.numeroEtiqueta = newValue;
-                      });
-                    },
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(10),
-                  ),
-                  TextFormField(
-                    // initialValue: (snapshot.data !=null) ? snapshot.data.dot : null,
-                    controller: textEditingControllerDot,
-                    decoration: InputDecoration(
-                      labelText: "Dot",
-                    ),
-                    onChanged: (String newValue) {
-                      setState(() {
-                        carcaca.dot = newValue;
-                      });
-                    },
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(10),
-                  ),
                   DropdownButtonFormField(
                     // hint: Text("Selecione um modelo"),
                     decoration: InputDecoration(
@@ -215,26 +181,6 @@ class EditarCarcacaPageState extends State<EditarCarcacaPage> {
                     }).toList(),
                   ),
                   Padding(padding: EdgeInsets.all(10)),
-                  Container(
-                    child: FutureBuilder(
-                        future: new ImageService().showImage(carcaca.fotos, "carcaca"),
-                        builder: (context, AsyncSnapshot snapshot) {
-                          if (snapshot.hasData) {
-                            return Container(
-                              height: 200.0,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: snapshot.data.length,
-                                itemBuilder: (BuildContext ctxt, int index) {
-                                  return snapshot.data[index];
-                                },
-                              ),
-                            );
-                          } else {
-                            return CircularProgressIndicator();
-                          }
-                        }),
-                  ),
                   Row(
                     children: [
                       Expanded(
@@ -244,7 +190,7 @@ class EditarCarcacaPageState extends State<EditarCarcacaPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ListaCarcaca(),
+                              builder: (context) => ListaRejeitadas(),
                             ),
                           );
                         },
@@ -254,47 +200,14 @@ class EditarCarcacaPageState extends State<EditarCarcacaPage> {
                           child: ElevatedButton(
                         child: Text("Atualizar"),
                         onPressed: () async {
-                          var carcacaApi = new CarcacaApi();
-
+                          var carcacaApi = new RejeitadasApi();
                           var response = await carcacaApi.update(carcaca);
-
-                          if (response is Carcaca && response != null) {
-
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ListaCarcaca(),
-                              ),
-                            );
-
-                          } else {
-                            responseMessage value =
-                            response != null ? response : null;
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text("Atenção!"),
-                                  content: Text(value.debugMessage),
-                                  actions: [
-                                    TextButton(
-                                      child: Text("OK"),
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => ListaCarcaca(),
-                                          ),
-                                        );
-                                        // _btnController1.reset();
-                                        // Navigator.pop(context);
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          }
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ListaRejeitadas(),
+                            ),
+                          );
                         },
                       )),
                     ],

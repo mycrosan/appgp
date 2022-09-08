@@ -2,12 +2,10 @@ import 'dart:convert';
 
 import 'package:GPPremium/components/ImagePreview.dart';
 import 'package:GPPremium/components/OrderData.dart';
-import 'package:GPPremium/models/carcaca.dart';
 import 'package:GPPremium/models/medida.dart';
 import 'package:GPPremium/models/modelo.dart';
 import 'package:GPPremium/models/pais.dart';
 import 'package:GPPremium/models/responseMessageSimple.dart';
-import 'package:GPPremium/service/carcacaapi.dart';
 import 'package:GPPremium/service/medidaapi.dart';
 import 'package:GPPremium/service/modeloapi.dart';
 
@@ -15,30 +13,30 @@ import 'package:GPPremium/service/paisapi.dart';
 import 'package:GPPremium/service/uploadapi.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
-import '../../models/responseMessage.dart';
-import 'ListaCarcacas.dart';
+import '../../models/rejeitadas.dart';
+import '../../service/rejeitadasapi.dart';
+import 'ListaRejeitadas.dart';
 
-class AdicionarCarcacaPage extends StatefulWidget {
+
+class AdicionarRejeitadasPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return AdicionarCarcacaPageState();
+    return AdicionarRejeitadasPageState();
   }
 }
 
-class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
+class AdicionarRejeitadasPageState extends State<AdicionarRejeitadasPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Carcaça'),
+        title: Text('Carcaça Proibida'),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -73,7 +71,7 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
   TextEditingController textEditingControllerModelo;
   TextEditingController textEditingControllerMarca;
   TextEditingController textEditingControllerMedida;
-  Carcaca carcaca;
+  Rejeitadas carcaca;
 
   //Modelo
   List<Modelo> modeloList = [];
@@ -95,7 +93,7 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
     textEditingControllerModelo = TextEditingController();
     textEditingControllerMarca = TextEditingController();
     textEditingControllerMedida = TextEditingController();
-    carcaca = new Carcaca();
+    carcaca = new Rejeitadas();
 
     ModeloApi().getAll().then((List<Modelo> value) {
       setState(() {
@@ -138,14 +136,6 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
     }
   }
 
-  // Widget _handlePreview() {
-  //   if (false) {
-  //     // return _previewVideo();
-  //   } else {
-  //     return _previewImages();
-  //   }
-  // }
-
   Future<void> retrieveLostData() async {
     final LostDataResponse response = await _picker.retrieveLostData();
     if (response.isEmpty) {
@@ -181,40 +171,6 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
       key: _formkey,
       child: Column(
         children: [
-          TextFormField(
-            controller: textEditingControllerEtiqueta,
-            decoration: InputDecoration(
-              labelText: "Etiqueta",
-            ),
-            validator: (value) =>
-                value.length == 0 ? 'Não pode ser nulo' : null,
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
-            onChanged: (String newValue) {
-              setState(() {
-                carcaca.numeroEtiqueta = newValue;
-              });
-            },
-          ),
-          Padding(
-            padding: EdgeInsets.all(10),
-          ),
-          TextFormField(
-            controller: textEditingControllerDot,
-            decoration: InputDecoration(
-              labelText: "Dot",
-            ),
-            validator: (value) =>
-                value.length == 0 ? 'Não pode ser nulo' : null,
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
-            onChanged: (String newValue) {
-              setState(() {
-                carcaca.dot = newValue;
-              });
-            },
-          ),
-          Padding(
-            padding: EdgeInsets.all(10),
-          ),
           DropdownButtonFormField(
             decoration: InputDecoration(
               labelText: "Modelo",
@@ -282,21 +238,22 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
             }).toList(),
           ),
           Padding(padding: EdgeInsets.all(10)),
-          Center(child: showImage(_imageFileList, "adicionar")),
-          Container(
-            padding: EdgeInsets.all(20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                FloatingActionButton(
-                  backgroundColor: Colors.blue,
-                  onPressed: getImage,
-                  tooltip: 'incrementar',
-                  child: Icon(Icons.camera_alt),
-                ),
-              ],
-            ),
-          ),
+          // Center(child: showImage(_imageFileList, "adicionar")),
+          // Adicionar foto
+          // Container(
+          //   padding: EdgeInsets.all(20),
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.end,
+          //     children: [
+          //       FloatingActionButton(
+          //         backgroundColor: Colors.blue,
+          //         onPressed: getImage,
+          //         tooltip: 'incrementar',
+          //         child: Icon(Icons.camera_alt),
+          //       ),
+          //     ],
+          //   ),
+          // ),
           Padding(
             padding: EdgeInsets.all(8),
           ),
@@ -318,60 +275,27 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
                   child: Text('Salvar!', style: TextStyle(color: Colors.white)),
                   controller: _btnController1,
                   onPressed: () async {
-                    if (_formkey.currentState.validate() && _imageFileList.length > 0) {
+                    if (_formkey.currentState.validate()) {
 
-                      Map<String, String> body = {
-                        'title': 'carcaca',
-                      };
+                    // if (_formkey.currentState.validate() && _imageFileList.length > 0) {
 
-                      responseMessageSimple imageResponse =
-                          await UploadApi().addImage(body, _imageFileList);
+                      // Map<String, String> body = {
+                      //   'title': 'carcaca_rejeitada',
+                      // };
+                      //
+                      // responseMessageSimple imageResponse =
+                      //     await UploadApi().addImage(body, _imageFileList);
 
-                      print(imageResponse.content[0]);
+                      var response = await RejeitadasApi().create(carcaca);
 
-                      carcaca.fotos = json.encode(imageResponse.content);
+                      _btnController1.success();
 
-                      var response = await CarcacaApi().create(carcaca);
-
-                      if (response is Carcaca && response != null) {
-
-                        _btnController1.success();
-
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ListaCarcaca(),
-                          ),
-                        );
-
-                      } else {
-                        responseMessage value =
-                        response != null ? response : null;
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text("Atenção!"),
-                              content: Text(value.debugMessage),
-                              actions: [
-                                TextButton(
-                                  child: Text("OK"),
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ListaCarcaca(),
-                                      ),
-                                    );
-                                    // _btnController1.reset();
-                                    // Navigator.pop(context);
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      }
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ListaRejeitadas(),
+                        ),
+                      );
                     } else {
                       _btnController1.reset();
                     }

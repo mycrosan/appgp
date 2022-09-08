@@ -52,6 +52,9 @@ class Home extends StatelessWidget {
             GPMenu('Qualidade', Icons.check, onClick: () {
               Navigator.pushNamed(context, '/qualidade');
             }),
+            GPMenu('Proibidas', Icons.block, onClick: () {
+              Navigator.pushNamed(context, '/proibidas');
+            }),
             GPMenu('Ajustes', Icons.settings, onClick: () {
               Navigator.pushNamed(context, '/ajustes');
             }),

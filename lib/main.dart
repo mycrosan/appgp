@@ -1,4 +1,3 @@
-import 'package:GPPremium/models/antiquebra.dart';
 import 'package:GPPremium/screens/antiquebra/ListaAntiquebra.dart';
 import 'package:GPPremium/screens/camelback/ListaCamelback.dart';
 import 'package:GPPremium/screens/carcaca/ListaCarcacas.dart';
@@ -13,6 +12,7 @@ import 'package:GPPremium/screens/pais/ListaPais.dart';
 import 'package:GPPremium/screens/producao/ListaProducao.dart';
 import 'package:GPPremium/screens/qualidade/ListaQualidade.dart';
 import 'package:GPPremium/screens/regra/ListaRegras.dart';
+import 'package:GPPremium/screens/rejeitadas/ListaRejeitadas.dart';
 import 'package:GPPremium/service/antiquebraapi.dart';
 import 'package:GPPremium/service/camelbackapi.dart';
 import 'package:GPPremium/service/carcacaapi.dart';
@@ -24,13 +24,11 @@ import 'package:GPPremium/service/modeloapi.dart';
 import 'package:GPPremium/service/paisapi.dart';
 import 'package:GPPremium/service/producaoapi.dart';
 import 'package:GPPremium/service/regraapi.dart';
+import 'package:GPPremium/service/rejeitadasapi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'autenticacao/login.dart';
-
-//flutter build appbundle
-//  const SERVER_IP = 'http://143.198.182.236:8080/gp/api/';
 
 var SERVER_IP;
 
@@ -55,6 +53,7 @@ class GpPremiumApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<CarcacaApi>(create: (_) => CarcacaApi()),
+        ChangeNotifierProvider<RejeitadasApi>(create: (_) => RejeitadasApi()),
         ChangeNotifierProvider<ProducaoApi>(create: (_) => ProducaoApi()),
         ChangeNotifierProvider<RegraApi>(create: (_) => RegraApi()),
         ChangeNotifierProvider<PaisApi>(create: (_) => PaisApi()),
@@ -82,6 +81,7 @@ class GpPremiumApp extends StatelessWidget {
           '/pais': (context) => ListaPais(),
           '/home': (_) => Home(),
           '/qualidade': (_) => ListaQualidade(),
+          '/proibidas': (_) => ListaRejeitadas(),
           '/ajustes': (_) => Ajustes(),
         },
         debugShowCheckedModeBanner: false,
