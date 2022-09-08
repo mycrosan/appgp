@@ -52,32 +52,27 @@ class CarcacaApi extends ChangeNotifier {
     } else {
       throw Exception('Falha ao tentar salvar');
     }
-
-    // if (response.statusCode == 200) {
-    //   var values = response.body;
-    //   var jsonData = jsonDecode(values);
-    //   // var mapValues= jsonData as Map;
-    //   return Carcaca.fromJson(jsonData);
-    //   print('Aqui');
-    // } else {
-    //   throw Exception('Falha ao tentar salvar carcaça');
-    // }
   }
 
-  Future<Carcaca> update(Carcaca carcaca) async {
+  Future<Object> update(Carcaca carcaca) async {
     var map = carcaca.toJson();
 
     var objData = new ConfigRequest();
     var response = await objData.requestUpdate(ENDPOINT, map, carcaca.id);
 
     if (response.statusCode == 200) {
-      var values = response.body;
-      var jsonData = jsonDecode(values);
-      // var mapValues= jsonData as Map;
-      return Carcaca.fromJson(jsonData);
-      print('Aqui');
+      try {
+        var value = Carcaca.fromJson(jsonDecode(response.body));
+        if (value.id != null) {
+          return value;
+        } else {
+          return responseMessage.fromJson(jsonDecode(response.body));
+        }
+      } catch (e) {
+        return responseMessage.fromJson(jsonDecode(response.body));
+      }
     } else {
-      throw Exception('Falha ao tentar salvar carcaça');
+      throw Exception('Falha ao tentar atualizar');
     }
   }
 
@@ -114,6 +109,4 @@ class CarcacaApi extends ChangeNotifier {
       throw Exception('Falha ao carregar Carcaça');
     }
   }
-
-
 }

@@ -351,7 +351,7 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: Text("Atenção! \n" + value.message),
+                              title: Text("Atenção!"),
                               content: Text(value.debugMessage),
                               actions: [
                                 TextButton(
@@ -372,12 +372,6 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
                           },
                         );
                       }
-
-
-
-
-
-
                     } else {
                       _btnController1.reset();
                     }
