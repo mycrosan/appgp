@@ -327,8 +327,6 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
                       responseMessageSimple imageResponse =
                           await UploadApi().addImage(body, _imageFileList);
 
-                      print(imageResponse.content[0]);
-
                       carcaca.fotos = json.encode(imageResponse.content);
 
                       var response = await CarcacaApi().create(carcaca);

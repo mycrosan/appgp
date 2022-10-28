@@ -384,91 +384,93 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
               Padding(padding: EdgeInsets.all(5)),
               Expanded(
                 child: RoundedLoadingButton(
-                  color: Colors.black,
-                  successIcon: Icons.check,
-                  failedIcon: Icons.cottage,
-                  child: Text('Salvar!', style: TextStyle(color: Colors.white)),
-                  controller: _btnController1,
-                  onPressed: () async {
-                    if (_formkey.currentState.validate()) {
-                      Map<String, String> body = {
-                        'title': 'producao',
-                      };
-                      responseMessageSimple imageResponse =
-                          await UploadApi().addImage(body, _imageFileList);
+                    color: Colors.black,
+                    successIcon: Icons.check,
+                    failedIcon: Icons.cottage,
+                    child:
+                        Text('Salvar!', style: TextStyle(color: Colors.white)),
+                    controller: _btnController1,
+                    onPressed: () async {
+                      if (_formkey.currentState.validate()) {
+                        Map<String, String> body = {
+                          'title': 'producao',
+                        };
+                        responseMessageSimple imageResponse =
+                            await UploadApi().addImage(body, _imageFileList);
 
-                      print(imageResponse.content[0]);
-                      producao.fotos = json.encode(imageResponse.content);
+                        print(imageResponse.content[0]);
+                        producao.fotos = json.encode(imageResponse.content);
 
-                      var response = await producaoApi.create(producao);
+                        var response = await producaoApi.create(producao);
 
-                      _btnController1.success();
+                        if (response is Producao && response != null) {
+                          _btnController1.success();
 
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text("Imprimir?"),
-                            content: Text("Quer ir para tela de impressão?"),
-                            actions: [
-                              ElevatedButton(
-                                child: Text("Sim"),
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => PrintPage(
-                                                producaoPrint: producao,
-                                              )));
-                                },
-                              ),
-                              ElevatedButton(
-                                child: Text("Não"),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ListaProducao(),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Imprimir?"),
+                                content:
+                                    Text("Quer ir para tela de impressão?"),
+                                actions: [
+                                  ElevatedButton(
+                                    child: Text("Sim"),
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => PrintPage(
+                                                    producaoPrint: producao,
+                                                  )));
+                                    },
+                                  ),
+                                  ElevatedButton(
+                                    child: Text("Não"),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ListaProducao(),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
                           );
-                          ;
-                        },
-                      );
-                    } else {
-                      _btnController1.reset();
-                    }
-                  },
-                ),
+                        } else {
+                          responseMessage value =
+                              response != null ? response : null;
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Atenção!"),
+                                content: Text(value.debugMessage),
+                                actions: [
+                                  TextButton(
+                                    child: Text("OK"),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ListaProducao(),
+                                        ),
+                                      );
+                                      // _btnController1.reset();
+                                      // Navigator.pop(context);
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        }
+                      }
+                    }),
               ),
-              // Expanded(
-              //     child: ElevatedButton(
-              //   child: Text("Salvar"),
-              //   onPressed: () async {
-              //     Map<String, String> body = {
-              //       'title': 'producao',
-              //     };
-              //
-              //     responseMessageSimple imageResponse =
-              //         await UploadApi().addImage(body, _imageFileList);
-              //
-              //     print(imageResponse.content[0]);
-              //     producao.fotos = json.encode(imageResponse.content);
-              //
-              //     if (_formkey.currentState.validate()) {
-              //       var response = await producaoApi.create(producao);
-              //       Navigator.push(
-              //         context,
-              //         MaterialPageRoute(
-              //           builder: (context) => ListaProducao(),
-              //         ),
-              //       );
-              //     }
-              //   },
-              // )),
             ],
           )
         ],

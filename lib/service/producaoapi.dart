@@ -52,18 +52,23 @@ class ProducaoApi extends ChangeNotifier {
     }
   }
 
-  Future<Producao> create(Producao producao) async {
-    var producaoMap = producao.toJson();
+  Future<Object> create(Producao producao) async {
+    var map = producao.toJson();
 
     var objData = new ConfigRequest();
-    var response = await objData.requestPost(ENDPOINT, producaoMap);
+    var response = await objData.requestPost(ENDPOINT, map);
 
     if (response.statusCode == 200) {
-      var values = response.body;
-      var jsonData = jsonDecode(values);
-      // var mapValues= jsonData as Map;
-      return Producao.fromJson(jsonData);
-      print('Aqui');
+      try {
+        var value = Producao.fromJson(jsonDecode(response.body));
+        if (value.id != null) {
+          return value;
+        } else {
+          return responseMessage.fromJson(jsonDecode(response.body));
+        }
+      } catch (e) {
+        return responseMessage.fromJson(jsonDecode(response.body));
+      }
     } else {
       throw Exception('Falha ao tentar salvar');
     }
