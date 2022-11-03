@@ -4,6 +4,9 @@ App para gestão de carcaças
 # Descrição
 Sistema Exclusivo GP Premium
 
+## Build
+flutter build appbundle
+
 ### Commit type	Emoji
 
 - Initial commit	🎉 :tada:
