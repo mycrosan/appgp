@@ -66,11 +66,10 @@ class AdicionarRejeitadasPageState extends State<AdicionarRejeitadasPage> {
 
   final ImagePicker _picker = ImagePicker();
 
-  MaskedTextController textEditingControllerEtiqueta;
-  MaskedTextController textEditingControllerDot;
   TextEditingController textEditingControllerModelo;
   TextEditingController textEditingControllerMarca;
   TextEditingController textEditingControllerMedida;
+  TextEditingController textEditingControllerDescricao;
   Rejeitadas carcaca;
 
   //Modelo
@@ -88,11 +87,10 @@ class AdicionarRejeitadasPageState extends State<AdicionarRejeitadasPage> {
   @override
   void initState() {
     super.initState();
-    textEditingControllerEtiqueta = MaskedTextController(mask: '000000');
-    textEditingControllerDot = MaskedTextController(mask: '0000');
     textEditingControllerModelo = TextEditingController();
     textEditingControllerMarca = TextEditingController();
     textEditingControllerMedida = TextEditingController();
+    textEditingControllerDescricao = TextEditingController();
     carcaca = new Rejeitadas();
 
     ModeloApi().getAll().then((List<Modelo> value) {
@@ -238,22 +236,19 @@ class AdicionarRejeitadasPageState extends State<AdicionarRejeitadasPage> {
             }).toList(),
           ),
           Padding(padding: EdgeInsets.all(10)),
-          // Center(child: showImage(_imageFileList, "adicionar")),
-          // Adicionar foto
-          // Container(
-          //   padding: EdgeInsets.all(20),
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.end,
-          //     children: [
-          //       FloatingActionButton(
-          //         backgroundColor: Colors.blue,
-          //         onPressed: getImage,
-          //         tooltip: 'incrementar',
-          //         child: Icon(Icons.camera_alt),
-          //       ),
-          //     ],
-          //   ),
-          // ),
+          TextFormField(
+              controller: textEditingControllerDescricao,
+              decoration: InputDecoration(
+                labelText: "Motivo",
+              ),
+              // validator: (value) =>
+              // value.length == 0 ? 'Não pode ser nulo' : null,
+              onChanged: (String newValue) {
+                setState(() {
+                  carcaca.motivo = newValue;
+                });
+              },
+            ),
           Padding(
             padding: EdgeInsets.all(8),
           ),

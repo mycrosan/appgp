@@ -1,12 +1,7 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
-import 'package:GPPremium/models/carcaca.dart';
 import 'package:GPPremium/models/medida.dart';
 import 'package:GPPremium/models/modelo.dart';
 import 'package:GPPremium/models/pais.dart';
-import 'package:GPPremium/service/carcacaapi.dart';
-import 'package:GPPremium/service/get_image.dart';
+
 import 'package:GPPremium/service/medidaapi.dart';
 import 'package:GPPremium/service/modeloapi.dart';
 import 'package:GPPremium/service/paisapi.dart';
@@ -24,7 +19,7 @@ class EditarRejeitadasPage extends StatefulWidget {
   int id;
   Rejeitadas carcacaEdit;
 
-  EditarRejeitadasPage({Key key, this.carcacaEdit, producao}) : super(key: key);
+  EditarRejeitadasPage({Key key, this.carcacaEdit}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -35,8 +30,9 @@ class EditarRejeitadasPage extends StatefulWidget {
 class EditarRejeitadasPageState extends State<EditarRejeitadasPage> {
   final _formkey = GlobalKey<FormState>();
 
-  TextEditingController textEditingControllerEtiqueta;
-  TextEditingController textEditingControllerDot;
+  TextEditingController textEditingControllerDescricao;
+  TextEditingController textEditingControllerMotivo;
+
   Rejeitadas carcaca;
   Image _image;
   bool image_ok = false;
@@ -56,8 +52,8 @@ class EditarRejeitadasPageState extends State<EditarRejeitadasPage> {
   @override
   void initState() {
     super.initState();
-    textEditingControllerEtiqueta = new TextEditingController();
-    textEditingControllerDot = new TextEditingController();
+    textEditingControllerDescricao = new TextEditingController();
+    textEditingControllerMotivo = new TextEditingController();
     carcaca = new Rejeitadas();
     // image = showImage( widget.carcacaEdit.fotos);
 
@@ -81,12 +77,13 @@ class EditarRejeitadasPageState extends State<EditarRejeitadasPage> {
 
     setState(() {
       carcaca.id = widget.carcacaEdit.id;
-
       carcaca.modelo = widget.carcacaEdit.modelo;
       carcaca.medida = widget.carcacaEdit.medida;
       carcaca.pais = widget.carcacaEdit.pais;
       carcaca.motivo = widget.carcacaEdit.motivo;
       carcaca.descricao = widget.carcacaEdit.descricao;
+      textEditingControllerMotivo.text = widget.carcacaEdit.motivo;
+      textEditingControllerDescricao.text = widget.carcacaEdit.descricao;
       modeloSelected = carcaca.modelo;
       medidaSelected = carcaca.medida;
       paisSelected = carcaca.pais;
@@ -181,6 +178,38 @@ class EditarRejeitadasPageState extends State<EditarRejeitadasPage> {
                     }).toList(),
                   ),
                   Padding(padding: EdgeInsets.all(10)),
+                  TextFormField(
+                    controller: textEditingControllerMotivo,
+                    decoration: InputDecoration(
+                      labelText: "Motivo",
+                    ),
+                    // validator: (value) =>
+                    // value.length == 0 ? 'Não pode ser nulo' : null,
+                    onChanged: (String newValue) {
+                      setState(() {
+                        carcaca.motivo = newValue;
+                      });
+                    },
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8),
+                  ),
+                  TextFormField(
+                    controller: textEditingControllerDescricao,
+                    decoration: InputDecoration(
+                      labelText: "Descrição",
+                    ),
+                    // validator: (value) =>
+                    // value.length == 0 ? 'Não pode ser nulo' : null,
+                    onChanged: (String newValue) {
+                      setState(() {
+                        carcaca.descricao = newValue;
+                      });
+                    },
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8),
+                  ),
                   Row(
                     children: [
                       Expanded(

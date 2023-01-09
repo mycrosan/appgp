@@ -38,6 +38,6 @@ class Rejeitadas {
     "medida": medida.toJson(),
     "pais": pais.toJson(),
     "motivo": motivo,
-    "status": descricao,
+    "descricao": descricao,
   };
 }
