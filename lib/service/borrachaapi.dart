@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:GPPremium/components/OrderData.dart';
 import 'package:GPPremium/models/borracha.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
@@ -19,7 +20,9 @@ class BorrachaApi extends ChangeNotifier {
       final map = jsonDecode(response.body);
       List<dynamic> body = map;
       // print(body[0]['_links']['self']);
-      return body.map((marca) => Borracha.fromJson(marca)).toList();
+      var values = body.map((marca) => Borracha.fromJson(marca)).toList();
+      alfabetSortList(values);
+      return values;
     } else {
       throw Exception('Falha ao carregar marcaes');
     }

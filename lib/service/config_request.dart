@@ -1,14 +1,11 @@
 import 'dart:convert';
 
 import 'package:GPPremium/autenticacao/authutil.dart';
-import 'package:GPPremium/models/classificacao.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
-
 import '../main.dart';
 import '../models/producao.dart';
 import '../models/regra.dart';
-import 'modeloapi.dart';
 
 class ConfigRequest {
   Future<Response> requestGet(String endpoint) async {

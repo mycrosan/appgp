@@ -1,7 +1,5 @@
 import 'package:GPPremium/models/pais.dart';
-import 'package:GPPremium/models/regra.dart';
 import 'package:GPPremium/service/paisapi.dart';
-import 'package:GPPremium/service/regraapi.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

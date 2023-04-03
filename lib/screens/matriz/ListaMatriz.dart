@@ -1,8 +1,6 @@
 import 'package:GPPremium/service/matrizapi.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../../components/OrderData.dart';
 import 'adicionar.dart';
 import 'detailwidget.dart';
 import 'editdatawidget.dart';
@@ -10,7 +8,6 @@ import 'editdatawidget.dart';
 class ListaMatriz extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     var matrizAPI = new MatrizApi();
 
     final MatrizApi matriz = Provider.of(context);
@@ -24,18 +21,17 @@ class ListaMatriz extends StatelessWidget {
         child: FutureBuilder(
             future: matrizAPI.getAll(),
             builder: (context, AsyncSnapshot<List> snapshot) {
-              alfabetSortList(snapshot.data);
               if (snapshot.hasData) {
+                snapshot.data;
                 return ListView.builder(
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index) {
                       return Card(
                         child: ListTile(
-                          title: Text('ID: ' +
-                              snapshot.data[index].id.toString()),
-                          subtitle: Text('Descricao: ' +
-                              snapshot.data[index].descricao
-                          ),
+                          title:
+                              Text('ID: ' + snapshot.data[index].id.toString()),
+                          subtitle: Text(
+                              'Descricao: ' + snapshot.data[index].descricao),
                           trailing: Container(
                             width: 100,
                             child: Row(
@@ -45,30 +41,36 @@ class ListaMatriz extends StatelessWidget {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) => EditMatrizPage(
-                                                matrizEdit: snapshot.data[index],
-                                              )));
+                                              builder: (context) =>
+                                                  EditMatrizPage(
+                                                    matrizEdit:
+                                                        snapshot.data[index],
+                                                  )));
                                     },
                                     icon:
-                                    Icon(Icons.edit, color: Colors.orange)),
+                                        Icon(Icons.edit, color: Colors.orange)),
 
-                                IconButton(onPressed: () async {
-
-                                  Provider.of<MatrizApi>(context, listen: false).delete(snapshot.data[index].id);
-
-                                }, icon: Icon(Icons.delete, color: Colors.red,)),
+                                IconButton(
+                                    onPressed: () async {
+                                      Provider.of<MatrizApi>(context,
+                                              listen: false)
+                                          .delete(snapshot.data[index].id);
+                                    },
+                                    icon: Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                    )),
                                 // IconButton(onPressed: (){}, icon: Icon(Icons.arrow_right, color: Colors.black,))
                               ],
                             ),
                           ),
-
                           onTap: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => DetalhesMatrizPage(
-                                      id: snapshot.data[index].id,
-                                    )));
+                                          id: snapshot.data[index].id,
+                                        )));
                           },
                         ),
                       );
@@ -83,8 +85,7 @@ class ListaMatriz extends StatelessWidget {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>
-                    AdicionarMatrizPage(), //AddCarcacaPage(),
+                builder: (context) => AdicionarMatrizPage(), //AddCarcacaPage(),
               ));
         },
         child: Icon(

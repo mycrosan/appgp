@@ -4,6 +4,7 @@ import 'package:GPPremium/models/responseMessage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
+import '../components/OrderData.dart';
 import 'config_request.dart';
 
 class PaisApi extends ChangeNotifier {
@@ -19,7 +20,9 @@ class PaisApi extends ChangeNotifier {
       final map = jsonDecode(response.body);
       List<dynamic> body = map;
       // print(body[0]['_links']['self']);
-      return body.map((pais) => Pais.fromJson(pais)).toList();
+      var values = body.map((pais) => Pais.fromJson(pais)).toList();
+      alfabetSortList(values);
+      return values;
     } else {
       throw Exception('Falha ao carregar paises');
     }

@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import 'package:GPPremium/components/ImagePreview.dart';
-import 'package:GPPremium/components/OrderData.dart';
 import 'package:GPPremium/models/carcaca.dart';
 import 'package:GPPremium/models/medida.dart';
 import 'package:GPPremium/models/modelo.dart';
@@ -15,12 +13,9 @@ import 'package:GPPremium/service/paisapi.dart';
 import 'package:GPPremium/service/uploadapi.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:path/path.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 import '../../models/responseMessage.dart';
@@ -100,21 +95,18 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
     ModeloApi().getAll().then((List<Modelo> value) {
       setState(() {
         modeloList = value;
-        alfabetSortList(modeloList);
       });
     });
 
     MedidaApi().getAll().then((List<Medida> value) {
       setState(() {
         medidaList = value;
-        alfabetSortList(medidaList);
       });
     });
 
     PaisApi().getAll().then((List<Pais> value) {
       setState(() {
         paisList = value;
-        alfabetSortList(paisList);
       });
     });
   }

@@ -1,5 +1,4 @@
 import 'package:GPPremium/models/medida.dart';
-import 'package:GPPremium/models/pais.dart';
 import 'package:GPPremium/screens/pais/ListaPais.dart';
 import 'package:GPPremium/service/medidaapi.dart';
 import 'package:flutter/cupertino.dart';

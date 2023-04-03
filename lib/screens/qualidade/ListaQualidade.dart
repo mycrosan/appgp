@@ -10,7 +10,7 @@ import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../components/OrderData.dart';
+
 import '../../models/carcaca.dart';
 import '../../models/qualidade.dart';
 import '../../service/Qualidadeapi.dart';
@@ -65,14 +65,12 @@ class ListaQualidadeState extends State<ListaQualidade> {
     TipoClassificacaoApi().getAll().then((List<TipoClassificacao> value) {
       setState(() {
         classificacaoList = value;
-        alfabetSortList(classificacaoList);
       });
     });
 
     TipoObservacacaoApi().getAll().then((List<TipoObservacao> value) {
       setState(() {
         observacaoList = value;
-        alfabetSortList(observacaoList);
       });
     });
 

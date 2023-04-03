@@ -1,8 +1,6 @@
 import 'package:GPPremium/service/camelbackapi.dart';
-import 'package:GPPremium/service/paisapi.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'adicionar.dart';
 import 'detailwidget.dart';
 import 'editdatawidget.dart';

@@ -7,10 +7,9 @@ import 'package:GPPremium/service/modeloapi.dart';
 import 'package:GPPremium/service/paisapi.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
-import '../../main.dart';
+
 import '../../models/rejeitadas.dart';
 import '../../service/rejeitadasapi.dart';
 import 'ListaRejeitadas.dart';
@@ -60,18 +59,21 @@ class EditarRejeitadasPageState extends State<EditarRejeitadasPage> {
     ModeloApi().getAll().then((List<Modelo> value) {
       setState(() {
         modeloList = value;
+       
       });
     });
 
     MedidaApi().getAll().then((List<Medida> value) {
       setState(() {
         medidaList = value;
+      
       });
     });
 
     PaisApi().getAll().then((List<Pais> value) {
       setState(() {
         paisList = value;
+       
       });
     });
 

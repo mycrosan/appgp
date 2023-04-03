@@ -6,7 +6,6 @@ import 'package:GPPremium/models/medida.dart';
 import 'package:GPPremium/models/modelo.dart';
 import 'package:GPPremium/models/pais.dart';
 import 'package:GPPremium/models/regra.dart';
-import 'package:GPPremium/screens/dashboard/home.dart';
 import 'package:GPPremium/service/antiquebraapi.dart';
 import 'package:GPPremium/service/camelbackapi.dart';
 import 'package:GPPremium/service/espessuramento.dart';
@@ -18,6 +17,7 @@ import 'package:GPPremium/service/regraapi.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 
 import 'ListaRegras.dart';
 
@@ -112,6 +112,7 @@ class EditarRegraPageState extends State<EditarRegraPage> {
     PaisApi().getAll().then((List<Pais> value) {
       setState(() {
         paisList = value;
+       
       });
     });
 

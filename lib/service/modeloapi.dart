@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:GPPremium/components/OrderData.dart';
 import 'package:GPPremium/models/modelo.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
@@ -36,7 +37,9 @@ class ModeloApi extends ChangeNotifier {
       final map = jsonDecode(response.body);
       List<dynamic> body = map;
       // print(body[0]['_links']['self']);
-      return body.map((modelo) => Modelo.fromJson(modelo)).toList();
+      var values = body.map((modelo) => Modelo.fromJson(modelo)).toList();
+      alfabetSortList(values);
+      return values;
     } else {
       throw Exception('Falha ao carregar modeloes');
     }

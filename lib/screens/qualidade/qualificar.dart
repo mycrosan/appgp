@@ -11,7 +11,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 import '../../components/ImagePreview.dart';
-import '../../components/OrderData.dart';
 import '../../models/classificacao.dart';
 import '../../models/observacao.dart';
 import '../../models/producao.dart';
@@ -93,7 +92,6 @@ class AdicionarQualificarPageState extends State<AdicionarQualificarPage> {
     TipoClassificacaoApi().getAll().then((List<TipoClassificacao> value) {
       setState(() {
         classificacaoList = value;
-        alfabetSortList(classificacaoList);
       });
     });
 
@@ -177,7 +175,6 @@ class AdicionarQualificarPageState extends State<AdicionarQualificarPage> {
               TipoObservacacaoApi().consulta(classificacao.id).then((Object value) {
                 setState(() {
                   observacaoList = value;
-                  alfabetSortList(observacaoList);
                 });
               });
 

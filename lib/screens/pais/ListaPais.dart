@@ -1,9 +1,8 @@
 import 'package:GPPremium/service/paisapi.dart';
-import 'package:GPPremium/service/regraapi.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../components/OrderData.dart';
+
 import 'adicionar.dart';
 import 'detailwidget.dart';
 import 'editdatawidget.dart';
@@ -25,7 +24,7 @@ class ListaPais extends StatelessWidget {
             future: paisAPI.getAll(),
             builder: (context, AsyncSnapshot<List> snapshot) {
               if (snapshot.hasData) {
-                alfabetSortList(snapshot.data);
+                snapshot.data;
                 return ListView.builder(
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index) {

@@ -1,10 +1,7 @@
 import 'package:GPPremium/service/regraapi.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../components/Loading.dart';
-import '../../components/OrderData.dart';
-import '../../components/snackBar.dart';
 import '../../models/marca.dart';
 import '../../models/medida.dart';
 import '../../models/modelo.dart';
@@ -14,8 +11,6 @@ import '../../service/marcaapi.dart';
 import '../../service/medidaapi.dart';
 import '../../service/modeloapi.dart';
 import '../../service/paisapi.dart';
-import '../../service/producaoapi.dart';
-import '../carcaca/ListaCarcacas.dart';
 import 'adicionar.dart';
 import 'detailwidget.dart';
 import 'editdatawidget.dart';
@@ -74,28 +69,27 @@ class ListaRegraState extends State<ListaRegras> {
     ModeloApi().getAll().then((List<Modelo> value) {
       setState(() {
         modeloList = value;
-        alfabetSortList(modeloList);
+       
       });
     });
 
     MedidaApi().getAll().then((List<Medida> value) {
       setState(() {
         medidaList = value;
-        alfabetSortList(medidaList);
+      
       });
     });
 
     PaisApi().getAll().then((List<Pais> value) {
       setState(() {
         paisList = value;
-        alfabetSortList(paisList);
+       
       });
     });
 
     MarcaApi().getAll().then((List<Marca> value) {
       setState(() {
         marcaList = value;
-        alfabetSortList(marcaList);
       });
     });
 

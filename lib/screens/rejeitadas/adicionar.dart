@@ -96,21 +96,21 @@ class AdicionarRejeitadasPageState extends State<AdicionarRejeitadasPage> {
     ModeloApi().getAll().then((List<Modelo> value) {
       setState(() {
         modeloList = value;
-        alfabetSortList(modeloList);
+       
       });
     });
 
     MedidaApi().getAll().then((List<Medida> value) {
       setState(() {
         medidaList = value;
-        alfabetSortList(medidaList);
+      
       });
     });
 
     PaisApi().getAll().then((List<Pais> value) {
       setState(() {
         paisList = value;
-        alfabetSortList(paisList);
+       
       });
     });
   }

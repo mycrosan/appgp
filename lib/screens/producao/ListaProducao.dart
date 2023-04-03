@@ -4,8 +4,6 @@ import 'package:GPPremium/service/producaoapi.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../../components/OrderData.dart';
 import '../../models/carcaca.dart';
 import '../../models/marca.dart';
 import '../../models/medida.dart';
@@ -74,28 +72,24 @@ class ListaProducaoState extends State<ListaProducao> {
     ModeloApi().getAll().then((List<Modelo> value) {
       setState(() {
         modeloList = value;
-        alfabetSortList(modeloList);
       });
     });
 
     MedidaApi().getAll().then((List<Medida> value) {
       setState(() {
         medidaList = value;
-        alfabetSortList(medidaList);
       });
     });
 
     PaisApi().getAll().then((List<Pais> value) {
       setState(() {
         paisList = value;
-        alfabetSortList(paisList);
       });
     });
 
     MarcaApi().getAll().then((List<Marca> value) {
       setState(() {
         marcaList = value;
-        alfabetSortList(marcaList);
       });
     });
 

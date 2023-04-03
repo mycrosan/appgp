@@ -7,19 +7,17 @@ import 'package:GPPremium/models/modelo.dart';
 import 'package:GPPremium/models/pais.dart';
 import 'package:GPPremium/models/regra.dart';
 import 'package:GPPremium/models/responseMessage.dart';
-import 'package:GPPremium/service/antiquebraapi.dart';
-import 'package:GPPremium/service/camelbackapi.dart';
-import 'package:GPPremium/service/espessuramento.dart';
 import 'package:GPPremium/service/matrizapi.dart';
-import 'package:GPPremium/service/medidaapi.dart';
-import 'package:GPPremium/service/modeloapi.dart';
-import 'package:GPPremium/service/paisapi.dart';
 import 'package:GPPremium/service/regraapi.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../../components/OrderData.dart';
+import '../../service/antiquebraapi.dart';
+import '../../service/camelbackapi.dart';
+import '../../service/espessuramento.dart';
+import '../../service/medidaapi.dart';
+import '../../service/modeloapi.dart';
+import '../../service/paisapi.dart';
 import 'ListaRegras.dart';
 
 class AdicionarRegraPage extends StatefulWidget {
@@ -101,27 +99,26 @@ class AdicionarRegraPageState extends State<AdicionarRegraPage> {
     MatrizApi().getAll().then((List<Matriz> value) {
       setState(() {
         matrizList = value;
-        alfabetSortList(matrizList);
       });
     });
 
     MedidaApi().getAll().then((List<Medida> value) {
       setState(() {
         medidaList = value;
-        alfabetSortList(medidaList);
       });
     });
 
     ModeloApi().getAll().then((List<Modelo> value) {
       setState(() {
         modeloList = value;
-        alfabetSortList(modeloList);
+       
       });
     });
 
     PaisApi().getAll().then((List<Pais> value) {
       setState(() {
         paisList = value;
+       
       });
     });
 

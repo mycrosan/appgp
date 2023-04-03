@@ -6,16 +6,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
-import '../../components/ImagePreview.dart';
-import '../../components/OrderData.dart';
 import '../../models/classificacao.dart';
 import '../../models/observacao.dart';
-import '../../models/responseMessageSimple.dart';
 import '../../service/Qualidadeapi.dart';
 import '../../service/get_image.dart';
 import '../../service/tipo_classificacaoapi.dart';
 import '../../service/tipo_observacacaoapi.dart';
-import '../../service/uploadapi.dart';
+
 
 
 class EditarQualidadePage extends StatefulWidget {
@@ -76,14 +73,12 @@ class EditarQualidadePageState extends State<EditarQualidadePage> {
     TipoClassificacaoApi().getAll().then((List<TipoClassificacao> value) {
       setState(() {
         classificacaoList = value;
-        alfabetSortList(classificacaoList);
       });
     });
 
     TipoObservacacaoApi().consulta(widget.qualidade.tipo_observacao.tipoClassificacao.id).then((Object value) {
       setState(() {
         observacaoList = value;
-        alfabetSortList(observacaoList);
       });
     });
 
@@ -151,7 +146,6 @@ class EditarQualidadePageState extends State<EditarQualidadePage> {
                 TipoObservacacaoApi().consulta(classificacao.id).then((Object value) {
                   setState(() {
                     observacaoList = value;
-                    alfabetSortList(observacaoList);
                   });
                 });
 

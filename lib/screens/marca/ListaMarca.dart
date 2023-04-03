@@ -1,8 +1,6 @@
 import 'package:GPPremium/service/marcaapi.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../../components/OrderData.dart';
 import 'adicionar.dart';
 import 'detailwidget.dart';
 import 'editdatawidget.dart';
@@ -25,7 +23,7 @@ class ListaMarca extends StatelessWidget {
             future: marcaAPI.getAll(),
             builder: (context, AsyncSnapshot<List> snapshot) {
               if (snapshot.hasData) {
-                alfabetSortList(snapshot.data);
+                snapshot.data;
                 return ListView.builder(
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index) {
