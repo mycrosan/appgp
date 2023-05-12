@@ -4,8 +4,7 @@
 import 'package:GPPremium/autenticacao/login.dart';
 import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/material.dart';
-import 'package:ionicons/ionicons.dart';
-import 'package:line_icons/line_icons.dart';
+
 
 import 'factory/menu.dart';
 
@@ -54,6 +53,9 @@ class Home extends StatelessWidget {
             }),
             GPMenu('Proibidas', Icons.block, onClick: () {
               Navigator.pushNamed(context, '/proibidas');
+            }),
+            GPMenu('Relatório', Icons.file_open, onClick: () {
+              Navigator.pushNamed(context, '/relatorio');
             }),
             GPMenu('Ajustes', Icons.settings, onClick: () {
               Navigator.pushNamed(context, '/ajustes');

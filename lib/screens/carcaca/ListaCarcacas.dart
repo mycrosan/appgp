@@ -136,7 +136,7 @@ class ListaCarcacaState extends State<ListaCarcaca> {
                             snapshot.data[index].medida.descricao +
                             "\n"
                                 'DOT: ' +
-                            snapshot.data[index].dot +
+                            snapshot.data[index].dot + ' País: ' + snapshot.data[index].pais.descricao +
                             "\n"
                                 'Modelo: ' +
                             snapshot.data[index].modelo.descricao),

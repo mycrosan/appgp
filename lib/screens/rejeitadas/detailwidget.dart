@@ -33,58 +33,27 @@ class DetalhesRejeitadasPageState extends State<DetalhesRejeitadasPage> {
           builder: (context, AsyncSnapshot<Rejeitadas> snapshot) {
             if (snapshot.hasData) {
               return Column(children: [
-                // Card(
-                //   child: ListTile(
-                //     title: Text('Etiqueta: ' +
-                //         snapshot.data.numeroEtiqueta +
-                //         " id: " +
-                //         snapshot.data.id.toString()),
-                //     subtitle: Text('Medida: ' +
-                //         snapshot.data.medida.descricao +
-                //         "\n"
-                //             'DOT: ' +
-                //         snapshot.data.dot +
-                //         "\n"
-                //             'Modelo: ' +
-                //         snapshot.data.modelo.descricao),
-                //   ),
-                // ),
+                Card(
+                  child: ListTile(
+                    title: Text("Modelo: " + snapshot.data.modelo.descricao),
+                    subtitle: Text('Medida: ' +
+                        snapshot.data.medida.descricao +
+                        "\n"
+                            'Pais: ' +
+                        snapshot.data.pais.descricao +
+                        "\n"
+                            'Motivo: ' +
+                        ((snapshot.data.motivo != null)
+                            ? snapshot.data.motivo.toString()
+                            : "NI") +
+                        "\n"
+                            'Observacao: ' +
+                        ((snapshot.data.descricao != null)
+                            ? snapshot.data.descricao.toString()
+                            : "NI")),
+                  ),
+                ),
               ]);
-
-              // return Column(
-              //   children: [
-              //     Text("Etiqueta"),
-              //     Text(snapshot.data.numeroEtiqueta.toString()),
-              //     Padding(
-              //       padding: EdgeInsets.all(5),
-              //     ),
-              //     Text("DOT"),
-              //     Text(snapshot.data.dot.toString()),
-              //     Padding(
-              //       padding: EdgeInsets.all(5),
-              //     ),
-              //     Text("Medida"),
-              //     Text(snapshot.data.medida.descricao.toString()),
-              //     Padding(
-              //       padding: EdgeInsets.all(5),
-              //     ),
-              //     Text("Modelo"),
-              //     Text(snapshot.data.modelo.descricao.toString()),
-              //     Padding(
-              //       padding: EdgeInsets.all(5),
-              //     ),
-              //     Text("Marca"),
-              //     Text(snapshot.data.modelo.marca.descricao),
-              //     Padding(
-              //       padding: EdgeInsets.all(5),
-              //     ),
-              //     Text("País"),
-              //     Text(snapshot.data.pais.descricao),
-              //     Padding(
-              //       padding: EdgeInsets.all(5),
-              //     ),
-              //   ],
-              // );
             } else {
               return CircularProgressIndicator();
             }

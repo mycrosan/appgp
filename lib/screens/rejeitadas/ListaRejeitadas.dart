@@ -127,10 +127,9 @@ class ListaRejeitadasState extends State<ListaRejeitadas> {
                   itemBuilder: (context, index) {
                     return Card(
                       child: ListTile(
-                        title: Text('id: ' +
-                            snapshot.data[index].id.toString() +
-                            " Modelo: " +
-                            snapshot.data[index].id.toString()),
+                        title: Text(
+                            "Modelo: " +
+                            snapshot.data[index].modelo.descricao),
                         subtitle: Text('Medida: ' +
                             snapshot.data[index].medida.descricao +
                             "\n"
