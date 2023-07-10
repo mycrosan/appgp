@@ -159,7 +159,7 @@ class AdicionarQualificarPageState extends State<AdicionarQualificarPage> {
       key: _formkey,
       child: Column(
         children: [
-          Text(widget.producao.carcaca.numeroEtiqueta),
+          Text("Etiqueta " + widget.producao.carcaca.numeroEtiqueta),
           DropdownButtonFormField(
             decoration: InputDecoration(
               labelText: "Situação",

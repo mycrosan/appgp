@@ -24,10 +24,13 @@ class ListaRejeitadasState extends State<ListaRejeitadas> {
     final DinamicListCard listCards = DinamicListCard();
 
     TextEditingController textEditingControllerRejeitadas;
+    TextEditingController textEditingControllerCarcaca;
     textEditingControllerRejeitadas = MaskedTextController(mask: '000000');
     Rejeitadas _responseValue;
     List listaRejeitadas = [];
     var _isList = ValueNotifier<bool>(true);
+    // bool loading = true;
+    var loading = ValueNotifier<bool>(true);
 
     //Fica escutando as mudanças
     final RejeitadasApi rejeitadas = Provider.of(context);
@@ -39,61 +42,87 @@ class ListaRejeitadasState extends State<ListaRejeitadas> {
       this.setState(() {});
     }
 
+    // return Scaffold(
+    //   appBar: AppBar(
+    //     title: Text('Proibidas'),
+    //     actions: [
+    //       IconButton(
+    //         icon: Icon(
+    //           Icons.add,
+    //           color: Colors.white,
+    //         ),
+    //         onPressed: () {
+    //           Navigator.push(
+    //               context,
+    //               MaterialPageRoute(
+    //                 builder: (context) => AdicionarRejeitadasPage(),
+    //               ));
+    //           // do something
+    //         },
+    //       ),
+    //     ],
+    //   ),
     return Scaffold(
       appBar: AppBar(
-        title: Text('Proibidas'),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AdicionarRejeitadasPage(),
-                  ));
-              // do something
-            },
-          ),
-        ],
+        title: Container(
+          width: double.infinity,
+          child: Row(children: [
+            Expanded(child: Text("Proibidas")),
+            Expanded(
+              child: Container(
+                color: Colors.white,
+                height: 30.0,
+                child: TextFormField(
+                  controller: textEditingControllerCarcaca,
+                  decoration: InputDecoration(
+                    hintText: 'Modelo',
+                    contentPadding: EdgeInsets.all(10.0),
+                    // prefixIcon: Icon(Icons.search),
+                  ),
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  onChanged: (String newValue) async {
+                    if (newValue.length >= 6) {
+                      loading.value = true;
+                      // qualidade.producao.carcaca.numeroEtiqueta = newValue;
+                      // producaoList =
+                      // await listCards.pesquisa(qualidade.producao);
+                      // loading.value = false;
+                      // _isList.value = true;
+                      // listCards.exibirProducao(context, producaoList);
+                      _isList.notifyListeners();
+                      listCards.notifyListeners();
+                      loading.notifyListeners();
+                    } else {
+                      _isList.value = true;
+                      _isList.notifyListeners();
+                    }
+                  },
+                ),
+              ),
+            )
+          ]),
+        ),
+            actions: [
+              IconButton(
+                icon: Icon(
+                  Icons.add,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AdicionarRejeitadasPage(),
+                      ));
+                  // do something
+                },
+              ),
+            ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            // Container(
-            //   padding: EdgeInsets.only(bottom: 20.0),
-            //   child: TextFormField(
-            //     controller: textEditingControllerRejeitadas,
-            //     decoration: InputDecoration(
-            //       labelText: "Informe o número da etiqueta",
-            //     ),
-            //     keyboardType: TextInputType.numberWithOptions(decimal: true),
-            //     onChanged: (String newValue) async {
-            //       if (newValue.length >= 6) {
-            //         var response = await RejeitadasApi().consultaRejeitadas(newValue);
-            //
-            //         if (response is Rejeitadas && response != null) {
-            //           _responseValue = response;
-            //
-            //           _isList.value = false;
-            //
-            //           _isList.notifyListeners();
-            //         } else {
-            //           responseMessage value =
-            //               response != null ? response : null;
-            //           ScaffoldMessenger.of(context)
-            //               .showSnackBar(warningMessage(context, value.message));
-            //         }
-            //       } else {
-            //         _isList.value = true;
-            //         _isList.notifyListeners();
-            //       }
-            //     },
-            //   ),
-            // ),
             ValueListenableBuilder(
                 valueListenable: _isList,
                 builder: (_, __, ___) {
@@ -128,7 +157,9 @@ class ListaRejeitadasState extends State<ListaRejeitadas> {
                     return Card(
                       child: ListTile(
                         title: Text(
-                            "Modelo: " +
+                            "ID: " +
+                                snapshot.data[index].id.toString() +
+                            " Modelo: " +
                             snapshot.data[index].modelo.descricao),
                         subtitle: Text('Medida: ' +
                             snapshot.data[index].medida.descricao +

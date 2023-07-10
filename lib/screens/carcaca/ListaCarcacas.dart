@@ -28,7 +28,7 @@ class ListaCarcacaState extends State<ListaCarcaca> {
     textEditingControllerCarcaca = MaskedTextController(mask: '000000');
     Carcaca _responseValue;
     List listaCarcaca = [];
-    var _isList = ValueNotifier<bool>(true);
+    var _isList = ValueNotifier<bool>(false);
 
     //Fica escutando as mudanças
     final CarcacaApi carcacas = Provider.of(context);
@@ -42,7 +42,48 @@ class ListaCarcacaState extends State<ListaCarcaca> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Carcaças'),
+        title: Container(
+          width: double.infinity,
+          child: Row(children: [
+            Expanded(child: Text("Carcaça")),
+            Expanded(
+              child: Container(
+                color: Colors.white,
+                height: 30.0,
+                child: TextFormField(
+                  controller: textEditingControllerCarcaca,
+                  decoration: InputDecoration(
+                    hintText: 'Nº etiqueta',
+                    contentPadding: EdgeInsets.all(10.0),
+                    // prefixIcon: Icon(Icons.search),
+                  ),
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  onChanged: (String newValue) async {
+                    if (newValue.length >= 6) {
+                      var response = await CarcacaApi().consultaCarcaca(newValue);
+
+                      if (response is Carcaca && response != null) {
+                        _responseValue = response;
+
+                        _isList.value = true;
+
+                        _isList.notifyListeners();
+                      } else {
+                        responseMessage value =
+                        response != null ? response : null;
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(warningMessage(context, value.message));
+                      }
+                    } else {
+                      _isList.value = false;
+                      _isList.notifyListeners();
+                    }
+                  },
+                ),
+              ),
+            )
+          ]),
+        ),
         actions: [
           IconButton(
             icon: Icon(
@@ -64,48 +105,16 @@ class ListaCarcacaState extends State<ListaCarcaca> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            Container(
-              padding: EdgeInsets.only(bottom: 20.0),
-              child: TextFormField(
-                controller: textEditingControllerCarcaca,
-                decoration: InputDecoration(
-                  labelText: "Informe o número da etiqueta",
-                ),
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                onChanged: (String newValue) async {
-                  if (newValue.length >= 6) {
-                    var response = await CarcacaApi().consultaCarcaca(newValue);
-
-                    if (response is Carcaca && response != null) {
-                      _responseValue = response;
-
-                      _isList.value = false;
-
-                      _isList.notifyListeners();
-                    } else {
-                      responseMessage value =
-                          response != null ? response : null;
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(warningMessage(context, value.message));
-                    }
-                  } else {
-                    _isList.value = true;
-                    _isList.notifyListeners();
-                  }
-                },
-              ),
-            ),
             ValueListenableBuilder(
                 valueListenable: _isList,
                 builder: (_, __, ___) {
                   return Visibility(
-                      visible: !_isList.value,
+                      visible: _isList.value,
                       child: _responseValue != null
                           ? listCards.cardResponse(_responseValue, context)
-                          : Text('Sem Informações'));
+                          : Text(''));
                 }),
             Visibility(
-              visible: _isList.value,
               child: _exibirLista(context, carcacasAPI) != null
                   ? _exibirLista(context, carcacasAPI)
                   : 'Aguardando..',

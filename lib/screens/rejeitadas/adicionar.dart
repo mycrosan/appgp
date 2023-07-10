@@ -1,22 +1,16 @@
-import 'dart:convert';
 
-import 'package:GPPremium/components/ImagePreview.dart';
-import 'package:GPPremium/components/OrderData.dart';
 import 'package:GPPremium/models/medida.dart';
 import 'package:GPPremium/models/modelo.dart';
 import 'package:GPPremium/models/pais.dart';
-import 'package:GPPremium/models/responseMessageSimple.dart';
 import 'package:GPPremium/service/medidaapi.dart';
 import 'package:GPPremium/service/modeloapi.dart';
 
 import 'package:GPPremium/service/paisapi.dart';
-import 'package:GPPremium/service/uploadapi.dart';
-import 'package:extended_masked_text/extended_masked_text.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
-import 'package:path/path.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 import '../../models/rejeitadas.dart';
@@ -271,15 +265,6 @@ class AdicionarRejeitadasPageState extends State<AdicionarRejeitadasPage> {
                   controller: _btnController1,
                   onPressed: () async {
                     if (_formkey.currentState.validate()) {
-
-                    // if (_formkey.currentState.validate() && _imageFileList.length > 0) {
-
-                      // Map<String, String> body = {
-                      //   'title': 'carcaca_rejeitada',
-                      // };
-                      //
-                      // responseMessageSimple imageResponse =
-                      //     await UploadApi().addImage(body, _imageFileList);
 
                       var response = await RejeitadasApi().create(carcaca);
 

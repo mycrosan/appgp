@@ -217,5 +217,20 @@ class ConfigRequest {
       return response;
     }
   }
+  Future<Response> requestQueryQualidade(
+      String endpoint, String numeroEtiqueta) async {
+    var jwt = await new AuthUtil().jwtOrEmpty;
+    if (jwt != null) {
+      http.Response response = await http.get(
+        Uri.parse(SERVER_IP + endpoint + "/pesquisa/${numeroEtiqueta}"),
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $jwt'
+        },
+      ).timeout(const Duration(seconds: 60));
+      return response;
+    }
+  }
 
 }

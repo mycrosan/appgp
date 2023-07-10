@@ -13,6 +13,7 @@ import 'package:GPPremium/screens/producao/ListaProducao.dart';
 import 'package:GPPremium/screens/qualidade/ListaQualidade.dart';
 import 'package:GPPremium/screens/regra/ListaRegras.dart';
 import 'package:GPPremium/screens/rejeitadas/ListaRejeitadas.dart';
+import 'package:GPPremium/screens/relatorio/ListaRelatorio.dart';
 import 'package:GPPremium/service/antiquebraapi.dart';
 import 'package:GPPremium/service/camelbackapi.dart';
 import 'package:GPPremium/service/carcacaapi.dart';
@@ -23,6 +24,7 @@ import 'package:GPPremium/service/medidaapi.dart';
 import 'package:GPPremium/service/modeloapi.dart';
 import 'package:GPPremium/service/paisapi.dart';
 import 'package:GPPremium/service/producaoapi.dart';
+import 'package:GPPremium/service/qualidadeapi.dart';
 import 'package:GPPremium/service/regraapi.dart';
 import 'package:GPPremium/service/rejeitadasapi.dart';
 import 'package:flutter/material.dart';
@@ -63,6 +65,7 @@ class GpPremiumApp extends StatelessWidget {
         ChangeNotifierProvider<MarcaApi>(create: (_) => MarcaApi()),
         ChangeNotifierProvider<MatrizApi>(create: (_) => MatrizApi()),
         ChangeNotifierProvider<AntiquebraApi>(create: (_) => AntiquebraApi()),
+        ChangeNotifierProvider<QualidadeApi>(create: (_) => QualidadeApi()),
         ChangeNotifierProvider<EspessuramentoApi>(
             create: (_) => EspessuramentoApi()),
       ],
@@ -83,6 +86,7 @@ class GpPremiumApp extends StatelessWidget {
           '/qualidade': (_) => ListaQualidade(),
           '/proibidas': (_) => ListaRejeitadas(),
           '/ajustes': (_) => Ajustes(),
+          '/relatorio': (_) => ListaRelatorio(),
         },
         debugShowCheckedModeBanner: false,
         theme: ThemeData(

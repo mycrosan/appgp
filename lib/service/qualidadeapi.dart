@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:GPPremium/models/responseMessage.dart';
 
+
+import '../models/producao.dart';
 import 'config_request.dart';
 
 class QualidadeApi extends ChangeNotifier {
@@ -95,6 +97,60 @@ class QualidadeApi extends ChangeNotifier {
       return true;
     } else {
       throw Exception('Falha ao tentar excluir carcaça');
+    }
+  }
+  Future<Object> consultaProducao(Producao producao) async {
+
+    var objData = new ConfigRequest();
+    var response = await objData.requestQueryProducao(ENDPOINT, producao);
+
+    if (response.statusCode == 200) {
+      final map = jsonDecode(response.body);
+      List<dynamic> body = map;
+      return body.map((producaos) => Producao.fromJson(producaos)).toList();
+    } else {
+      throw Exception('Falha ao carregar producões');
+    }
+  }
+
+  //  Future<Object> consultaQualidade(numeroEtiqueta) async {
+  //   var objData = new ConfigRequest();
+  //   var response = await objData.requestQueryCarcaca(ENDPOINT, numeroEtiqueta);
+  //
+  //   if (response.statusCode == 200) {
+  //     try {
+  //       var value = Qualidade.fromJson(jsonDecode(response.body));
+  //       if (value.id != null) {
+  //         return value;
+  //       } else {
+  //         return responseMessage.fromJson(jsonDecode(response.body));
+  //       }
+  //     } catch (e) {
+  //       return responseMessage.fromJson(jsonDecode(response.body));
+  //     }
+  //   } else {
+  //     throw Exception('Falha ao carregar Qualidade');
+  //   }
+  // }
+
+  Future<Object>consultaQualidade(numeroEtiqueta) async {
+
+    var objData = new ConfigRequest();
+    var response = await objData.requestQueryQualidade(ENDPOINT, numeroEtiqueta);
+
+    if (response.statusCode == 200) {
+      try {
+        var value = Qualidade.fromJson(jsonDecode(response.body));
+        if (value.id != null) {
+          return value;
+        } else {
+          return responseMessage.fromJson(jsonDecode(response.body));
+        }
+      } catch (e) {
+        return responseMessage.fromJson(jsonDecode(response.body));
+      }
+    } else {
+      throw Exception('Falha ao carregar Carcaça');
     }
   }
 

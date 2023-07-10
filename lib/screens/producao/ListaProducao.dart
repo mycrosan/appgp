@@ -10,6 +10,7 @@ import '../../models/medida.dart';
 import '../../models/modelo.dart';
 import '../../models/pais.dart';
 import '../../models/producao.dart';
+import '../../models/responseMessage.dart';
 import '../../service/marcaapi.dart';
 import '../../service/medidaapi.dart';
 import '../../service/modeloapi.dart';
@@ -64,6 +65,7 @@ class ListaProducaoState extends State<ListaProducao> {
     textEditingControllerModelo = TextEditingController();
     textEditingControllerMarca = TextEditingController();
     textEditingControllerMedida = TextEditingController();
+
     producao = new Producao();
     producao.carcaca = new Carcaca();
     producao.carcaca.modelo = new Modelo();
@@ -139,14 +141,20 @@ class ListaProducaoState extends State<ListaProducao> {
                       loading.value = true;
                       producao.carcaca.numeroEtiqueta = newValue;
                       producaoList = await listCards.pesquisa(producao);
-                      loading.value = false;
-                      _isList.value = true;
-                      listCards.exibirListaConsulta(context, producaoList);
-                      _isList.notifyListeners();
-                      listCards.notifyListeners();
-                      loading.notifyListeners();
+
+                      if(producaoList.length > 0) {
+                        loading.value = false;
+                        _isList.value = true;
+                        listCards.exibirListaConsulta(context, producaoList);
+                        _isList.notifyListeners();
+                        listCards.notifyListeners();
+                        loading.notifyListeners();
+                      }else{
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            warningMessage(context, "Sem resultados para etiqueta " + newValue));
+                      }
                     } else {
-                      _isList.value = true;
+                      _isList.value = false;
                       _isList.notifyListeners();
                     }
                   },
