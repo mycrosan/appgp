@@ -1,10 +1,13 @@
+import 'package:intl/intl.dart';
 import 'package:GPPremium/models/producao.dart';
 import 'package:GPPremium/service/producaoapi.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:esc_pos_printer/esc_pos_printer.dart';
+import 'package:esc_pos_utils/esc_pos_utils.dart';
+import 'package:flutter/material.dart' hide Image;
 import 'package:ionicons/ionicons.dart';
 
 import '../../components/ImagePreview.dart';
+import '../../components/snackBar.dart';
 import '../../models/responseMessage.dart';
 import '../../service/get_image.dart';
 import 'printWidget.dart';
@@ -20,7 +23,120 @@ class DetalhesProducaoPage extends StatefulWidget {
   }
 }
 
+
+
+
 class DetalhesProducaoPageState extends State<DetalhesProducaoPage> {
+
+  Future<void> printEtiqueta(NetworkPrinter printer) async {
+    // Print image
+    // final ByteData data = await rootBundle.load('assets/images/banner.png');
+    // final Uint8List bytes = data.buffer.asUint8List();
+    // final Image image = decodeImage(bytes);
+    // printer.image(image);
+    printer.row([
+      PosColumn(text: 'Cod. da etiqueta', width: 5),
+      PosColumn(text: this.widget.producao.carcaca.numeroEtiqueta, styles: PosStyles(
+        align: PosAlign.right,
+        height: PosTextSize.size3,
+        width: PosTextSize.size3,
+      ), width: 7),
+    ]);
+    printer.hr(ch: '-');
+    printer.text('Matriz', styles: PosStyles(align: PosAlign.center));
+    printer.text(this.widget.producao.regra.matriz.descricao,
+        styles: PosStyles(
+          align: PosAlign.center,
+          height: PosTextSize.size3,
+          width: PosTextSize.size3,
+        ),
+        linesAfter: 1);
+
+    printer.hr(ch: '-');
+    printer.text('Camelback', styles: PosStyles(align: PosAlign.left));
+    printer.text(this.widget.producao.regra.camelback.descricao,
+        styles: PosStyles(
+          align: PosAlign.center,
+          height: PosTextSize.size3,
+          width: PosTextSize.size3,
+        ),
+        linesAfter: 1);
+
+    printer.hr(ch: '-');
+    printer.text('Anti quebra 1', styles: PosStyles(align: PosAlign.left));
+    printer.text(this.widget.producao.regra.antiquebra1.descricao,
+        styles: PosStyles(
+          align: PosAlign.right,
+          height: PosTextSize.size2,
+          width: PosTextSize.size2,
+        ),
+        linesAfter: 1);
+
+    printer.hr(ch: '-');
+    printer.text('Anti quebra 2', styles: PosStyles(align: PosAlign.left));
+    printer.text(this.widget.producao.regra.antiquebra2.descricao,
+        styles: PosStyles(
+          align: PosAlign.right,
+          height: PosTextSize.size2,
+          width: PosTextSize.size2,
+        ),
+        linesAfter: 1);
+
+    printer.hr(ch: '-');
+    printer.text('Anti quebra 3', styles: PosStyles(align: PosAlign.left));
+    printer.text(this.widget.producao.regra.antiquebra3.descricao,
+        styles: PosStyles(
+          align: PosAlign.right,
+          height: PosTextSize.size2,
+          width: PosTextSize.size2,
+        ),
+        linesAfter: 1);
+
+    printer.hr(ch: '-');
+    printer.text('Espessuramento', styles: PosStyles(align: PosAlign.left));
+    printer.text(this.widget.producao.regra.antiquebra3.descricao,
+        styles: PosStyles(
+          align: PosAlign.right,
+          height: PosTextSize.size2,
+          width: PosTextSize.size2,
+        ),
+        linesAfter: 1);
+
+    printer.hr(ch: '-');
+    printer.text('Tempo', styles: PosStyles(align: PosAlign.left));
+    printer.text(this.widget.producao.regra.tempo,
+        styles: PosStyles(
+          align: PosAlign.center,
+          height: PosTextSize.size7,
+          width: PosTextSize.size7,
+        ),
+        linesAfter: 1);
+
+
+
+    printer.cut();
+  }
+
+  void configAndPrint(String printerIp, BuildContext ctx) async {
+    // TODO Don't forget to choose printer's paper size
+    const PaperSize paper = PaperSize.mm80;
+    final profile = await CapabilityProfile.load();
+    final printer = NetworkPrinter(paper, profile);
+
+    final PosPrintResult res = await printer.connect(printerIp, port: 9100);
+
+    if (res == PosPrintResult.success) {
+      await printEtiqueta(printer);
+      printer.disconnect();
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+        successMessage(context,
+            "Resultado da impressão: " + res.msg));
+
+  }
+
+
   @override
   Widget build(BuildContext context) {
     var producaoApi = new ProducaoApi();
@@ -42,6 +158,16 @@ class DetalhesProducaoPageState extends State<DetalhesProducaoPage> {
                             producaoPrint:
                             this.widget.producao,
                           )));
+              // do something
+            },
+          ),
+          IconButton(
+            icon: Icon(
+              Ionicons.print_outline,
+              color: Colors.white,
+            ),
+            onPressed: () {
+             this.configAndPrint('192.168.0.31', context);
               // do something
             },
           ),

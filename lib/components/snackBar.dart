@@ -20,3 +20,12 @@ Widget warningMessage(BuildContext context, String message) {
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
   );;
 }
+@override
+Widget successMessage(BuildContext context, String message) {
+  return SnackBar(
+    content: Text(message),
+    backgroundColor: Colors.lightGreen,
+    behavior: SnackBarBehavior.floating,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+  );;
+}

@@ -10,7 +10,6 @@ import '../../models/medida.dart';
 import '../../models/modelo.dart';
 import '../../models/pais.dart';
 import '../../models/producao.dart';
-import '../../models/responseMessage.dart';
 import '../../service/marcaapi.dart';
 import '../../service/medidaapi.dart';
 import '../../service/modeloapi.dart';
