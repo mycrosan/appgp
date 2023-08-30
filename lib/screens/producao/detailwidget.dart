@@ -40,6 +40,7 @@ class DetalhesProducaoPageState extends State<DetalhesProducaoPage> {
         align: PosAlign.right,
         height: PosTextSize.size3,
         width: PosTextSize.size3,
+        bold: true,
       ), width: 7),
     ]);
     printer.hr(ch: '-');
@@ -49,6 +50,7 @@ class DetalhesProducaoPageState extends State<DetalhesProducaoPage> {
           align: PosAlign.center,
           height: PosTextSize.size3,
           width: PosTextSize.size3,
+          bold: true,
         ),
         linesAfter: 1);
 
@@ -57,8 +59,9 @@ class DetalhesProducaoPageState extends State<DetalhesProducaoPage> {
     printer.text(this.widget.producao.regra.camelback.descricao,
         styles: PosStyles(
           align: PosAlign.center,
-          height: PosTextSize.size3,
-          width: PosTextSize.size3,
+          height: PosTextSize.size4,
+          width: PosTextSize.size4,
+          bold: true,
         ),
         linesAfter: 1);
 
@@ -67,8 +70,9 @@ class DetalhesProducaoPageState extends State<DetalhesProducaoPage> {
     printer.text(this.widget.producao.regra.antiquebra1.descricao,
         styles: PosStyles(
           align: PosAlign.right,
-          height: PosTextSize.size2,
-          width: PosTextSize.size2,
+          height: PosTextSize.size3,
+          width: PosTextSize.size3,
+          bold: true,
         ),
         linesAfter: 1);
 
@@ -77,8 +81,9 @@ class DetalhesProducaoPageState extends State<DetalhesProducaoPage> {
     printer.text(this.widget.producao.regra.antiquebra2.descricao,
         styles: PosStyles(
           align: PosAlign.right,
-          height: PosTextSize.size2,
-          width: PosTextSize.size2,
+          height: PosTextSize.size3,
+          width: PosTextSize.size3,
+          bold: true,
         ),
         linesAfter: 1);
 
@@ -87,8 +92,9 @@ class DetalhesProducaoPageState extends State<DetalhesProducaoPage> {
     printer.text(this.widget.producao.regra.antiquebra3.descricao,
         styles: PosStyles(
           align: PosAlign.right,
-          height: PosTextSize.size2,
-          width: PosTextSize.size2,
+          height: PosTextSize.size3,
+          width: PosTextSize.size3,
+          bold: true,
         ),
         linesAfter: 1);
 
@@ -97,8 +103,9 @@ class DetalhesProducaoPageState extends State<DetalhesProducaoPage> {
     printer.text(this.widget.producao.regra.antiquebra3.descricao,
         styles: PosStyles(
           align: PosAlign.right,
-          height: PosTextSize.size2,
-          width: PosTextSize.size2,
+          height: PosTextSize.size3,
+          width: PosTextSize.size3,
+          bold: true,
         ),
         linesAfter: 1);
 
@@ -107,12 +114,21 @@ class DetalhesProducaoPageState extends State<DetalhesProducaoPage> {
     printer.text(this.widget.producao.regra.tempo,
         styles: PosStyles(
           align: PosAlign.center,
-          height: PosTextSize.size7,
-          width: PosTextSize.size7,
+          height: PosTextSize.size8,
+          width: PosTextSize.size8,
+          bold: true,
         ),
         linesAfter: 1);
-
-
+    printer.hr(ch: '-');
+    printer.text('Modelo', styles: PosStyles(align: PosAlign.left));
+    printer.text(this.widget.producao.carcaca.modelo.descricao,
+        styles: PosStyles(
+          align: PosAlign.center,
+          height: PosTextSize.size3,
+          width: PosTextSize.size3,
+          bold: true,
+        ),
+        linesAfter: 1);
 
     printer.cut();
   }
@@ -147,7 +163,7 @@ class DetalhesProducaoPageState extends State<DetalhesProducaoPage> {
           IconButton(
             icon: Icon(
               Ionicons.print,
-              color: Colors.white,
+              color: Colors.orangeAccent,
             ),
             onPressed: () {
               Navigator.push(
@@ -164,7 +180,7 @@ class DetalhesProducaoPageState extends State<DetalhesProducaoPage> {
           IconButton(
             icon: Icon(
               Ionicons.print_outline,
-              color: Colors.white,
+              color: Colors.greenAccent,
             ),
             onPressed: () {
              this.configAndPrint('192.168.0.31', context);
