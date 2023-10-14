@@ -100,7 +100,7 @@ class DetalhesProducaoPageState extends State<DetalhesProducaoPage> {
 
     printer.hr(ch: '-');
     printer.text('Espessuramento', styles: PosStyles(align: PosAlign.left));
-    printer.text(this.widget.producao.regra.antiquebra3.descricao,
+    printer.text(this.widget.producao.regra.espessuramento.descricao,
         styles: PosStyles(
           align: PosAlign.right,
           height: PosTextSize.size3,
