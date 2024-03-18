@@ -3,8 +3,21 @@ import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../components/snackBar.dart';
+import '../../models/carcaca.dart';
+import '../../models/marca.dart';
+import '../../models/medida.dart';
+import '../../models/modelo.dart';
+import '../../models/pais.dart';
 import '../../models/rejeitadas.dart';
+import '../../service/marcaapi.dart';
+import '../../service/medidaapi.dart';
+import '../../service/modeloapi.dart';
+import '../../service/paisapi.dart';
+import '../../service/producaoapi.dart';
 import '../../service/rejeitadasapi.dart';
+import '../../service/rejeitadasapi.dart';
+import '../producao/detailwidget.dart';
+import '../producao/editdatawidget.dart';
 import 'adicionar.dart';
 import 'detailwidget.dart';
 import 'editdatawidget.dart';
@@ -17,51 +30,93 @@ class ListaRejeitadas extends StatefulWidget {
 }
 
 class ListaRejeitadasState extends State<ListaRejeitadas> {
+
+  final _formkey = GlobalKey<FormState>();
+
+  TextEditingController textEditingControllerModelo;
+  TextEditingController textEditingControllerMarca;
+  TextEditingController textEditingControllerMedida;
+
+  final DinamicListRejeitada listCards = DinamicListRejeitada();
+
+  TextEditingController textEditingControllerCarcaca;
+  Rejeitadas rejeitada;
+
+  // bool loading = true;
+  var loading = ValueNotifier<bool>(true);
+
+  //Modelo
+  List<Modelo> modeloList = [];
+  Modelo modeloSelected;
+
+  //Medida
+  List<Medida> medidaList = [];
+  Medida medidaSelected;
+
+  //Pais
+  List<Pais> paisList = [];
+  Pais paisSelected;
+
+  //Marca
+  List<Marca> marcaList = [];
+  Marca marcaSelected;
+
+  List<Rejeitadas> carcacaList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    textEditingControllerModelo = TextEditingController();
+    textEditingControllerMarca = TextEditingController();
+    textEditingControllerMedida = TextEditingController();
+
+    rejeitada = new Rejeitadas();
+    rejeitada.modelo = new Modelo();
+    rejeitada.medida = new Medida();
+    rejeitada.pais = new Pais();
+    rejeitada.modelo.marca = new Marca();
+
+    ModeloApi().getAll().then((List<Modelo> value) {
+      setState(() {
+        modeloList = value;
+      });
+    });
+
+    MedidaApi().getAll().then((List<Medida> value) {
+      setState(() {
+        medidaList = value;
+      });
+    });
+
+    PaisApi().getAll().then((List<Pais> value) {
+      setState(() {
+        paisList = value;
+      });
+    });
+
+    MarcaApi().getAll().then((List<Marca> value) {
+      setState(() {
+        marcaList = value;
+      });
+    });
+
+    RejeitadasApi().getAll().then((List<Rejeitadas> value) {
+      setState(() {
+        carcacaList = value;
+        loading.value = false;
+      });
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    var rejeitadasAPI = new RejeitadasApi();
 
-    final DinamicListCard listCards = DinamicListCard();
+    var rejeitadasApi = new RejeitadasApi();
 
-    TextEditingController textEditingControllerRejeitadas;
-    TextEditingController textEditingControllerCarcaca;
-    textEditingControllerRejeitadas = MaskedTextController(mask: '000000');
-    Rejeitadas _responseValue;
-    List listaRejeitadas = [];
-    var _isList = ValueNotifier<bool>(true);
-    // bool loading = true;
-    var loading = ValueNotifier<bool>(true);
-
-    //Fica escutando as mudanças
     final RejeitadasApi rejeitadas = Provider.of(context);
+    var _isList = ValueNotifier<bool>(true);
 
-    @override
-    void initState() {
-      super.initState();
-
-      this.setState(() {});
-    }
-
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     title: Text('Proibidas'),
-    //     actions: [
-    //       IconButton(
-    //         icon: Icon(
-    //           Icons.add,
-    //           color: Colors.white,
-    //         ),
-    //         onPressed: () {
-    //           Navigator.push(
-    //               context,
-    //               MaterialPageRoute(
-    //                 builder: (context) => AdicionarRejeitadasPage(),
-    //               ));
-    //           // do something
-    //         },
-    //       ),
-    //     ],
-    //   ),
     return Scaffold(
       appBar: AppBar(
         title: Container(
@@ -102,173 +157,280 @@ class ListaRejeitadasState extends State<ListaRejeitadas> {
             )
           ]),
         ),
-            actions: [
-              IconButton(
-                icon: Icon(
-                  Icons.add,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AdicionarRejeitadasPage(),
-                      ));
-                  // do something
-                },
-              ),
-            ],
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AdicionarRejeitadasPage(),
+                  ));
+              // do something
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            ValueListenableBuilder(
-                valueListenable: _isList,
-                builder: (_, __, ___) {
-                  return Visibility(
-                      visible: !_isList.value,
-                      child: _responseValue != null
-                          ? listCards.cardResponse(_responseValue, context)
-                          : Text('Sem Informações'));
-                }),
-            Visibility(
-              visible: _isList.value,
-              child: _exibirLista(context, rejeitadasAPI) != null
-                  ? _exibirLista(context, rejeitadasAPI)
-                  : 'Aguardando..',
+            DropdownButtonFormField(
+              decoration: InputDecoration(
+                labelText: "Modelo",
+              ),
+              validator: (value) =>
+              value == null ? 'Não pode ser nulo' : null,
+              value: modeloSelected,
+              isExpanded: true,
+              onChanged: (Modelo modelo) {
+                setState(() {
+                  modeloSelected = modelo;
+                  rejeitada.modelo = modeloSelected;
+                  marcaSelected = modeloSelected.marca;
+                  rejeitada.modelo.marca = marcaSelected;
+                });
+              },
+              items: modeloList.map((Modelo modelo) {
+                return DropdownMenuItem(
+                  value: modelo,
+                  child: Text(modelo.descricao),
+                );
+              }).toList(),
+            ),
+            Padding(
+              padding: EdgeInsets.all(5),
+            ),
+            Row(children: [
+              Expanded(
+                  child: DropdownButtonFormField(
+                    decoration: InputDecoration(
+                      labelText: "Medida",
+                    ),
+                    validator: (value) =>
+                    value == null ? 'Não pode ser nulo' : null,
+                    value: medidaSelected,
+                    isExpanded: true,
+                    onChanged: (Medida medida) {
+                      setState(() {
+                        medidaSelected = medida;
+                        rejeitada.medida = medidaSelected;
+                      });
+                    },
+                    items: medidaList.map((Medida medida) {
+                      return DropdownMenuItem(
+                        value: medida,
+                        child: Text(medida.descricao),
+                      );
+                    }).toList(),
+                  )),
+              Expanded(
+                  child: DropdownButtonFormField(
+                    decoration: InputDecoration(
+                      labelText: "País",
+                    ),
+                    validator: (value) =>
+                    value == null ? 'Não pode ser nulo' : null,
+                    value: paisSelected,
+                    isExpanded: true,
+                    onChanged: (Pais pais) {
+                      setState(() {
+                        paisSelected = pais;
+                        rejeitada.pais = paisSelected;
+                      });
+                    },
+                    items: paisList.map((Pais pais) {
+                      return DropdownMenuItem(
+                        value: pais,
+                        child: Text(pais.descricao),
+                      );
+                    }).toList(),
+                  )),
+              Expanded(
+                  child: DropdownButtonFormField(
+                    decoration: InputDecoration(
+                      labelText: "Marca",
+                    ),
+                    validator: (value) =>
+                    value == null ? 'Não pode ser nulo' : null,
+                    value: marcaSelected,
+                    isExpanded: true,
+                    onChanged: (Marca marca) {
+                      setState(() {
+                        marcaSelected = marca;
+                        rejeitada.modelo.marca = marcaSelected;
+                      });
+                    },
+                    items: marcaList.map((Marca marca) {
+                      return DropdownMenuItem(
+                        value: marca,
+                        child: Text(marca.descricao),
+                      );
+                    }).toList(),
+                  )),
+            ]),
+            Padding(
+              padding: EdgeInsets.all(5),
+            ),
+            Container(
+                child: ElevatedButton(
+                  child: Text("Pesquisar"),
+                  onPressed: () async {
+                    if (true) {
+                      loading.value = true;
+                      carcacaList = await listCards.pesquisa(rejeitada);
+                      loading.value = false;
+                      _isList.value = true;
+                      _isList.notifyListeners();
+                    }
+                  },
+                )),
+            Container(
+              child: Expanded(
+                child: ValueListenableBuilder(
+                    valueListenable: _isList,
+                    builder: (_, __, ___) {
+                      return Visibility(
+                        child: listCards.exibirListaConsulta(
+                            context, carcacaList) !=
+                            null
+                            ? listCards.exibirListaConsulta(
+                            context, carcacaList)
+                            : loading.value
+                            ? cicleLoading(context)
+                            : carcacaList.length == 0
+                            ? Text('Nenhuma produção encontrada')
+                            : '',
+                      );
+                    }),
+              ),
             ),
           ],
         ),
       ),
     );
   }
-
-  Widget _exibirLista(context, obj) {
-    // return Text("data");
-    return Expanded(
-      child: FutureBuilder(
-          future: obj.getAll(),
-          builder: (context, AsyncSnapshot<List> snapshot) {
-            if (snapshot.hasData) {
-              return ListView.builder(
-                  itemCount: snapshot.data.length,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      child: ListTile(
-                        title: Text(
-                            "ID: " +
-                                snapshot.data[index].id.toString() +
-                            " Modelo: " +
-                            snapshot.data[index].modelo.descricao),
-                        subtitle: Text('Medida: ' +
-                            snapshot.data[index].medida.descricao +
-                            "\n"
-                                'Pais: ' +
-                            snapshot.data[index].pais.descricao +
-                            "\n"
-                                'Motivo: ' +
-                            ((snapshot.data[index].motivo != null)
-                                ? snapshot.data[index].motivo.toString()
-                                : "NI") +
-                            "\n"
-                                'Observacao: ' +
-                            ((snapshot.data[index].descricao != null)
-                                ? snapshot.data[index].descricao.toString()
-                                : "NI")),
-                        trailing: Container(
-                          width: 100,
-                          child: Row(
-                            children: <Widget>[
-                              IconButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                EditarRejeitadasPage(
-                                                  carcacaEdit:
-                                                      snapshot.data[index],
-                                                )));
-                                  },
-                                  icon: Icon(Icons.edit, color: Colors.orange)),
-
-                              IconButton(
-                                  onPressed: () async {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: Text("Excluir"),
-                                          content: Text(
-                                              "Tem certeza que deseja excluir o item ${snapshot.data[index].id}"),
-                                          actions: [
-                                            ElevatedButton(
-                                              child: Text("Sim"),
-                                              onPressed: () {
-                                                Provider.of<RejeitadasApi>(
-                                                        context,
-                                                        listen: false)
-                                                    .delete(snapshot
-                                                        .data[index].id);
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                        deleteMessage(context));
-                                                Navigator.pop(context);
-                                              },
-                                            ),
-                                            ElevatedButton(
-                                              child: Text("Não"),
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                            ),
-                                          ],
-                                        );
-                                        ;
-                                      },
-                                    );
-                                  },
-                                  icon: Icon(
-                                    Icons.delete,
-                                    color: Colors.red,
-                                  )),
-                              // IconButton(
-                              //     onPressed: () {
-                              //       Navigator.push(
-                              //           context,
-                              //           MaterialPageRoute(
-                              //               builder: (context) =>
-                              //                   PrintPage(
-                              //                     carcacaPrint:
-                              //                     snapshot.data[index],
-                              //                   )));
-                              //     },
-                              //     icon: Icon(Icons.print, color: Colors.greenAccent)),
-                              // IconButton(onPressed: (){}, icon: Icon(Icons.arrow_right, color: Colors.black,))
-                            ],
-                          ),
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => DetalhesRejeitadasPage(
-                                        id: snapshot.data[index].id,
-                                      )));
-                        },
-                      ),
-                    );
-                  });
-            } else {
-              return cicleLoading(context);
-            }
-          }),
-    );
-  }
 }
 
-class DinamicListCard extends ChangeNotifier {
+class DinamicListRejeitada extends ChangeNotifier {
+  exibirListaConsulta(context, Servico) {
+    if (Servico.length > 0) {
+      return Container(
+        height: 400.0,
+        child: ListView.builder(
+            itemCount: Servico.length,
+            itemBuilder: (context, index) {
+              if (Servico.length > 0) {
+                return Card(
+                  child: ListTile(
+                    title: Text(
+                        "ID: " +
+                            Servico[index].id.toString() +
+                            " Modelo: " +
+                            Servico[index].modelo.descricao),
+                    subtitle: Text('Medida: ' +
+                        Servico[index].medida.descricao +
+                        "\n"
+                            'Pais: ' +
+                        Servico[index].pais.descricao +
+                        "\n"
+                            'Motivo: ' +
+                        ((Servico[index].motivo != null)
+                            ? Servico[index].motivo.toString()
+                            : "NI") +
+                        "\n"
+                            'Observacao: ' +
+                        ((Servico[index].descricao != null)
+                            ? Servico[index].descricao.toString()
+                            : "NI")),
+                    trailing: Container(
+                      width: 100,
+                      child: Row(
+                        children: <Widget>[
+                          IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            EditarRejeitadasPage(
+                                              carcacaEdit:
+                                              Servico[index],
+                                            )));
+                              },
+                              icon: Icon(Icons.edit, color: Colors.orange)),
+                          IconButton(
+                              onPressed: () async {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text("Excluir"),
+                                      content: Text(
+                                          "Tem certeza que deseja excluir o item ${Servico[index].id}"),
+                                      actions: [
+                                        ElevatedButton(
+                                          child: Text("Sim"),
+                                          onPressed: () async {
+                                            var response =
+                                            await Provider.of<ProducaoApi>(
+                                                context,
+                                                listen: false)
+                                                .delete(Servico[index].id)
+                                                .then((value) {
+                                              return value;
+                                            });
+                                            if (response) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                  deleteMessage(context));
+                                              Servico.removeAt(index);
+                                              Navigator.pop(context);
+                                            }
+                                          },
+                                        ),
+                                        ElevatedButton(
+                                          child: Text("Não"),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                    notifyListeners();
+                                  },
+                                );
+                              },
+                              icon: Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                              )),
+                        ],
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DetalhesRejeitadasPage(
+                                id: Servico[index].id,
+                              )));
+                    },
+                  ),
+                );
+              } else {
+                return cicleLoading(context);
+              }
+            }),
+      );
+    } else {
+      return null;
+    }
+  }
+
   cardResponse(_responseValue, context) {
     return Card(
       shape: RoundedRectangleBorder(
@@ -295,8 +457,8 @@ class DinamicListCard extends ChangeNotifier {
                         context,
                         MaterialPageRoute(
                             builder: (context) => EditarRejeitadasPage(
-                                  carcacaEdit: _responseValue,
-                                )));
+                              carcacaEdit: _responseValue,
+                            )));
                   },
                   icon: Icon(Icons.edit, color: Colors.orange)),
 
@@ -314,7 +476,7 @@ class DinamicListCard extends ChangeNotifier {
                               child: Text("Sim"),
                               onPressed: () {
                                 Provider.of<RejeitadasApi>(context,
-                                        listen: false)
+                                    listen: false)
                                     .delete(_responseValue.id);
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(deleteMessage(context));
@@ -346,10 +508,14 @@ class DinamicListCard extends ChangeNotifier {
               context,
               MaterialPageRoute(
                   builder: (context) => DetalhesRejeitadasPage(
-                        id: _responseValue.id,
-                      )));
+                    id: _responseValue.id,
+                  )));
         },
       ),
     );
+  }
+
+  pesquisa(carcaca) {
+    return RejeitadasApi().consultaRejeitadas(carcaca);
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:GPPremium/autenticacao/authutil.dart';
+import 'package:GPPremium/models/rejeitadas.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import '../main.dart';
@@ -119,17 +120,31 @@ class ConfigRequest {
   }
 
   Future<Response> requestQueryRejeitadas(
-      String endpoint, String numeroEtiqueta) async {
+      String endpoint, Rejeitadas rejeitada) async {
     var jwt = await new AuthUtil().jwtOrEmpty;
+
+    var modeloId = rejeitada.modelo != null ? rejeitada.modelo.id : null;
+
+    var marcaId = rejeitada.modelo.marca != null ? rejeitada.modelo.marca.id : null;
+
+    var medidaId = rejeitada.medida != null ? rejeitada.medida.id : null;
+
+    var paisId = rejeitada.pais != null ? rejeitada.pais.id : null;
+
     if (jwt != null) {
+
+      var url = Uri.parse(SERVER_IP +
+          endpoint +
+          "/pesquisa?medidaId=${medidaId}&marcaId=${marcaId}&modeloId=${modeloId}&paisId=${paisId}");
+
       http.Response response = await http.get(
-        Uri.parse(SERVER_IP + endpoint + "/pesquisa/${numeroEtiqueta}"),
+        url,
         headers: {
           'Content-type': 'application/json',
           'Accept': 'application/json',
           'Authorization': 'Bearer $jwt'
         },
-      ).timeout(const Duration(seconds: 60));
+      ).timeout(Duration(seconds: 60));
       return response;
     }
   }

@@ -57,10 +57,6 @@ class Regra {
     data['id'] = this.id;
     data['tamanho_min'] = this.tamanhoMin;
     data['tamanho_max'] = this.tamanhoMax;
-    // data['anti_quebra_1'] = this.antiQuebra1;
-    // data['anti_quebra_2'] = this.antiQuebra2;
-    // data['anti_quebra_3'] = this.antiQuebra3;
-    // data['espessuramento'] = this.espessuramento;
     data['tempo'] = this.tempo;
     if (this.matriz != null) {
       data['matriz'] = this.matriz.toJson();

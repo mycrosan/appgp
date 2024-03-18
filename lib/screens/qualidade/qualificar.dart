@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-
 import 'package:GPPremium/models/qualidade.dart';
 import 'package:GPPremium/screens/qualidade/ListaQualidade.dart';
 
@@ -21,7 +20,6 @@ import '../../service/tipo_observacacaoapi.dart';
 import '../../service/uploadapi.dart';
 
 class AdicionarQualificarPage extends StatefulWidget {
-
   int id;
   Producao producao;
 
@@ -60,9 +58,8 @@ class AdicionarQualificarPageState extends State<AdicionarQualificarPage> {
     _imageFileList = value == null ? null : [value];
   }
 
-
   final RoundedLoadingButtonController _btnController1 =
-  RoundedLoadingButtonController();
+      RoundedLoadingButtonController();
 
   String _retrieveDataError;
 
@@ -95,14 +92,12 @@ class AdicionarQualificarPageState extends State<AdicionarQualificarPage> {
       });
     });
 
-
     QualidadeApi().getAll().then((List<Qualidade> value) {
       setState(() {
         qualidadeList = value;
         loading.value = false;
       });
     });
-
   }
 
   dynamic _pickImageError;
@@ -172,12 +167,13 @@ class AdicionarQualificarPageState extends State<AdicionarQualificarPage> {
                 classificacaoSelected = classificacao;
               });
 
-              TipoObservacacaoApi().consulta(classificacao.id).then((Object value) {
+              TipoObservacacaoApi()
+                  .consulta(classificacao.id)
+                  .then((Object value) {
                 setState(() {
                   observacaoList = value;
                 });
               });
-
             },
             items: classificacaoList.map((TipoClassificacao qualificacao) {
               return DropdownMenuItem(
@@ -221,6 +217,7 @@ class AdicionarQualificarPageState extends State<AdicionarQualificarPage> {
             // value.length == 0 ? 'Não pode ser nulo' : null,
             onChanged: (String newValue) async {
               setState(() {
+                qualidade.observacao = newValue;
               });
             },
           ),
@@ -246,11 +243,11 @@ class AdicionarQualificarPageState extends State<AdicionarQualificarPage> {
             children: [
               Expanded(
                   child: ElevatedButton(
-                    child: Text("Cancelar"),
-                    onPressed: () {
-                      Navigator.pushReplacementNamed(context, "/home");
-                    },
-                  )),
+                child: Text("Cancelar"),
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, "/home");
+                },
+              )),
               Padding(padding: EdgeInsets.all(5)),
               Expanded(
                 child: RoundedLoadingButton(
@@ -260,13 +257,13 @@ class AdicionarQualificarPageState extends State<AdicionarQualificarPage> {
                   child: Text('Salvar!', style: TextStyle(color: Colors.white)),
                   controller: _btnController1,
                   onPressed: () async {
-                    if (_formkey.currentState.validate() && _imageFileList.length > 0) {
-
+                    if (_formkey.currentState.validate() &&
+                        _imageFileList.length > 0) {
                       Map<String, String> body = {
                         'title': 'qualidade',
                       };
                       responseMessageSimple imageResponse =
-                      await UploadApi().addImage(body, _imageFileList);
+                          await UploadApi().addImage(body, _imageFileList);
 
                       print(imageResponse.content[0]);
                       qualidade.fotos = json.encode(imageResponse.content);
@@ -283,7 +280,6 @@ class AdicionarQualificarPageState extends State<AdicionarQualificarPage> {
                           builder: (context) => ListaQualidade(),
                         ),
                       );
-
                     } else {
                       _btnController1.reset();
                     }

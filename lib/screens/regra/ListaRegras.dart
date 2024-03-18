@@ -61,6 +61,7 @@ class ListaRegraState extends State<ListaRegras> {
     textEditingControllerModelo = TextEditingController();
     textEditingControllerMarca = TextEditingController();
     textEditingControllerMedida = TextEditingController();
+
     regra = new Regra();
     regra.medida = new Medida();
     regra.modelo = new Modelo();
@@ -69,21 +70,18 @@ class ListaRegraState extends State<ListaRegras> {
     ModeloApi().getAll().then((List<Modelo> value) {
       setState(() {
         modeloList = value;
-       
       });
     });
 
     MedidaApi().getAll().then((List<Medida> value) {
       setState(() {
         medidaList = value;
-      
       });
     });
 
     PaisApi().getAll().then((List<Pais> value) {
       setState(() {
         paisList = value;
-       
       });
     });
 

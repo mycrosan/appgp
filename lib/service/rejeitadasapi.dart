@@ -17,7 +17,7 @@ class RejeitadasApi extends ChangeNotifier {
       final map = jsonDecode(response.body);
       List<dynamic> body = map;
       // print(body[0]['_links']['self']);
-      return body.map((carcacas) => Rejeitadas.fromJson(carcacas)).toList();
+      return body.map((rejeitada) => Rejeitadas.fromJson(rejeitada)).toList();
     } else {
       throw Exception('Falha ao carregar carcaças');
     }
@@ -82,25 +82,39 @@ class RejeitadasApi extends ChangeNotifier {
     }
   }
 
-  Future<Object> consultaRejeitadas(numeroEtiqueta) async {
+  Future<Object> consultaRejeitadas(Rejeitadas rejeitada) async {
+
     var objData = new ConfigRequest();
-    var response = await objData.requestQueryRejeitadas(ENDPOINT, numeroEtiqueta);
+    var response = await objData.requestQueryRejeitadas(ENDPOINT, rejeitada);
 
     if (response.statusCode == 200) {
-      try {
-        var value = Rejeitadas.fromJson(jsonDecode(response.body));
-        if (value.id != null) {
-          return value;
-        } else {
-          return responseMessage.fromJson(jsonDecode(response.body));
-        }
-      } catch (e) {
-        return responseMessage.fromJson(jsonDecode(response.body));
-      }
+      final map = jsonDecode(response.body);
+      List<dynamic> body = map;
+      return body.map((rejeitadas) => Rejeitadas.fromJson(rejeitadas)).toList();
     } else {
-      throw Exception('Falha ao carregar Carcaça');
+      throw Exception('Falha ao carregar producões');
     }
   }
+
+  // Future<Object> consultaRejeitadas(Rejeitadas rejeitada) async {
+  //   var objData = new ConfigRequest();
+  //   var response = await objData.requestQueryRejeitadas(ENDPOINT, rejeitada);
+  //
+  //   if (response.statusCode == 200) {
+  //     try {
+  //       var value = Rejeitadas.fromJson(jsonDecode(response.body));
+  //       if (value.id != null) {
+  //         return value;
+  //       } else {
+  //         return responseMessage.fromJson(jsonDecode(response.body));
+  //       }
+  //     } catch (e) {
+  //       return responseMessage.fromJson(jsonDecode(response.body));
+  //     }
+  //   } else {
+  //     throw Exception('Falha ao carregar Carcaça');
+  //   }
+  // }
 
 
 }

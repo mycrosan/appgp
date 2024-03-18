@@ -1,10 +1,7 @@
-import 'package:GPPremium/models/responseMessage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../components/ImagePreview.dart';
 import '../../models/rejeitadas.dart';
-import '../../service/get_image.dart';
 import '../../service/rejeitadasapi.dart';
 
 class DetalhesRejeitadasPage extends StatefulWidget {
