@@ -56,3 +56,6 @@ flutter build appbundle
 Comandos para iniciar o AVD - Emulador
 cd ~/Library/Android/sdk/emulator
 ./emulator -avd Pixel_5_API_30   
+
+## Java 11
+## Fluter 2
