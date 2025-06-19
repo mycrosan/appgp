@@ -2,9 +2,8 @@
  * Classe para otimizar a criação dos widgets dos menus
  */
 
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
 class GPMenu extends StatelessWidget {
   //const ({Key key}) : super(key: key);

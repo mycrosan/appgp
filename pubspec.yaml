@@ -22,6 +22,7 @@ dependencies:
   path:
   http: ^0.13.4
   flutter_secure_storage: ^3.3.1+1
+  file_picker: ^3.0.0
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
@@ -52,8 +53,10 @@ dependencies:
   esc_pos_printer: ^4.1.0
   esc_pos_utils: ^1.0.0
   ping_discover_network: ^0.2.0+1
-#  qr_flutter: ^3.2.0
-  #wifi: ^0.1.5
+  qr_code_scanner: 0.4.0
+  flutter_barcode_scanner: ^2.0.0
+  #qr_flutter: ^3.2.0
+ #wifi: ^0.1.5
 
 dev_dependencies:
   flutter_test:
