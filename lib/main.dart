@@ -87,6 +87,7 @@ class GpPremiumApp extends StatelessWidget {
           '/proibidas': (_) => ListaRejeitadas(),
           '/ajustes': (_) => Ajustes(),
           '/relatorio': (_) => ListaRelatorio(),
+          '/usuarios': (_) => ListaRelatorio(),
         },
         debugShowCheckedModeBanner: false,
         theme: ThemeData(

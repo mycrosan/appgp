@@ -140,12 +140,10 @@ class AdicionarQualificarPageState extends State<AdicionarQualificarPage> {
   }
 
   Text _getRetrieveErrorWidget() {
-    if (_retrieveDataError != null) {
-      final Text result = Text(_retrieveDataError);
-      _retrieveDataError = null;
-      return result;
-    }
-    return null;
+    final Text result = Text(_retrieveDataError);
+    _retrieveDataError = null;
+    return result;
+      return null;
   }
 
   Widget _construirFormulario(context) {

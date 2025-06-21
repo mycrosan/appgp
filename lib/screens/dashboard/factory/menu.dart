@@ -1,34 +1,35 @@
-/**
- * Classe para otimizar a criação dos widgets dos menus
- */
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
 class GPMenu extends StatelessWidget {
-  //const ({Key key}) : super(key: key);
   final String name;
   final IconData icon;
-  final Function onClick;
+  final VoidCallback onClick;
 
-  const GPMenu(this.name, this.icon, {@required this.onClick});
+  const GPMenu(
+      this.name,
+      this.icon, {
+        Key key,
+        @required this.onClick,
+      }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => onClick(),
+      onTap: onClick,
       child: Card(
-          color: Colors.white,
-          child: Center(
-            child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Icon(icon, size: 80.0),
-                  Text(name),
-                ]),
-          )),
+        color: Colors.white,
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(icon, size: 80, semanticLabel: name),
+              SizedBox(height: 8),
+              Text(name, style: TextStyle(fontSize: 12)),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

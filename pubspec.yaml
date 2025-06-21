@@ -38,7 +38,7 @@ dependencies:
   line_icons: ^2.0.1
   equatable: ^2.0.3
   image_picker: ^0.8.4+5
-  image_cropper:
+  #image_cropper: ^1.5.1
   permission_handler:
   usage: ^4.0.2
   flutter_quill:
@@ -52,7 +52,7 @@ dependencies:
   esc_pos_printer: ^4.1.0
   esc_pos_utils: ^1.0.0
   ping_discover_network: ^0.2.0+1
-#  qr_flutter: ^3.2.0
+  flutter_barcode_scanner: ^2.0.0
   wifi: ^0.1.5
 
 dev_dependencies:

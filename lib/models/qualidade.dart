@@ -33,10 +33,8 @@ class Qualidade {
 
     data['fotos'] = this.fotos;
 
-    if (this.tipo_observacao != null) {
-      data['tipo_observacao'] = this.tipo_observacao.toJson();
-    }
-
+    data['tipo_observacao'] = this.tipo_observacao.toJson();
+  
     return data;
   }
 }

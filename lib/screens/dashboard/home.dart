@@ -54,7 +54,7 @@ class Home extends StatelessWidget {
             GPMenu('Proibidas', Icons.block, onClick: () {
               Navigator.pushNamed(context, '/proibidas');
             }),
-            GPMenu('Relatório', Icons.file_open, onClick: () {
+            GPMenu('Relatório', Icons.download, onClick: () {
               Navigator.pushNamed(context, '/relatorio');
             }),
             GPMenu('Ajustes', Icons.settings, onClick: () {

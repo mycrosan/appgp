@@ -58,22 +58,12 @@ class Regra {
     data['tamanho_min'] = this.tamanhoMin;
     data['tamanho_max'] = this.tamanhoMax;
     data['tempo'] = this.tempo;
-    if (this.matriz != null) {
-      data['matriz'] = this.matriz.toJson();
-    }
-    if (this.medida != null) {
+    data['matriz'] = this.matriz.toJson();
       data['medida'] = this.medida.toJson();
-    }
-    if (this.modelo != null) {
       data['modelo'] = this.modelo.toJson();
-    }
-    if (this.pais != null) {
       data['pais'] = this.pais.toJson();
-    }
-    if (this.camelback != null) {
       data['camelback'] = this.camelback.toJson();
-    }
-    if (this.antiquebra1 != null) {
+      if (this.antiquebra1 != null) {
       data['antiquebra1'] = this.antiquebra1.toJson();
     }
     if (this.antiquebra2 != null) {

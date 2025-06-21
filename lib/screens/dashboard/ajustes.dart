@@ -63,6 +63,9 @@ class Ajustes extends StatelessWidget {
             GPMenu('Espessuramento', Icons.settings, onClick: () {
               Navigator.pushNamed(context, '/espessuramento');
             }),
+            GPMenu('Usuários', Icons.settings, onClick: () {
+              Navigator.pushNamed(context, '/usuarios');
+            }),
 
             // GPMenu('Borracha', Icons.precision_manufacturing, onClick: () {
             //   Navigator.pushNamed(context, '/producao');

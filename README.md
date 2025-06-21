@@ -53,6 +53,10 @@ flutter build appbundle
 - Accessibility	♿ :wheelchair:
 - Move/rename repository	🚚 :truck:
 
-Comandos para iniciar o AVD - Emulador
-cd ~/Library/Android/sdk/emulator
-./emulator -avd Pixel_5_API_30   
+## Comandos para iniciar o AVD - Emulador
+- cd ~/Library/Android/sdk/emulator
+- ./emulator -avd Pixel_5_API_30   
+
+## Gerar keystore
+
+keytool -genkey -v -keystore ~/upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload

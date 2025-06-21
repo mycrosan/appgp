@@ -24,15 +24,11 @@ class Producao {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    if (this.carcaca != null) {
-      data['carcaca'] = this.carcaca.toJson();
-    }
-    data['medida_pneu_raspado'] = this.medidaPneuRaspado;
+    data['carcaca'] = this.carcaca.toJson();
+      data['medida_pneu_raspado'] = this.medidaPneuRaspado;
     data['dados'] = this.dados;
-    if (this.regra != null) {
-      data['regra'] = this.regra.toJson();
-    }
-    data['fotos'] = this.fotos;
+    data['regra'] = this.regra.toJson();
+      data['fotos'] = this.fotos;
     return data;
   }
 }

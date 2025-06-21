@@ -119,7 +119,7 @@ class ListaQualidadeState extends State<ListaQualidade> {
                       var response =
                           await listCards.pesquisaQualidade(newValue);
                       loading.value = false;
-                      if (response is Qualidade && response != null) {
+                      if (response is Qualidade) {
                         _isListQualidade.value = true;
                         qualidadePesquisa = response;
                         listCards.exibirQualidade(context, response);
