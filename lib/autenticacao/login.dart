@@ -157,8 +157,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                 if (value == null || value.isEmpty) {
                                   return 'Informe a senha';
                                 }
-                                if (value.length != 6) {
-                                  return 'A senha deve ter exatamente 6 dígitos';
+                                if (value.length < 4) {
+                                  return 'A senha deve ter 4 dígitos ou mais';
                                 }
                                 return null;
                               },

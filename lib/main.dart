@@ -14,6 +14,7 @@ import 'package:GPPremium/screens/qualidade/ListaQualidade.dart';
 import 'package:GPPremium/screens/regra/ListaRegras.dart';
 import 'package:GPPremium/screens/rejeitadas/ListaRejeitadas.dart';
 import 'package:GPPremium/screens/relatorio/ListaRelatorio.dart';
+import 'package:GPPremium/screens/usuario/ListaUsuarios.dart';
 import 'package:GPPremium/service/antiquebraapi.dart';
 import 'package:GPPremium/service/camelbackapi.dart';
 import 'package:GPPremium/service/carcacaapi.dart';
@@ -87,7 +88,7 @@ class GpPremiumApp extends StatelessWidget {
           '/proibidas': (_) => ListaRejeitadas(),
           '/ajustes': (_) => Ajustes(),
           '/relatorio': (_) => ListaRelatorio(),
-          '/usuarios': (_) => ListaRelatorio(),
+          '/usuarios': (_) => ListaUsuariosPage(),
         },
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -123,7 +124,7 @@ class GpPremiumApp extends StatelessWidget {
             elevation: 10,
           ), //AppBarTheme
         ),
-        home: Login(),
+        home: Home(),
       ),
     );
   }
