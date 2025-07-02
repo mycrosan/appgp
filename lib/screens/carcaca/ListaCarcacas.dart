@@ -1,4 +1,3 @@
-import 'package:GPPremium/components/Loading.dart';
 import 'package:GPPremium/models/carcaca.dart';
 import 'package:GPPremium/screens/carcaca/adicionar.dart';
 import 'package:GPPremium/screens/carcaca/editdatawidget.dart';
@@ -7,6 +6,7 @@ import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../components/snackBar.dart';
 import '../../models/responseMessage.dart';
 import 'detailwidget.dart';
@@ -31,22 +31,16 @@ class ListaCarcacaState extends State<ListaCarcaca> {
 
   Future<void> _scanBarcode() async {
     String barcodeScanRes = '';
-
     try {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-        '#FF6666',
-        'Cancelar',
-        true,
-        ScanMode.BARCODE,
+        '#FF6666', 'Cancelar', true, ScanMode.BARCODE,
       );
     } catch (e) {
       print('Erro ao escanear: $e');
     }
 
     if (barcodeScanRes != '-1' && mounted) {
-      // Preenche zeros à esquerda
       String codigoFormatado = barcodeScanRes.padLeft(6, '0');
-
       setState(() {
         textEditingControllerCarcaca.text = codigoFormatado;
       });
@@ -63,12 +57,41 @@ class ListaCarcacaState extends State<ListaCarcaca> {
     }
   }
 
+  Widget shimmerLoadingList() {
+    return ListView.builder(
+      itemCount: 6,
+      itemBuilder: (context, index) {
+        return Shimmer.fromColors(
+          baseColor: Colors.grey[300],
+          highlightColor: Colors.grey[100],
+          child: Card(
+            margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+            child: ListTile(
+              title: Container(height: 12, width: 100, color: Colors.white),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(height: 12, width: 150, color: Colors.white),
+                  SizedBox(height: 6),
+                  Container(height: 12, width: 80, color: Colors.white),
+                ],
+              ),
+              trailing: Container(
+                width: 48,
+                height: 24,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    var carcacasAPI = new CarcacaApi();
-    final DinamicListCard listCards = DinamicListCard();
-    final CarcacaApi carcacas = Provider.of(context);
+    final carcacasAPI = CarcacaApi();
+    final listCards = DinamicListCard();
 
     return Scaffold(
       appBar: AppBar(
@@ -81,32 +104,29 @@ class ListaCarcacaState extends State<ListaCarcaca> {
                 color: Colors.white,
                 height: 30.0,
                 child: TextFormField(
-                    controller: textEditingControllerCarcaca,
-                    decoration: InputDecoration(
-                      hintText: 'Nº etiqueta',
-                      contentPadding: EdgeInsets.all(10.0),
-                    ),
-                    keyboardType: TextInputType.numberWithOptions(decimal: true),
-                    onChanged: (String newValue) async {
-                      if (newValue.length == 6) {
-                        String codigoFormatado = newValue.padLeft(6, '0');
-
-                        var response = await CarcacaApi().consultaCarcaca(codigoFormatado);
-
-                        if (response is Carcaca) {
-                          _responseValue = response;
-                          _isList.value = true;
-                          _isList.notifyListeners();
-                        } else if (response is responseMessage) {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(warningMessage(context, response.message));
-                        }
-                      } else {
-                        _isList.value = false;
+                  controller: textEditingControllerCarcaca,
+                  decoration: InputDecoration(
+                    hintText: 'Nº etiqueta',
+                    contentPadding: EdgeInsets.all(10.0),
+                  ),
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  onChanged: (String newValue) async {
+                    if (newValue.length == 6) {
+                      String codigoFormatado = newValue.padLeft(6, '0');
+                      var response = await carcacasAPI.consultaCarcaca(codigoFormatado);
+                      if (response is Carcaca) {
+                        _responseValue = response;
+                        _isList.value = true;
                         _isList.notifyListeners();
+                      } else if (response is responseMessage) {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(warningMessage(context, response.message));
                       }
+                    } else {
+                      _isList.value = false;
+                      _isList.notifyListeners();
                     }
-
+                  },
                 ),
               ),
             )
@@ -115,18 +135,14 @@ class ListaCarcacaState extends State<ListaCarcaca> {
         actions: [
           IconButton(
             icon: Icon(Icons.qr_code_scanner, color: Colors.white),
-            onPressed: () {
-              _scanBarcode();
-            },
+            onPressed: () => _scanBarcode(),
           ),
           IconButton(
             icon: Icon(Icons.add, color: Colors.white),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => AdicionarCarcacaPage(),
-                ),
+                MaterialPageRoute(builder: (context) => AdicionarCarcacaPage()),
               );
             },
           ),
@@ -151,55 +167,48 @@ class ListaCarcacaState extends State<ListaCarcaca> {
               child: FutureBuilder(
                 future: carcacasAPI.getAll(),
                 builder: (context, AsyncSnapshot<List> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return shimmerLoadingList();
+                  }
+
                   if (snapshot.hasData) {
                     return ListView.builder(
                       itemCount: snapshot.data.length,
                       itemBuilder: (context, index) {
+                        final item = snapshot.data[index];
                         return Card(
                           child: ListTile(
-                            title: Text('Etiqueta: ' +
-                                snapshot.data[index].numeroEtiqueta +
-                                " id: " +
-                                snapshot.data[index].id.toString()),
+                            title: Text('Etiqueta: ${item.numeroEtiqueta} id: ${item.id}'),
                             subtitle: Text(
-                              'Medida: ' +
-                                  snapshot.data[index].medida.descricao +
-                                  "\nDOT: " +
-                                  snapshot.data[index].dot +
-                                  ' País: ' +
-                                  snapshot.data[index].pais.descricao +
-                                  "\nModelo: " +
-                                  snapshot.data[index].modelo.descricao,
+                              'Medida: ${item.medida.descricao}\n'
+                                  'DOT: ${item.dot} País: ${item.pais.descricao}\n'
+                                  'Modelo: ${item.modelo.descricao}',
                             ),
                             trailing: Container(
                               width: 100,
                               child: Row(
-                                children: <Widget>[
+                                children: [
                                   IconButton(
                                     onPressed: () {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) =>
-                                              EditarCarcacaPage(
-                                                carcacaEdit:
-                                                snapshot.data[index],
-                                              ),
+                                          builder: (_) =>
+                                              EditarCarcacaPage(carcacaEdit: item),
                                         ),
                                       );
                                     },
-                                    icon:
-                                    Icon(Icons.edit, color: Colors.orange),
+                                    icon: Icon(Icons.edit, color: Colors.orange),
                                   ),
                                   IconButton(
-                                    onPressed: () async {
+                                    onPressed: () {
                                       showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
                                           return AlertDialog(
                                             title: Text("Excluir"),
                                             content: Text(
-                                              "Tem certeza que deseja excluir o item ${snapshot.data[index].numeroEtiqueta}?",
+                                              "Tem certeza que deseja excluir o item ${item.numeroEtiqueta}?",
                                             ),
                                             actions: [
                                               ElevatedButton(
@@ -208,12 +217,9 @@ class ListaCarcacaState extends State<ListaCarcaca> {
                                                   Provider.of<CarcacaApi>(
                                                     context,
                                                     listen: false,
-                                                  ).delete(
-                                                      snapshot.data[index].id);
+                                                  ).delete(item.id);
                                                   ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                      deleteMessage(
-                                                          context));
+                                                      .showSnackBar(deleteMessage(context));
                                                   Navigator.pop(context);
                                                 },
                                               ),
@@ -237,9 +243,7 @@ class ListaCarcacaState extends State<ListaCarcaca> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => DetalhesCarcacaPage(
-                                    id: snapshot.data[index].id,
-                                  ),
+                                  builder: (_) => DetalhesCarcacaPage(id: item.id),
                                 ),
                               );
                             },
@@ -248,7 +252,7 @@ class ListaCarcacaState extends State<ListaCarcaca> {
                       },
                     );
                   } else {
-                    return cicleLoading(context);
+                    return Center(child: Text('Erro ao carregar dados.'));
                   }
                 },
               ),
@@ -261,47 +265,37 @@ class ListaCarcacaState extends State<ListaCarcaca> {
 }
 
 class DinamicListCard extends ChangeNotifier {
-  cardResponse(_responseValue, context) {
+  cardResponse(Carcaca _responseValue, BuildContext context) {
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       color: Colors.white70,
       child: ListTile(
-        title: Text('Etiqueta: ' +
-            _responseValue.numeroEtiqueta +
-            " id: " +
-            _responseValue.id.toString()),
+        title: Text('Etiqueta: ${_responseValue.numeroEtiqueta} id: ${_responseValue.id}'),
         subtitle: Text(
-          'Medida: ' +
-              _responseValue.medida.descricao +
-              "\nDOT: " +
-              _responseValue.dot +
-              "\nModelo: " +
-              _responseValue.modelo.descricao,
+          'Medida: ${_responseValue.medida.descricao}\n'
+              'DOT: ${_responseValue.dot}\n'
+              'Modelo: ${_responseValue.modelo.descricao}',
         ),
         trailing: Container(
           width: 100,
           child: Row(
-            children: <Widget>[
+            children: [
               IconButton(
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => EditarCarcacaPage(
-                        carcacaEdit: _responseValue,
-                      ),
+                      builder: (_) => EditarCarcacaPage(carcacaEdit: _responseValue),
                     ),
                   );
                 },
                 icon: Icon(Icons.edit, color: Colors.orange),
               ),
               IconButton(
-                onPressed: () async {
+                onPressed: () {
                   showDialog(
                     context: context,
-                    builder: (BuildContext context) {
+                    builder: (_) {
                       return AlertDialog(
                         title: Text("Excluir"),
                         content: Text(
@@ -320,9 +314,7 @@ class DinamicListCard extends ChangeNotifier {
                           ),
                           ElevatedButton(
                             child: Text("Não"),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
+                            onPressed: () => Navigator.pop(context),
                           ),
                         ],
                       );
@@ -338,9 +330,7 @@ class DinamicListCard extends ChangeNotifier {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => DetalhesCarcacaPage(
-                id: _responseValue.id,
-              ),
+              builder: (_) => DetalhesCarcacaPage(id: _responseValue.id),
             ),
           );
         },

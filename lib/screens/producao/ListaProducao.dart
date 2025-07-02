@@ -86,11 +86,15 @@ class ListaProducaoState extends State<ListaProducao> {
         true,
         ScanMode.BARCODE,
       );
+
       if (barcodeScanRes != '-1') {
+        String etiquetaFormatada = barcodeScanRes.padLeft(6, '0');
+
         setState(() {
-          textEditingControllerCarcaca.text = barcodeScanRes;
+          textEditingControllerCarcaca.text = etiquetaFormatada;
         });
-        _pesquisarEtiqueta(barcodeScanRes);
+
+        await _pesquisarEtiqueta(etiquetaFormatada);
       }
     } on PlatformException {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -98,6 +102,7 @@ class ListaProducaoState extends State<ListaProducao> {
       );
     }
   }
+
 
   Future<void> _pesquisarEtiqueta(String etiqueta) async {
     final listCards = DinamicListCard();
@@ -136,7 +141,7 @@ class ListaProducaoState extends State<ListaProducao> {
                         controller: textEditingControllerCarcaca,
                         style: TextStyle(fontSize: 12),  // fonte reduzida
                         decoration: InputDecoration(
-                          hintText: 'Nº Etiqueta',
+                          hintText: 'Etiqueta',
                           contentPadding: EdgeInsets.all(12.0),
                         ),
                         keyboardType: TextInputType.numberWithOptions(decimal: true),
@@ -374,7 +379,7 @@ class DinamicListCard extends ChangeNotifier {
     return null;
   }
 
-  Future<List<Producao>> pesquisa(Producao producao) {
+  pesquisa(producao) {
     return ProducaoApi().consultaProducao(producao);
   }
 }

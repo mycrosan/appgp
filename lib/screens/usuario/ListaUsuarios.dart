@@ -8,12 +8,12 @@ import 'package:http/http.dart' as http;
 import 'adicionar.dart';
 
 
-class ListaUsuariosPage extends StatefulWidget {
+class ListaUsuarios extends StatefulWidget {
   @override
   _ListaUsuariosPageState createState() => _ListaUsuariosPageState();
 }
 
-class _ListaUsuariosPageState extends State<ListaUsuariosPage> {
+class _ListaUsuariosPageState extends State<ListaUsuarios> {
   List<Usuario> usuarios = [];
 
   @override

@@ -43,7 +43,8 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
     // (Mantenha o método igual, omitido aqui para foco na leitura do código de barras)
   }
 
-  void configAndPrint(String printerIp, BuildContext ctx, Producao producao) async {
+  void configAndPrint(
+      String printerIp, BuildContext ctx, Producao producao) async {
     const PaperSize paper = PaperSize.mm80;
     final profile = await CapabilityProfile.load();
     final printer = NetworkPrinter(paper, profile);
@@ -74,7 +75,7 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
   }
 
   final RoundedLoadingButtonController _btnController1 =
-  RoundedLoadingButtonController();
+      RoundedLoadingButtonController();
 
   String _retrieveDataError;
 
@@ -189,7 +190,7 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
     final Text result = Text(_retrieveDataError);
     _retrieveDataError = null;
     return result;
-      return null;
+    return null;
   }
 
   // NOVO MÉTODO: Leitura do código de barras
@@ -238,7 +239,6 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
           SnackBar(content: Text('Falha ao ler código de barras.')));
     }
   }
-
 
   Future<void> _consultaCarcaca(String codigo) async {
     setState(() {
@@ -301,7 +301,8 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
                       },
                     ),
                   ),
-                  validator: (value) => value.length == 0 ? 'Não pode ser nulo' : null,
+                  validator: (value) =>
+                      value.length == 0 ? 'Não pode ser nulo' : null,
                   keyboardType: TextInputType.number,
                   onChanged: (String newValue) async {
                     setState(() {
@@ -313,7 +314,8 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
                     });
 
                     if (newValue.length == 6) {
-                      var response = await CarcacaApi().consultaCarcaca(newValue);
+                      var response =
+                          await CarcacaApi().consultaCarcaca(newValue);
                       if (response is Carcaca && response != null) {
                         setState(() {
                           producao.carcaca = response;
@@ -346,25 +348,24 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
                   },
                 ),
               ),
-
             ],
           ),
           Container(
             child: mostrarCarcacaSelecionada
                 ? Card(
-              child: ListTile(
-                title: Text(
-                    'Etiqueta: ' + producao.carcaca.numeroEtiqueta.toString()),
-                subtitle: Text('Medida: ' +
-                    medidaCarcaca.descricao +
-                    ' DOT: ' +
-                    producao.carcaca.dot +
-                    ' Modelo: ' +
-                    modeloCarcaca.descricao +
-                    ' Pais: ' +
-                    paisCarcaca.descricao),
-              ),
-            )
+                    child: ListTile(
+                      title: Text('Etiqueta: ' +
+                          producao.carcaca.numeroEtiqueta.toString()),
+                      subtitle: Text('Medida: ' +
+                          medidaCarcaca.descricao +
+                          ' DOT: ' +
+                          producao.carcaca.dot +
+                          ' Modelo: ' +
+                          modeloCarcaca.descricao +
+                          ' Pais: ' +
+                          paisCarcaca.descricao),
+                    ),
+                  )
                 : Text('Sem carcaça'),
           ),
           DropdownButtonFormField(
@@ -395,7 +396,7 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
               labelText: "Medida pneu raspado",
             ),
             validator: (value) =>
-            value.length == 0 ? 'Não pode ser nulo' : null,
+                value.length == 0 ? 'Não pode ser nulo' : null,
             keyboardType: TextInputType.numberWithOptions(decimal: true),
             onChanged: (String newValue) async {
               if (newValue.length >= 5) {
@@ -470,11 +471,11 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
             children: [
               Expanded(
                   child: ElevatedButton(
-                    child: Text("Cancelar"),
-                    onPressed: () {
-                      Navigator.pushReplacementNamed(context, "/home");
-                    },
-                  )),
+                child: Text("Cancelar"),
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, "/home");
+                },
+              )),
               Padding(padding: EdgeInsets.all(5)),
               Expanded(
                 child: RoundedLoadingButton(
@@ -482,7 +483,7 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
                     successIcon: Icons.check,
                     failedIcon: Icons.cottage,
                     child:
-                    Text('Salvar!', style: TextStyle(color: Colors.white)),
+                        Text('Salvar!', style: TextStyle(color: Colors.white)),
                     controller: _btnController1,
                     onPressed: () async {
                       if (_formkey.currentState.validate()) {
@@ -490,7 +491,7 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
                           'title': 'producao',
                         };
                         responseMessageSimple imageResponse =
-                        await UploadApi().addImage(body, _imageFileList);
+                            await UploadApi().addImage(body, _imageFileList);
 
                         producao.fotos = json.encode(imageResponse.content);
 
@@ -498,14 +499,14 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
 
                         if (response is Producao && response != null) {
                           _btnController1.success();
-
+                          _btnController1.reset();
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
                                 title: Text("Imprimir?"),
                                 content:
-                                Text("Quer ir para tela de impressão?"),
+                                    Text("Quer ir para tela de impressão?"),
                                 actions: [
                                   ElevatedButton(
                                     child: Text("Sim"),
@@ -514,8 +515,8 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) => PrintPage(
-                                                producaoPrint: producao,
-                                              )));
+                                                    producaoPrint: producao,
+                                                  )));
                                     },
                                   ),
                                   ElevatedButton(
@@ -532,7 +533,8 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
                                   ElevatedButton(
                                     child: Text("Imprimir direto"),
                                     onPressed: () {
-                                      this.configAndPrint('192.168.0.31', context, producao);
+                                      this.configAndPrint(
+                                          '192.168.0.31', context, producao);
                                       Navigator.pop(context);
                                     },
                                   ),
@@ -542,7 +544,7 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
                           );
                         } else {
                           responseMessage value =
-                          response != null ? response : null;
+                              response != null ? response : null;
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
@@ -566,6 +568,9 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
                             },
                           );
                         }
+                      } else {
+                        _btnController1
+                            .reset(); // <- ESSA LINHA FAZ O BOTÃO VOLTAR
                       }
                     }),
               ),
