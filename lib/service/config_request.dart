@@ -247,5 +247,4 @@ class ConfigRequest {
       return response;
     }
   }
-
 }

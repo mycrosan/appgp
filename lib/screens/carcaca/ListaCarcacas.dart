@@ -106,7 +106,7 @@ class ListaCarcacaState extends State<ListaCarcaca> {
                 child: TextFormField(
                   controller: textEditingControllerCarcaca,
                   decoration: InputDecoration(
-                    hintText: 'Nº etiqueta',
+                    hintText: 'Etiqueta',
                     contentPadding: EdgeInsets.all(10.0),
                   ),
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
@@ -158,7 +158,7 @@ class ListaCarcacaState extends State<ListaCarcaca> {
                 return Visibility(
                   visible: _isList.value,
                   child: _responseValue != null
-                      ? listCards.cardResponse(_responseValue, context)
+                      ? listCards.cardResponse(_responseValue, context, isHighlighted: true)
                       : Text(''),
                 );
               },
@@ -176,79 +176,8 @@ class ListaCarcacaState extends State<ListaCarcaca> {
                       itemCount: snapshot.data.length,
                       itemBuilder: (context, index) {
                         final item = snapshot.data[index];
-                        return Card(
-                          child: ListTile(
-                            title: Text('Etiqueta: ${item.numeroEtiqueta} id: ${item.id}'),
-                            subtitle: Text(
-                              'Medida: ${item.medida.descricao}\n'
-                                  'DOT: ${item.dot} País: ${item.pais.descricao}\n'
-                                  'Modelo: ${item.modelo.descricao}',
-                            ),
-                            trailing: Container(
-                              width: 100,
-                              child: Row(
-                                children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) =>
-                                              EditarCarcacaPage(carcacaEdit: item),
-                                        ),
-                                      );
-                                    },
-                                    icon: Icon(Icons.edit, color: Colors.orange),
-                                  ),
-                                  IconButton(
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: Text("Excluir"),
-                                            content: Text(
-                                              "Tem certeza que deseja excluir o item ${item.numeroEtiqueta}?",
-                                            ),
-                                            actions: [
-                                              ElevatedButton(
-                                                child: Text("Sim"),
-                                                onPressed: () {
-                                                  Provider.of<CarcacaApi>(
-                                                    context,
-                                                    listen: false,
-                                                  ).delete(item.id);
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(deleteMessage(context));
-                                                  Navigator.pop(context);
-                                                },
-                                              ),
-                                              ElevatedButton(
-                                                child: Text("Não"),
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    },
-                                    icon: Icon(Icons.delete, color: Colors.red),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => DetalhesCarcacaPage(id: item.id),
-                                ),
-                              );
-                            },
-                          ),
-                        );
+                        final isHighlighted = _responseValue != null && _responseValue.id == item.id;
+                        return DinamicListCard().cardResponse(item, context, isHighlighted: isHighlighted);
                       },
                     );
                   } else {
@@ -265,75 +194,119 @@ class ListaCarcacaState extends State<ListaCarcaca> {
 }
 
 class DinamicListCard extends ChangeNotifier {
-  cardResponse(Carcaca _responseValue, BuildContext context) {
+  Widget cardResponse(Carcaca item, BuildContext context, {bool isHighlighted = false}) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-      color: Colors.white70,
-      child: ListTile(
-        title: Text('Etiqueta: ${_responseValue.numeroEtiqueta} id: ${_responseValue.id}'),
-        subtitle: Text(
-          'Medida: ${_responseValue.medida.descricao}\n'
-              'DOT: ${_responseValue.dot}\n'
-              'Modelo: ${_responseValue.modelo.descricao}',
-        ),
-        trailing: Container(
-          width: 100,
-          child: Row(
-            children: [
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => EditarCarcacaPage(carcacaEdit: _responseValue),
-                    ),
-                  );
-                },
-                icon: Icon(Icons.edit, color: Colors.orange),
-              ),
-              IconButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (_) {
-                      return AlertDialog(
-                        title: Text("Excluir"),
-                        content: Text(
-                          "Tem certeza que deseja excluir o item ${_responseValue.numeroEtiqueta}?",
+      color: isHighlighted ? Colors.green[50] : null,
+      elevation: isHighlighted ? 4 : 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: isHighlighted
+            ? BorderSide(color: Colors.green, width: 2)
+            : BorderSide.none,
+      ),
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.confirmation_number_outlined, color: Colors.blueGrey),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Etiqueta: ${item.numeroEtiqueta}',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        actions: [
-                          ElevatedButton(
-                            child: Text("Sim"),
-                            onPressed: () {
-                              Provider.of<CarcacaApi>(context, listen: false)
-                                  .delete(_responseValue.id);
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(deleteMessage(context));
-                              Navigator.pop(context);
-                            },
-                          ),
-                          ElevatedButton(
-                            child: Text("Não"),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                icon: Icon(Icons.delete, color: Colors.red),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Icon(Icons.straighten, size: 16, color: Colors.grey[600]),
+                      SizedBox(width: 4),
+                      Expanded(
+                        child: Text('Medida: ${item.medida.descricao}', overflow: TextOverflow.ellipsis),
+                      ),
+                      SizedBox(width: 8),
+                      Icon(Icons.flag, size: 16, color: Colors.grey[600]),
+                      SizedBox(width: 4),
+                      Expanded(
+                        child: Text('País: ${item.pais.descricao}', overflow: TextOverflow.ellipsis),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Icon(Icons.model_training, size: 16, color: Colors.grey[600]),
+                      SizedBox(width: 4),
+                      Expanded(child: Text('Modelo: ${item.modelo.descricao}')),
+                    ],
+                  ),
+                  SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Icon(Icons.date_range, size: 16, color: Colors.grey[600]),
+                      SizedBox(width: 4),
+                      Text('DOT: ${item.dot}'),
+                    ],
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => DetalhesCarcacaPage(id: _responseValue.id),
             ),
-          );
-        },
+            Column(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.edit, color: Colors.orange),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => EditarCarcacaPage(carcacaEdit: item),
+                      ),
+                    );
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.delete, color: Colors.red),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (_) {
+                        return AlertDialog(
+                          title: Text("Excluir"),
+                          content: Text("Tem certeza que deseja excluir o item ${item.numeroEtiqueta}?"),
+                          actions: [
+                            ElevatedButton(
+                              child: Text("Sim"),
+                              onPressed: () {
+                                Provider.of<CarcacaApi>(context, listen: false).delete(item.id);
+                                ScaffoldMessenger.of(context).showSnackBar(deleteMessage(context));
+                                Navigator.pop(context);
+                              },
+                            ),
+                            ElevatedButton(
+                              child: Text("Não"),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                ),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

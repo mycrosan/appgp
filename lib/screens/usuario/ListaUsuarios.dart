@@ -1,12 +1,7 @@
-import 'dart:convert';
-import 'package:GPPremium/main.dart';
 import 'package:GPPremium/models/usuario.dart';
+import 'package:GPPremium/screens/usuario/adicionar.dart';
+import 'package:GPPremium/service/usuarioapi.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-
-
-import 'adicionar.dart';
-
 
 class ListaUsuarios extends StatefulWidget {
   @override
@@ -15,6 +10,8 @@ class ListaUsuarios extends StatefulWidget {
 
 class _ListaUsuariosPageState extends State<ListaUsuarios> {
   List<Usuario> usuarios = [];
+  final UsuarioApi usuarioApi = UsuarioApi();
+  bool _loading = true;
 
   @override
   void initState() {
@@ -23,14 +20,17 @@ class _ListaUsuariosPageState extends State<ListaUsuarios> {
   }
 
   Future<void> buscarUsuarios() async {
-    final response = await http.get(Uri.parse(SERVER_IP + "usuario"));
-    if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body);
+    try {
+      final lista = await usuarioApi.getAll();
       setState(() {
-        usuarios = data.map((e) => Usuario.fromJson(e)).toList();
+        usuarios = lista;
+        _loading = false;
       });
-    } else {
-      print("Erro ao buscar usuários");
+    } catch (e) {
+      setState(() => _loading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao carregar usuários.')),
+      );
     }
   }
 
@@ -38,13 +38,41 @@ class _ListaUsuariosPageState extends State<ListaUsuarios> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Usuários")),
-      body: ListView.builder(
+      body: _loading
+          ? Center(child: CircularProgressIndicator())
+          : usuarios.isEmpty
+          ? Center(child: Text("Nenhum usuário cadastrado."))
+          : ListView.builder(
         itemCount: usuarios.length,
         itemBuilder: (context, index) {
           final usuario = usuarios[index];
-          return ListTile(
-            title: Text(usuario.nome),
-            subtitle: Text(usuario.login),
+          return Card(
+            margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            child: ListTile(
+              leading: Icon(Icons.person),
+              title: Text(usuario.nome ?? ''),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Login: ${usuario.login ?? ''}'),
+                  if (usuario.perfil != null && usuario.perfil.isNotEmpty)
+                    Text('Perfil: ${usuario.perfil.map((p) => p.descricao).join(', ')}'),
+                  // Text('Status: ${usuario.status == true ? "Ativo" : "Inativo"}'),
+                ],
+              ),
+              trailing: IconButton(
+                icon: Icon(Icons.edit, color: Colors.orange),
+                onPressed: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => AdicionarUsuariosPage(usuario: usuario),
+                    ),
+                  );
+                  buscarUsuarios(); // Atualiza lista após editar
+                },
+              ),
+            ),
           );
         },
       ),
@@ -52,9 +80,9 @@ class _ListaUsuariosPageState extends State<ListaUsuarios> {
         onPressed: () async {
           await Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AdicionarUsuariosPage()),
+            MaterialPageRoute(builder: (_) => AdicionarUsuariosPage()),
           );
-          buscarUsuarios(); // atualiza a lista após adicionar
+          buscarUsuarios(); // Atualiza lista após novo cadastro
         },
         child: Icon(Icons.add),
       ),
