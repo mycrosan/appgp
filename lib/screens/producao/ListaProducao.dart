@@ -182,7 +182,7 @@ class ListaProducaoState extends State<ListaProducao> {
                           contentPadding: EdgeInsets.all(12.0),
                         ),
                         keyboardType:
-                        TextInputType.numberWithOptions(decimal: true),
+                            TextInputType.numberWithOptions(decimal: true),
                         onChanged: (newValue) async {
                           if (newValue.length >= 6) {
                             await _pesquisarEtiqueta(newValue);
@@ -228,7 +228,7 @@ class ListaProducaoState extends State<ListaProducao> {
               DropdownButtonFormField(
                 decoration: InputDecoration(labelText: "Modelo"),
                 validator: (value) =>
-                value == null ? 'Não pode ser nulo' : null,
+                    value == null ? 'Não pode ser nulo' : null,
                 value: modeloSelected,
                 isExpanded: true,
                 onChanged: (Modelo modelo) {
@@ -252,7 +252,7 @@ class ListaProducaoState extends State<ListaProducao> {
                     child: DropdownButtonFormField(
                       decoration: InputDecoration(labelText: "Medida"),
                       validator: (value) =>
-                      value == null ? 'Não pode ser nulo' : null,
+                          value == null ? 'Não pode ser nulo' : null,
                       value: medidaSelected,
                       isExpanded: true,
                       onChanged: (Medida medida) {
@@ -273,7 +273,7 @@ class ListaProducaoState extends State<ListaProducao> {
                     child: DropdownButtonFormField(
                       decoration: InputDecoration(labelText: "País"),
                       validator: (value) =>
-                      value == null ? 'Não pode ser nulo' : null,
+                          value == null ? 'Não pode ser nulo' : null,
                       value: paisSelected,
                       isExpanded: true,
                       onChanged: (Pais pais) {
@@ -294,7 +294,7 @@ class ListaProducaoState extends State<ListaProducao> {
                     child: DropdownButtonFormField(
                       decoration: InputDecoration(labelText: "Marca"),
                       validator: (value) =>
-                      value == null ? 'Não pode ser nulo' : null,
+                          value == null ? 'Não pode ser nulo' : null,
                       value: marcaSelected,
                       isExpanded: true,
                       onChanged: (Marca marca) {
@@ -332,10 +332,12 @@ class ListaProducaoState extends State<ListaProducao> {
                         valueListenable: _isList,
                         builder: (_, isListVisible, __) {
                           if (!isListVisible) {
-                            return Center(child: Text('Digite uma etiqueta válida.'));
+                            return Center(
+                                child: Text('Digite uma etiqueta válida.'));
                           }
                           if (producaoList.isEmpty) {
-                            return Center(child: Text('Nenhuma produção encontrada'));
+                            return Center(
+                                child: Text('Nenhuma produção encontrada'));
                           }
                           return listCards.exibirListaConsulta(
                               context, producaoList);
@@ -468,7 +470,7 @@ class DinamicListCard extends ChangeNotifier {
                         );
                         if (confirm) {
                           bool deleted = await Provider.of<ProducaoApi>(context,
-                              listen: false)
+                                  listen: false)
                               .delete(producao.id);
                           if (deleted) {
                             listaProducao.removeAt(index);
@@ -488,8 +490,7 @@ class DinamicListCard extends ChangeNotifier {
       },
     );
   }
-
-  Future<List<Producao>> pesquisa(Producao producao) {
+  pesquisa(Producao producao) {
     return ProducaoApi().consultaProducao(producao);
   }
 }
