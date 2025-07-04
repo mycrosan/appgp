@@ -1,4 +1,3 @@
-import 'package:GPPremium/components/Loading.dart';
 import 'package:GPPremium/components/snackBar.dart';
 import 'package:GPPremium/service/producaoapi.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
@@ -6,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart'; // <-- import shimmer
 import '../../models/carcaca.dart';
 import '../../models/marca.dart';
 import '../../models/medida.dart';
@@ -17,7 +17,6 @@ import '../../service/medidaapi.dart';
 import '../../service/modeloapi.dart';
 import '../../service/paisapi.dart';
 import 'adicionar.dart';
-import 'detailwidget.dart';
 import 'editdatawidget.dart';
 
 class ListaProducao extends StatefulWidget {
@@ -37,6 +36,7 @@ class ListaProducaoState extends State<ListaProducao> {
   Producao producao;
 
   var loading = ValueNotifier<bool>(true);
+  var _isList = ValueNotifier<bool>(true);
 
   List<Modelo> modeloList = [];
   Modelo modeloSelected;
@@ -70,11 +70,16 @@ class ListaProducaoState extends State<ListaProducao> {
     PaisApi().getAll().then((value) => setState(() => paisList = value));
     MarcaApi().getAll().then((value) => setState(() => marcaList = value));
 
-    ProducaoApi().getAll().then((value) {
-      setState(() {
-        producaoList = value;
-        loading.value = false;
-      });
+    _carregarTodasProducoes();
+  }
+
+  Future<void> _carregarTodasProducoes() async {
+    loading.value = true;
+    List<Producao> todas = await ProducaoApi().getAll();
+    setState(() {
+      producaoList = todas;
+      loading.value = false;
+      _isList.value = true;
     });
   }
 
@@ -103,27 +108,59 @@ class ListaProducaoState extends State<ListaProducao> {
     }
   }
 
-
   Future<void> _pesquisarEtiqueta(String etiqueta) async {
-    final listCards = DinamicListCard();
     loading.value = true;
     producao.carcaca.numeroEtiqueta = etiqueta;
-    producaoList = await listCards.pesquisa(producao);
+    List<Producao> resultados = await DinamicListCard().pesquisa(producao);
     loading.value = false;
 
-    if (producaoList.isNotEmpty) {
-      setState(() {});
-    } else {
+    setState(() {
+      producaoList = resultados;
+      _isList.value = true;
+    });
+
+    if (resultados.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         warningMessage(context, "Sem resultados para etiqueta $etiqueta"),
       );
     }
   }
 
+  Future<void> _pesquisar() async {
+    loading.value = true;
+    List<Producao> resultados = await DinamicListCard().pesquisa(producao);
+    loading.value = false;
+
+    setState(() {
+      producaoList = resultados;
+      _isList.value = true;
+    });
+  }
+
+  Widget _shimmerLoading() {
+    // Simula uma lista com 5 cards shimmer
+    return ListView.builder(
+      itemCount: 5,
+      itemBuilder: (_, __) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        child: Shimmer.fromColors(
+          baseColor: Colors.grey[300],
+          highlightColor: Colors.grey[100],
+          child: Container(
+            height: 100,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final listCards = DinamicListCard();
-    var _isList = ValueNotifier<bool>(true);
 
     return Scaffold(
       appBar: AppBar(
@@ -139,12 +176,13 @@ class ListaProducaoState extends State<ListaProducao> {
                     Expanded(
                       child: TextFormField(
                         controller: textEditingControllerCarcaca,
-                        style: TextStyle(fontSize: 12),  // fonte reduzida
+                        style: TextStyle(fontSize: 12),
                         decoration: InputDecoration(
                           hintText: 'Etiqueta',
                           contentPadding: EdgeInsets.all(12.0),
                         ),
-                        keyboardType: TextInputType.numberWithOptions(decimal: true),
+                        keyboardType:
+                        TextInputType.numberWithOptions(decimal: true),
                         onChanged: (newValue) async {
                           if (newValue.length >= 6) {
                             await _pesquisarEtiqueta(newValue);
@@ -155,12 +193,13 @@ class ListaProducaoState extends State<ListaProducao> {
                       ),
                     ),
                     Container(
-                      height: 30,  // Mesma altura da sua TextFormField
+                      height: 30,
                       width: 30,
                       child: IconButton(
                         padding: EdgeInsets.zero,
                         constraints: BoxConstraints(),
-                        icon: Icon(Icons.qr_code_scanner, size: 20, color: Colors.black),
+                        icon: Icon(Icons.qr_code_scanner,
+                            size: 20, color: Colors.black),
                         onPressed: scanBarcode,
                       ),
                     ),
@@ -168,14 +207,14 @@ class ListaProducaoState extends State<ListaProducao> {
                 ),
               ),
             )
-
           ],
         ),
         actions: [
           IconButton(
             icon: Icon(Icons.add, color: Colors.white),
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => AdicionarProducaoPage()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => AdicionarProducaoPage()));
             },
           ),
         ],
@@ -188,7 +227,8 @@ class ListaProducaoState extends State<ListaProducao> {
             children: [
               DropdownButtonFormField(
                 decoration: InputDecoration(labelText: "Modelo"),
-                validator: (value) => value == null ? 'Não pode ser nulo' : null,
+                validator: (value) =>
+                value == null ? 'Não pode ser nulo' : null,
                 value: modeloSelected,
                 isExpanded: true,
                 onChanged: (Modelo modelo) {
@@ -211,7 +251,8 @@ class ListaProducaoState extends State<ListaProducao> {
                   Expanded(
                     child: DropdownButtonFormField(
                       decoration: InputDecoration(labelText: "Medida"),
-                      validator: (value) => value == null ? 'Não pode ser nulo' : null,
+                      validator: (value) =>
+                      value == null ? 'Não pode ser nulo' : null,
                       value: medidaSelected,
                       isExpanded: true,
                       onChanged: (Medida medida) {
@@ -231,7 +272,8 @@ class ListaProducaoState extends State<ListaProducao> {
                   Expanded(
                     child: DropdownButtonFormField(
                       decoration: InputDecoration(labelText: "País"),
-                      validator: (value) => value == null ? 'Não pode ser nulo' : null,
+                      validator: (value) =>
+                      value == null ? 'Não pode ser nulo' : null,
                       value: paisSelected,
                       isExpanded: true,
                       onChanged: (Pais pais) {
@@ -251,7 +293,8 @@ class ListaProducaoState extends State<ListaProducao> {
                   Expanded(
                     child: DropdownButtonFormField(
                       decoration: InputDecoration(labelText: "Marca"),
-                      validator: (value) => value == null ? 'Não pode ser nulo' : null,
+                      validator: (value) =>
+                      value == null ? 'Não pode ser nulo' : null,
                       value: marcaSelected,
                       isExpanded: true,
                       onChanged: (Marca marca) {
@@ -270,27 +313,35 @@ class ListaProducaoState extends State<ListaProducao> {
                   ),
                 ],
               ),
+              SizedBox(height: 8),
               ElevatedButton(
                 child: Text("Pesquisar"),
                 onPressed: () async {
-                  loading.value = true;
-                  producaoList = await listCards.pesquisa(producao);
-                  loading.value = false;
-                  _isList.value = true;
+                  await _pesquisar();
                 },
               ),
+              SizedBox(height: 8),
               Expanded(
-                child: ValueListenableBuilder(
-                  valueListenable: _isList,
-                  builder: (_, __, ___) {
-                    return Visibility(
-                      child: listCards.exibirListaConsulta(context, producaoList) ??
-                          (loading.value
-                              ? cicleLoading(context)
-                              : producaoList.isEmpty
-                              ? Text('Nenhuma produção encontrada')
-                              : Container()),
-                    );
+                child: ValueListenableBuilder<bool>(
+                  valueListenable: loading,
+                  builder: (_, isLoading, __) {
+                    if (isLoading) {
+                      return _shimmerLoading();
+                    } else {
+                      return ValueListenableBuilder<bool>(
+                        valueListenable: _isList,
+                        builder: (_, isListVisible, __) {
+                          if (!isListVisible) {
+                            return Center(child: Text('Digite uma etiqueta válida.'));
+                          }
+                          if (producaoList.isEmpty) {
+                            return Center(child: Text('Nenhuma produção encontrada'));
+                          }
+                          return listCards.exibirListaConsulta(
+                              context, producaoList);
+                        },
+                      );
+                    }
                   },
                 ),
               ),
@@ -303,20 +354,84 @@ class ListaProducaoState extends State<ListaProducao> {
 }
 
 class DinamicListCard extends ChangeNotifier {
-  exibirListaConsulta(context, Servico) {
-    if (Servico.isNotEmpty) {
-      return Container(
-        height: 400.0,
-        child: ListView.builder(
-          itemCount: Servico.length,
-          itemBuilder: (context, index) {
-            return Card(
-              child: ListTile(
-                title: Text('Etiqueta: ${Servico[index].carcaca.numeroEtiqueta}'),
-                subtitle: Text(
-                    'Med. Pneu Rasp.: ${Servico[index].medidaPneuRaspado} | Regra: ${Servico[index].regra.id}'),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
+  Widget exibirListaConsulta(BuildContext context, List<Producao> listaProducao,
+      {String etiquetaDestacada}) {
+    return ListView.builder(
+      itemCount: listaProducao.length,
+      itemBuilder: (context, index) {
+        final producao = listaProducao[index];
+        final isHighlighted = etiquetaDestacada != null &&
+            producao.carcaca.numeroEtiqueta == etiquetaDestacada;
+
+        return Card(
+          color: isHighlighted ? Colors.green[50] : null,
+          elevation: isHighlighted ? 4 : 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: isHighlighted
+                ? BorderSide(color: Colors.green, width: 2)
+                : BorderSide.none,
+          ),
+          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.confirmation_number_outlined,
+                              color: Colors.blueGrey),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Etiqueta: ${producao.carcaca.numeroEtiqueta}',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 16),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 6),
+                      Row(
+                        children: [
+                          Icon(Icons.straighten,
+                              size: 16, color: Colors.grey[600]),
+                          SizedBox(width: 4),
+                          Text('Med. Raspado: ${producao.medidaPneuRaspado}'),
+                        ],
+                      ),
+                      SizedBox(height: 6),
+                      Row(
+                        children: [
+                          Icon(Icons.rule, size: 16, color: Colors.grey[600]),
+                          SizedBox(width: 4),
+                          Text('Regra: ${producao.regra?.id ?? ''}'),
+                        ],
+                      ),
+                      SizedBox(height: 6),
+                      Row(
+                        children: [
+                          Icon(Icons.model_training,
+                              size: 16, color: Colors.grey[600]),
+                          SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              'Modelo: ${producao.carcaca.modelo?.descricao ?? ''}',
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Column(
                   children: [
                     IconButton(
                       icon: Icon(Icons.edit, color: Colors.orange),
@@ -324,7 +439,8 @@ class DinamicListCard extends ChangeNotifier {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => EditarProducaoPage(producao: Servico[index]),
+                            builder: (_) =>
+                                EditarProducaoPage(producao: producao),
                           ),
                         );
                       },
@@ -336,7 +452,8 @@ class DinamicListCard extends ChangeNotifier {
                           context: context,
                           builder: (_) => AlertDialog(
                             title: Text("Excluir"),
-                            content: Text("Excluir item ${Servico[index].carcaca.numeroEtiqueta}?"),
+                            content: Text(
+                                "Excluir item ${producao.carcaca.numeroEtiqueta}?"),
                             actions: [
                               TextButton(
                                 child: Text("Não"),
@@ -350,11 +467,13 @@ class DinamicListCard extends ChangeNotifier {
                           ),
                         );
                         if (confirm) {
-                          bool deleted = await Provider.of<ProducaoApi>(context, listen: false)
-                              .delete(Servico[index].id);
+                          bool deleted = await Provider.of<ProducaoApi>(context,
+                              listen: false)
+                              .delete(producao.id);
                           if (deleted) {
-                            Servico.removeAt(index);
-                            ScaffoldMessenger.of(context).showSnackBar(deleteMessage(context));
+                            listaProducao.removeAt(index);
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(deleteMessage(context));
                             notifyListeners();
                           }
                         }
@@ -362,24 +481,15 @@ class DinamicListCard extends ChangeNotifier {
                     ),
                   ],
                 ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => DetalhesProducaoPage(producao: Servico[index]),
-                    ),
-                  );
-                },
-              ),
-            );
-          },
-        ),
-      );
-    }
-    return null;
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
-  pesquisa(producao) {
+  Future<List<Producao>> pesquisa(Producao producao) {
     return ProducaoApi().consultaProducao(producao);
   }
 }

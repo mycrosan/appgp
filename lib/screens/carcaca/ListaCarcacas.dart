@@ -95,48 +95,60 @@ class ListaCarcacaState extends State<ListaCarcaca> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Container(
-          width: double.infinity,
-          child: Row(children: [
+        title: Row(
+          children: [
             Expanded(child: Text("Carcaça")),
             Expanded(
               child: Container(
                 color: Colors.white,
                 height: 30.0,
-                child: TextFormField(
-                  controller: textEditingControllerCarcaca,
-                  decoration: InputDecoration(
-                    hintText: 'Etiqueta',
-                    contentPadding: EdgeInsets.all(10.0),
-                  ),
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  onChanged: (String newValue) async {
-                    if (newValue.length == 6) {
-                      String codigoFormatado = newValue.padLeft(6, '0');
-                      var response = await carcacasAPI.consultaCarcaca(codigoFormatado);
-                      if (response is Carcaca) {
-                        _responseValue = response;
-                        _isList.value = true;
-                        _isList.notifyListeners();
-                      } else if (response is responseMessage) {
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(warningMessage(context, response.message));
-                      }
-                    } else {
-                      _isList.value = false;
-                      _isList.notifyListeners();
-                    }
-                  },
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: textEditingControllerCarcaca,
+                        style: TextStyle(fontSize: 12),
+                        decoration: InputDecoration(
+                          hintText: 'Etiqueta',
+                          contentPadding: EdgeInsets.all(12.0),
+                        ),
+                        keyboardType: TextInputType.numberWithOptions(decimal: true),
+                        onChanged: (newValue) async {
+                          if (newValue.length >= 6) {
+                            String codigoFormatado = newValue.padLeft(6, '0');
+                            var response = await CarcacaApi().consultaCarcaca(codigoFormatado);
+                            if (response is Carcaca) {
+                              _responseValue = response;
+                              _isList.value = true;
+                              _isList.notifyListeners();
+                            } else if (response is responseMessage) {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(warningMessage(context, response.message));
+                            }
+                          } else {
+                            _isList.value = false;
+                            _isList.notifyListeners();
+                          }
+                        },
+                      ),
+                    ),
+                    Container(
+                      height: 30,
+                      width: 30,
+                      child: IconButton(
+                        padding: EdgeInsets.zero,
+                        constraints: BoxConstraints(),
+                        icon: Icon(Icons.qr_code_scanner, size: 20, color: Colors.black),
+                        onPressed: _scanBarcode,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            )
-          ]),
+            ),
+          ],
         ),
         actions: [
-          IconButton(
-            icon: Icon(Icons.qr_code_scanner, color: Colors.white),
-            onPressed: () => _scanBarcode(),
-          ),
           IconButton(
             icon: Icon(Icons.add, color: Colors.white),
             onPressed: () {
