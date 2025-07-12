@@ -1,5 +1,6 @@
 import 'package:GPPremium/components/snackBar.dart';
 import 'package:GPPremium/service/producaoapi.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -225,13 +226,15 @@ class ListaProducaoState extends State<ListaProducao> {
           key: _formkey,
           child: Column(
             children: [
-              DropdownButtonFormField(
-                decoration: InputDecoration(labelText: "Modelo"),
-                validator: (value) =>
-                    value == null ? 'Não pode ser nulo' : null,
-                value: modeloSelected,
-                isExpanded: true,
-                onChanged: (Modelo modelo) {
+              DropdownSearch<Modelo>(
+                mode: Mode.BOTTOM_SHEET,
+                showSearchBox: true,
+                label: "Modelo",
+                validator: (value) => value == null ? 'Não pode ser nulo' : null,
+                items: modeloList,
+                selectedItem: modeloSelected,
+                itemAsString: (Modelo m) => m.descricao,
+                onChanged: (modelo) {
                   setState(() {
                     modeloSelected = modelo;
                     producao.carcaca.modelo = modeloSelected;
@@ -239,13 +242,8 @@ class ListaProducaoState extends State<ListaProducao> {
                     producao.carcaca.modelo.marca = marcaSelected;
                   });
                 },
-                items: modeloList.map((modelo) {
-                  return DropdownMenuItem(
-                    value: modelo,
-                    child: Text(modelo.descricao),
-                  );
-                }).toList(),
               ),
+
               Row(
                 children: [
                   Expanded(
