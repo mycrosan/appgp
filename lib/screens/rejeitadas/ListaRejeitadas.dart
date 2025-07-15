@@ -1,9 +1,7 @@
 import 'package:GPPremium/components/Loading.dart';
-import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../components/snackBar.dart';
-import '../../models/carcaca.dart';
 import '../../models/marca.dart';
 import '../../models/medida.dart';
 import '../../models/modelo.dart';
@@ -13,11 +11,7 @@ import '../../service/marcaapi.dart';
 import '../../service/medidaapi.dart';
 import '../../service/modeloapi.dart';
 import '../../service/paisapi.dart';
-import '../../service/producaoapi.dart';
 import '../../service/rejeitadasapi.dart';
-import '../../service/rejeitadasapi.dart';
-import '../producao/detailwidget.dart';
-import '../producao/editdatawidget.dart';
 import 'adicionar.dart';
 import 'detailwidget.dart';
 import 'editdatawidget.dart';
@@ -376,7 +370,7 @@ class DinamicListRejeitada extends ChangeNotifier {
                                           child: Text("Sim"),
                                           onPressed: () async {
                                             var response =
-                                            await Provider.of<ProducaoApi>(
+                                            await Provider.of<RejeitadasApi>(
                                                 context,
                                                 listen: false)
                                                 .delete(Servico[index].id)

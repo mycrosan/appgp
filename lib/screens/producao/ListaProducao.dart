@@ -18,6 +18,7 @@ import '../../service/medidaapi.dart';
 import '../../service/modeloapi.dart';
 import '../../service/paisapi.dart';
 import 'adicionar.dart';
+import 'detailwidget.dart';
 import 'editdatawidget.dart';
 
 class ListaProducao extends StatefulWidget {
@@ -363,131 +364,146 @@ class DinamicListCard extends ChangeNotifier {
         final isHighlighted = etiquetaDestacada != null &&
             producao.carcaca.numeroEtiqueta == etiquetaDestacada;
 
-        return Card(
-          color: isHighlighted ? Colors.green[50] : null,
-          elevation: isHighlighted ? 4 : 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-            side: isHighlighted
-                ? BorderSide(color: Colors.green, width: 2)
-                : BorderSide.none,
-          ),
-          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => DetalhesProducaoPage(producao: producao),
+              ),
+            );
+          },
+          child: Card(
+            color: isHighlighted ? Colors.green[50] : null,
+            elevation: isHighlighted ? 4 : 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: isHighlighted
+                  ? BorderSide(color: Colors.green, width: 2)
+                  : BorderSide.none,
+            ),
+            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.confirmation_number_outlined,
+                                color: Colors.blueGrey),
+                            SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                'Etiqueta: ${producao.carcaca.numeroEtiqueta}',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Icon(Icons.straighten,
+                                size: 16, color: Colors.grey[600]),
+                            SizedBox(width: 4),
+                            Text('Med. Raspado: ${producao.medidaPneuRaspado}'),
+                          ],
+                        ),
+                        SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Icon(Icons.rule,
+                                size: 16, color: Colors.grey[600]),
+                            SizedBox(width: 4),
+                            Text('Regra: ${producao.regra?.id ?? ''}'),
+                          ],
+                        ),
+                        SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Icon(Icons.model_training,
+                                size: 16, color: Colors.grey[600]),
+                            SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                'Modelo: ${producao.carcaca.modelo?.descricao ?? ''}',
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Column(
                     children: [
-                      Row(
-                        children: [
-                          Icon(Icons.confirmation_number_outlined,
-                              color: Colors.blueGrey),
-                          SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              'Etiqueta: ${producao.carcaca.numeroEtiqueta}',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 16),
-                              overflow: TextOverflow.ellipsis,
+                      IconButton(
+                        icon: Icon(Icons.edit, color: Colors.orange),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  EditarProducaoPage(producao: producao),
                             ),
-                          ),
-                        ],
+                          );
+                        },
                       ),
-                      SizedBox(height: 6),
-                      Row(
-                        children: [
-                          Icon(Icons.straighten,
-                              size: 16, color: Colors.grey[600]),
-                          SizedBox(width: 4),
-                          Text('Med. Raspado: ${producao.medidaPneuRaspado}'),
-                        ],
-                      ),
-                      SizedBox(height: 6),
-                      Row(
-                        children: [
-                          Icon(Icons.rule, size: 16, color: Colors.grey[600]),
-                          SizedBox(width: 4),
-                          Text('Regra: ${producao.regra?.id ?? ''}'),
-                        ],
-                      ),
-                      SizedBox(height: 6),
-                      Row(
-                        children: [
-                          Icon(Icons.model_training,
-                              size: 16, color: Colors.grey[600]),
-                          SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              'Modelo: ${producao.carcaca.modelo?.descricao ?? ''}',
-                              overflow: TextOverflow.ellipsis,
+                      IconButton(
+                        icon: Icon(Icons.delete, color: Colors.red),
+                        onPressed: () async {
+                          bool confirm = await showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: Text("Excluir"),
+                              content: Text(
+                                  "Excluir item ${producao.carcaca.numeroEtiqueta}?"),
+                              actions: [
+                                TextButton(
+                                  child: Text("Não"),
+                                  onPressed: () =>
+                                      Navigator.pop(context, false),
+                                ),
+                                TextButton(
+                                  child: Text("Sim"),
+                                  onPressed: () =>
+                                      Navigator.pop(context, true),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
+                          );
+                          if (confirm) {
+                            bool deleted =
+                            await Provider.of<ProducaoApi>(context,
+                                listen: false)
+                                .delete(producao.id);
+                            if (deleted) {
+                              listaProducao.removeAt(index);
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(deleteMessage(context));
+                              notifyListeners();
+                            }
+                          }
+                        },
                       ),
                     ],
                   ),
-                ),
-                Column(
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.edit, color: Colors.orange),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                EditarProducaoPage(producao: producao),
-                          ),
-                        );
-                      },
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.delete, color: Colors.red),
-                      onPressed: () async {
-                        bool confirm = await showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                            title: Text("Excluir"),
-                            content: Text(
-                                "Excluir item ${producao.carcaca.numeroEtiqueta}?"),
-                            actions: [
-                              TextButton(
-                                child: Text("Não"),
-                                onPressed: () => Navigator.pop(context, false),
-                              ),
-                              TextButton(
-                                child: Text("Sim"),
-                                onPressed: () => Navigator.pop(context, true),
-                              ),
-                            ],
-                          ),
-                        );
-                        if (confirm) {
-                          bool deleted = await Provider.of<ProducaoApi>(context,
-                                  listen: false)
-                              .delete(producao.id);
-                          if (deleted) {
-                            listaProducao.removeAt(index);
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(deleteMessage(context));
-                            notifyListeners();
-                          }
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
       },
     );
   }
+
   pesquisa(Producao producao) {
     return ProducaoApi().consultaProducao(producao);
   }

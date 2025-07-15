@@ -1,5 +1,6 @@
 import 'package:GPPremium/models/carcaca.dart';
 import 'package:GPPremium/screens/carcaca/adicionar.dart';
+import 'package:GPPremium/screens/carcaca/detailwidget.dart';
 import 'package:GPPremium/screens/carcaca/editdatawidget.dart';
 import 'package:GPPremium/service/carcacaapi.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
@@ -9,7 +10,6 @@ import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../components/snackBar.dart';
 import '../../models/responseMessage.dart';
-import 'detailwidget.dart';
 
 class ListaCarcaca extends StatefulWidget {
   @override
@@ -22,11 +22,13 @@ class ListaCarcacaState extends State<ListaCarcaca> {
   TextEditingController textEditingControllerCarcaca;
   Carcaca _responseValue;
   var _isList = ValueNotifier<bool>(false);
+  Future<List> _carcacasFuture;
 
   @override
   void initState() {
     super.initState();
     textEditingControllerCarcaca = MaskedTextController(mask: '000000');
+    _carcacasFuture = CarcacaApi().getAll();
   }
 
   Future<void> _scanBarcode() async {
@@ -90,8 +92,11 @@ class ListaCarcacaState extends State<ListaCarcaca> {
 
   @override
   Widget build(BuildContext context) {
-    final carcacasAPI = CarcacaApi();
-    final listCards = DinamicListCard();
+    final listCards = DinamicListCard(onDelete: () {
+      setState(() {
+        _carcacasFuture = CarcacaApi().getAll();
+      });
+    });
 
     return Scaffold(
       appBar: AppBar(
@@ -177,7 +182,7 @@ class ListaCarcacaState extends State<ListaCarcaca> {
             ),
             Expanded(
               child: FutureBuilder(
-                future: carcacasAPI.getAll(),
+                future: _carcacasFuture,
                 builder: (context, AsyncSnapshot<List> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return shimmerLoadingList();
@@ -189,7 +194,7 @@ class ListaCarcacaState extends State<ListaCarcaca> {
                       itemBuilder: (context, index) {
                         final item = snapshot.data[index];
                         final isHighlighted = _responseValue != null && _responseValue.id == item.id;
-                        return DinamicListCard().cardResponse(item, context, isHighlighted: isHighlighted);
+                        return listCards.cardResponse(item, context, isHighlighted: isHighlighted);
                       },
                     );
                   } else {
@@ -206,118 +211,131 @@ class ListaCarcacaState extends State<ListaCarcaca> {
 }
 
 class DinamicListCard extends ChangeNotifier {
+  final VoidCallback onDelete;
+
+  DinamicListCard({this.onDelete});
+
   Widget cardResponse(Carcaca item, BuildContext context, {bool isHighlighted = false}) {
-    return Card(
-      color: isHighlighted ? Colors.green[50] : null,
-      elevation: isHighlighted ? 4 : 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: isHighlighted
-            ? BorderSide(color: Colors.green, width: 2)
-            : BorderSide.none,
-      ),
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.confirmation_number_outlined, color: Colors.blueGrey),
-                      SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          'Etiqueta: ${item.numeroEtiqueta}',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                          overflow: TextOverflow.ellipsis,
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => DetalhesCarcacaPage(id: item.id),
+          ),
+        );
+      },
+      child: Card(
+        color: isHighlighted ? Colors.green[50] : null,
+        elevation: isHighlighted ? 4 : 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: isHighlighted
+              ? BorderSide(color: Colors.green, width: 2)
+              : BorderSide.none,
+        ),
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.confirmation_number_outlined, color: Colors.blueGrey),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Etiqueta: ${item.numeroEtiqueta}',
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
+                    SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Icon(Icons.straighten, size: 16, color: Colors.grey[600]),
+                        SizedBox(width: 4),
+                        Expanded(child: Text('Medida: ${item.medida.descricao}', overflow: TextOverflow.ellipsis)),
+                        SizedBox(width: 8),
+                        Icon(Icons.flag, size: 16, color: Colors.grey[600]),
+                        SizedBox(width: 4),
+                        Expanded(child: Text('País: ${item.pais.descricao}', overflow: TextOverflow.ellipsis)),
+                      ],
+                    ),
+                    SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Icon(Icons.model_training, size: 16, color: Colors.grey[600]),
+                        SizedBox(width: 4),
+                        Expanded(child: Text('Modelo: ${item.modelo.descricao}')),
+                      ],
+                    ),
+                    SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Icon(Icons.date_range, size: 16, color: Colors.grey[600]),
+                        SizedBox(width: 4),
+                        Text('DOT: ${item.dot}'),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Column(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.edit, color: Colors.orange),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => EditarCarcacaPage(carcacaEdit: item),
+                        ),
+                      );
+                    },
                   ),
-                  SizedBox(height: 6),
-                  Row(
-                    children: [
-                      Icon(Icons.straighten, size: 16, color: Colors.grey[600]),
-                      SizedBox(width: 4),
-                      Expanded(
-                        child: Text('Medida: ${item.medida.descricao}', overflow: TextOverflow.ellipsis),
-                      ),
-                      SizedBox(width: 8),
-                      Icon(Icons.flag, size: 16, color: Colors.grey[600]),
-                      SizedBox(width: 4),
-                      Expanded(
-                        child: Text('País: ${item.pais.descricao}', overflow: TextOverflow.ellipsis),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 6),
-                  Row(
-                    children: [
-                      Icon(Icons.model_training, size: 16, color: Colors.grey[600]),
-                      SizedBox(width: 4),
-                      Expanded(child: Text('Modelo: ${item.modelo.descricao}')),
-                    ],
-                  ),
-                  SizedBox(height: 6),
-                  Row(
-                    children: [
-                      Icon(Icons.date_range, size: 16, color: Colors.grey[600]),
-                      SizedBox(width: 4),
-                      Text('DOT: ${item.dot}'),
-                    ],
+                  IconButton(
+                    icon: Icon(Icons.delete, color: Colors.red),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (_) {
+                          return AlertDialog(
+                            title: Text("Excluir"),
+                            content: Text("Tem certeza que deseja excluir o item ${item.numeroEtiqueta}?"),
+                            actions: [
+                              ElevatedButton(
+                                child: Text("Sim"),
+                                onPressed: () async {
+                                  await Provider.of<CarcacaApi>(context, listen: false).delete(item.id);
+                                  ScaffoldMessenger.of(context).showSnackBar(deleteMessage(context));
+                                  Navigator.pop(context);
+                                  if (onDelete != null) {
+                                    onDelete();
+                                  }
+                                },
+                              ),
+                              ElevatedButton(
+                                child: Text("Não"),
+                                onPressed: () => Navigator.pop(context),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
                   ),
                 ],
-              ),
-            ),
-            Column(
-              children: [
-                IconButton(
-                  icon: Icon(Icons.edit, color: Colors.orange),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => EditarCarcacaPage(carcacaEdit: item),
-                      ),
-                    );
-                  },
-                ),
-                IconButton(
-                  icon: Icon(Icons.delete, color: Colors.red),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (_) {
-                        return AlertDialog(
-                          title: Text("Excluir"),
-                          content: Text("Tem certeza que deseja excluir o item ${item.numeroEtiqueta}?"),
-                          actions: [
-                            ElevatedButton(
-                              child: Text("Sim"),
-                              onPressed: () {
-                                Provider.of<CarcacaApi>(context, listen: false).delete(item.id);
-                                ScaffoldMessenger.of(context).showSnackBar(deleteMessage(context));
-                                Navigator.pop(context);
-                              },
-                            ),
-                            ElevatedButton(
-                              child: Text("Não"),
-                              onPressed: () => Navigator.pop(context),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                ),
-              ],
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );
