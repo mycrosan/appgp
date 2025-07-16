@@ -36,8 +36,8 @@ class Usuario {
     data['login'] = this.login;
     data['senha'] = this.senha;
     data['status'] = this.status;
-    data['perfil'] = this.perfil.map((v) => v.toJson()).toList();
-      return data;
+    data['perfil'] = (this.perfil ?? []).map((v) => v.toJson()).toList();
+    return data;
   }
 }
 

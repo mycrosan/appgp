@@ -65,7 +65,7 @@ keytool -genkey -v -keystore ~/upload-keystore.jks -keyalg RSA -keysize 2048 -va
 
 flutter build apk --release
 
-## Publicar 
+## Publicar google play console
 
 flutter build appbundle --release
 

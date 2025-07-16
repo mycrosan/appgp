@@ -8,16 +8,15 @@ import 'package:GPPremium/models/responseMessageSimple.dart';
 import 'package:GPPremium/service/carcacaapi.dart';
 import 'package:GPPremium/service/medidaapi.dart';
 import 'package:GPPremium/service/modeloapi.dart';
-
 import 'package:GPPremium/service/paisapi.dart';
 import 'package:GPPremium/service/uploadapi.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:rounded_loading_button/rounded_loading_button.dart';
-
 import '../../models/responseMessage.dart';
 import 'ListaCarcacas.dart';
 
@@ -29,22 +28,6 @@ class AdicionarCarcacaPage extends StatefulWidget {
 }
 
 class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Carcaça'),
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.all(20),
-          margin: const EdgeInsets.only(bottom: 70.0),
-          child: _construirFormulario(context),
-        ),
-      ),
-    );
-  }
-
   final _formkey = GlobalKey<FormState>();
 
   XFile _imageFile1;
@@ -56,11 +39,9 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
     _imageFileList = value == null ? null : [value];
   }
 
-  final RoundedLoadingButtonController _btnController1 =
-      RoundedLoadingButtonController();
+  final RoundedLoadingButtonController _btnController1 = RoundedLoadingButtonController();
 
   String _retrieveDataError;
-
   final ImagePicker _picker = ImagePicker();
 
   MaskedTextController textEditingControllerEtiqueta;
@@ -70,15 +51,12 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
   TextEditingController textEditingControllerMedida;
   Carcaca carcaca;
 
-  //Modelo
   List<Modelo> modeloList = [];
   Modelo modeloSelected;
 
-  //Medida
   List<Medida> medidaList = [];
   Medida medidaSelected;
 
-  //Pais
   List<Pais> paisList = [];
   Pais paisSelected;
 
@@ -111,9 +89,6 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
     });
   }
 
-  // XFile _imageFile;
-  dynamic _pickImageError;
-
   Future getImage() async {
     try {
       final pickedFile = await _picker.pickImage(
@@ -125,45 +100,30 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
       });
     } catch (e) {
       setState(() {
-        _pickImageError = e;
+        _retrieveDataError = e.toString();
       });
     }
   }
 
-  // Widget _handlePreview() {
-  //   if (false) {
-  //     // return _previewVideo();
-  //   } else {
-  //     return _previewImages();
-  //   }
-  // }
-
-  Future<void> retrieveLostData() async {
-    final LostDataResponse response = await _picker.retrieveLostData();
-    if (response.isEmpty) {
+  Future<void> _scanBarcode() async {
+    String barcodeScanRes;
+    try {
+      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+        '#FF6666', 'Cancelar', true, ScanMode.BARCODE,
+      );
+    } catch (e) {
+      print('Erro ao escanear: $e');
       return;
     }
-    if (response.file != null) {
-      if (response.type == RetrieveType.video) {
-        isVideo = true;
-        // await _playVideo(response.file);
-      } else {
-        isVideo = false;
-        setState(() {
-          _imageFile = response.file;
-          _imageFileList = response.files;
-        });
-      }
-    } else {
-      _retrieveDataError = response.exception.code;
-    }
-  }
 
-  Text _getRetrieveErrorWidget() {
-    final Text result = Text(_retrieveDataError);
-    _retrieveDataError = null;
-    return result;
-      return null;
+    if (!mounted || barcodeScanRes == '-1') return;
+
+    final codigoFormatado = barcodeScanRes.padLeft(6, '0');
+
+    setState(() {
+      textEditingControllerEtiqueta.text = codigoFormatado;
+      carcaca.numeroEtiqueta = codigoFormatado;
+    });
   }
 
   Widget _construirFormulario(context) {
@@ -171,30 +131,32 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
       key: _formkey,
       child: Column(
         children: [
-          TextFormField(
-            controller: textEditingControllerEtiqueta,
-            decoration: InputDecoration(
-              labelText: "Etiqueta",
-            ),
-            validator: (value) =>
-                value.length == 0 ? 'Não pode ser nulo' : null,
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
-            onChanged: (String newValue) {
-              setState(() {
-                carcaca.numeroEtiqueta = newValue;
-              });
-            },
+          Row(
+            children: [
+              Expanded(
+                child: TextFormField(
+                  controller: textEditingControllerEtiqueta,
+                  decoration: InputDecoration(labelText: "Etiqueta"),
+                  validator: (value) => value.length == 0 ? 'Não pode ser nulo' : null,
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  onChanged: (String newValue) {
+                    setState(() {
+                      carcaca.numeroEtiqueta = newValue;
+                    });
+                  },
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.qr_code_scanner),
+                onPressed: _scanBarcode,
+              ),
+            ],
           ),
-          Padding(
-            padding: EdgeInsets.all(10),
-          ),
+          SizedBox(height: 10),
           TextFormField(
             controller: textEditingControllerDot,
-            decoration: InputDecoration(
-              labelText: "Dot",
-            ),
-            validator: (value) =>
-                value.length == 0 ? 'Não pode ser nulo' : null,
+            decoration: InputDecoration(labelText: "Dot"),
+            validator: (value) => value.length == 0 ? 'Não pode ser nulo' : null,
             keyboardType: TextInputType.numberWithOptions(decimal: true),
             onChanged: (String newValue) {
               setState(() {
@@ -202,13 +164,9 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
               });
             },
           ),
-          Padding(
-            padding: EdgeInsets.all(10),
-          ),
+          SizedBox(height: 10),
           DropdownButtonFormField(
-            decoration: InputDecoration(
-              labelText: "Modelo",
-            ),
+            decoration: InputDecoration(labelText: "Modelo"),
             validator: (value) => value == null ? 'Não pode ser nulo' : null,
             value: modeloSelected,
             isExpanded: true,
@@ -225,13 +183,9 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
               );
             }).toList(),
           ),
-          Padding(
-            padding: EdgeInsets.all(5),
-          ),
+          SizedBox(height: 10),
           DropdownButtonFormField(
-            decoration: InputDecoration(
-              labelText: "Medida",
-            ),
+            decoration: InputDecoration(labelText: "Medida"),
             validator: (value) => value == null ? 'Não pode ser nulo' : null,
             value: medidaSelected,
             isExpanded: true,
@@ -248,13 +202,9 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
               );
             }).toList(),
           ),
-          Padding(
-            padding: EdgeInsets.all(5),
-          ),
+          SizedBox(height: 10),
           DropdownButtonFormField(
-            decoration: InputDecoration(
-              labelText: "País",
-            ),
+            decoration: InputDecoration(labelText: "País"),
             validator: (value) => value == null ? 'Não pode ser nulo' : null,
             value: paisSelected,
             isExpanded: true,
@@ -271,88 +221,71 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
               );
             }).toList(),
           ),
-          Padding(padding: EdgeInsets.all(10)),
+          SizedBox(height: 10),
           Center(child: showImage(_imageFileList, "adicionar")),
-          Container(
-            padding: EdgeInsets.all(20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                FloatingActionButton(
-                  backgroundColor: Colors.blue,
-                  onPressed: getImage,
-                  tooltip: 'incrementar',
-                  child: Icon(Icons.camera_alt),
-                ),
-              ],
+          Padding(
+            padding: EdgeInsets.all(10),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: FloatingActionButton(
+                backgroundColor: Colors.blue,
+                onPressed: getImage,
+                tooltip: 'Adicionar Imagem',
+                child: Icon(Icons.camera_alt),
+              ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.all(8),
-          ),
+          SizedBox(height: 8),
           Row(
             children: [
               Expanded(
-                  child: ElevatedButton(
-                child: Text("Cancelar"),
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, "/home");
-                },
-              )),
-              Padding(padding: EdgeInsets.all(5)),
+                child: ElevatedButton(
+                  child: Text("Cancelar"),
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(context, "/home");
+                  },
+                ),
+              ),
+              SizedBox(width: 5),
               Expanded(
                 child: RoundedLoadingButton(
                   color: Colors.black,
                   successIcon: Icons.check,
-                  failedIcon: Icons.cottage,
+                  failedIcon: Icons.close,
                   child: Text('Salvar!', style: TextStyle(color: Colors.white)),
                   controller: _btnController1,
                   onPressed: () async {
                     if (_formkey.currentState.validate() && _imageFileList.length > 0) {
-
                       Map<String, String> body = {
                         'title': 'carcaca',
                       };
 
                       responseMessageSimple imageResponse =
-                          await UploadApi().addImage(body, _imageFileList);
+                      await UploadApi().addImage(body, _imageFileList);
 
                       carcaca.fotos = json.encode(imageResponse.content);
 
                       var response = await CarcacaApi().create(carcaca);
 
                       if (response is Carcaca && response != null) {
-
                         _btnController1.success();
-
-                        Navigator.push(
+                        Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => ListaCarcaca(),
-                          ),
+                          MaterialPageRoute(builder: (context) => ListaCarcaca()),
                         );
-
                       } else {
-                        responseMessage value =
-                        response != null ? response : null;
+                        responseMessage value = response ?? responseMessage();
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
                               title: Text("Atenção!"),
-                              content: Text(value.debugMessage),
+                              content: Text(value.debugMessage ?? "Erro ao salvar"),
                               actions: [
                                 TextButton(
                                   child: Text("OK"),
                                   onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ListaCarcaca(),
-                                      ),
-                                    );
-                                    // _btnController1.reset();
-                                    // Navigator.pop(context);
+                                    Navigator.pop(context);
                                   },
                                 ),
                               ],
@@ -366,16 +299,24 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
                   },
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(bottom: 30),
-              ),
             ],
-          )
+          ),
         ],
       ),
     );
   }
-}
 
-typedef void OnPickImageCallback(
-    double maxWidth, double maxHeight, int quality);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Carcaça')),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(20),
+          margin: const EdgeInsets.only(bottom: 70.0),
+          child: _construirFormulario(context),
+        ),
+      ),
+    );
+  }
+}

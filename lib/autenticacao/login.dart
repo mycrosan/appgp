@@ -233,7 +233,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 FadeTransition(
                   opacity: _formOpacity,
                   child: Text(
-                    'v1.1.1',
+                    'v1.2.1',
                     style: TextStyle(color: Colors.white70),
                   ),
                 ),

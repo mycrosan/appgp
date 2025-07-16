@@ -5,6 +5,7 @@ import 'package:GPPremium/service/qualidadeapi.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 import '../../models/carcaca.dart';
 import '../../models/classificacao.dart';
@@ -31,23 +32,25 @@ class ListaQualidadeState extends State<ListaQualidade> {
   TextEditingController textEditingControllerModelo;
   TextEditingController textEditingControllerMarca;
   TextEditingController textEditingControllerMedida;
-
   TextEditingController textEditingControllerCarcaca;
   Qualidade qualidade;
 
-  // bool loading = true;
   var loading = ValueNotifier<bool>(true);
 
-  //Classificacão
   List<TipoClassificacao> classificacaoList = [];
   TipoClassificacao classificacaoSelected;
 
-  //Observacação
   List<TipoObservacao> observacaoList = [];
   TipoObservacao observavaoSelected;
 
   List<Qualidade> qualidadeList = [];
   List<Producao> producaoList = [];
+
+  final _isList = ValueNotifier<bool>(false);
+  final _isListQualidade = ValueNotifier<bool>(false);
+  Qualidade qualidadePesquisa;
+
+  final DinamicShowCards listCards = DinamicShowCards();
 
   @override
   void initState() {
@@ -55,24 +58,21 @@ class ListaQualidadeState extends State<ListaQualidade> {
     textEditingControllerModelo = TextEditingController();
     textEditingControllerMarca = TextEditingController();
     textEditingControllerMedida = TextEditingController();
-    qualidade = new Qualidade();
-    qualidade.producao = new Producao();
-    qualidade.producao.carcaca = new Carcaca();
-    qualidade.tipo_observacao = new TipoObservacao();
+    textEditingControllerCarcaca = MaskedTextController(mask: '000000');
+    qualidade = Qualidade();
+    qualidade.producao = Producao();
+    qualidade.producao.carcaca = Carcaca();
+    qualidade.tipo_observacao = TipoObservacao();
 
-    TipoClassificacaoApi().getAll().then((List<TipoClassificacao> value) {
-      setState(() {
-        classificacaoList = value;
-      });
+    TipoClassificacaoApi().getAll().then((value) {
+      setState(() => classificacaoList = value);
     });
 
-    TipoObservacacaoApi().getAll().then((List<TipoObservacao> value) {
-      setState(() {
-        observacaoList = value;
-      });
+    TipoObservacacaoApi().getAll().then((value) {
+      setState(() => observacaoList = value);
     });
 
-    QualidadeApi().getAll().then((List<Qualidade> value) {
+    QualidadeApi().getAll().then((value) {
       setState(() {
         qualidadeList = value;
         loading.value = false;
@@ -80,130 +80,138 @@ class ListaQualidadeState extends State<ListaQualidade> {
     });
   }
 
+  Future<void> pesquisarPorEtiqueta(String etiqueta) async {
+    if (etiqueta.length >= 6) {
+      etiqueta = etiqueta.padLeft(6, '0');
+      loading.value = true;
+      var response = await listCards.pesquisaQualidade(etiqueta);
+      loading.value = false;
+      if (response is Qualidade) {
+        _isListQualidade.value = true;
+        qualidadePesquisa = response;
+        listCards.notifyListeners();
+      } else if (response.status == 'PRECONDITION_REQUIRED') {
+        qualidade.producao.carcaca.numeroEtiqueta = etiqueta;
+        producaoList = await listCards.pesquisaProducao(qualidade.producao);
+        if (producaoList.isNotEmpty) {
+          _isList.value = true;
+          listCards.notifyListeners();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            warningMessage(context, "Sem resultados para etiqueta $etiqueta"),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          warningMessage(context, response.message ?? 'Erro na leitura'),
+        );
+      }
+    }
+  }
+
+  Future<void> scanBarcode() async {
+    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+      '#ff6666',
+      'Cancelar',
+      true,
+      ScanMode.BARCODE,
+    );
+
+    if (barcodeScanRes != '-1') {
+      barcodeScanRes = barcodeScanRes.padLeft(6, '0');
+      textEditingControllerCarcaca.text = barcodeScanRes;
+      await pesquisarPorEtiqueta(barcodeScanRes);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final DinamicShowCards listCards = DinamicShowCards();
-
-    TextEditingController textEditingControllerCarcaca;
-    TextEditingController textEditingControllerQualidade;
-    textEditingControllerCarcaca = MaskedTextController(mask: '000000');
-
-    var _isList = ValueNotifier<bool>(false);
-    var _isListQualidade = ValueNotifier<bool>(false);
-    Qualidade qualidadePesquisa;
-
-//Fica escutando as mudanças
     final QualidadeApi qualidades = Provider.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Container(
-          width: double.infinity,
-          child: Row(children: [
+        title: Row(
+          children: [
             Expanded(child: Text("Qualidade")),
             Expanded(
               child: Container(
                 color: Colors.white,
                 height: 30.0,
-                child: TextFormField(
-                  controller: textEditingControllerCarcaca,
-                  decoration: InputDecoration(
-                    hintText: 'Nº etiqueta',
-                    contentPadding: EdgeInsets.all(10.0),
-                    // prefixIcon: Icon(Icons.search),
-                  ),
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  onChanged: (String newValue) async {
-                    if (newValue.length >= 6) {
-                      loading.value = true;
-                      var response =
-                          await listCards.pesquisaQualidade(newValue);
-                      loading.value = false;
-                      if (response is Qualidade) {
-                        _isListQualidade.value = true;
-                        qualidadePesquisa = response;
-                        listCards.exibirQualidade(context, response);
-                        _isListQualidade.notifyListeners();
-                        listCards.notifyListeners();
-                        loading.notifyListeners();
-                      } else if (response.status == 'PRECONDITION_REQUIRED') {
-                        loading.value = true;
-                        qualidade.producao.carcaca.numeroEtiqueta = newValue;
-                        producaoList = await listCards
-                            .pesquisaProducao(qualidade.producao);
-                        if (producaoList.length > 0) {
-                          loading.value = false;
-                          _isList.value = true;
-                          listCards.exibirProducao(context, producaoList);
-                          _isList.notifyListeners();
-                          listCards.notifyListeners();
-                          loading.notifyListeners();
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              warningMessage(context,
-                                  "Sem resultados para etiqueta " + newValue));
-                        }
-                      } else {
-                        responseMessage value =
-                            response != null ? response : null;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            warningMessage(context, value.message));
-                      }
-                    } else {
-                      _isListQualidade.value = false;
-                      _isList.value = false;
-                      _isListQualidade.notifyListeners();
-                    }
-                  },
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: textEditingControllerCarcaca,
+                        style: TextStyle(fontSize: 12),
+                        decoration: InputDecoration(
+                          hintText: 'Etiqueta',
+                          contentPadding: EdgeInsets.all(12.0),
+                          border: InputBorder.none,
+                        ),
+                        keyboardType: TextInputType.numberWithOptions(decimal: true),
+                        onChanged: (String newValue) async {
+                          await pesquisarPorEtiqueta(newValue);
+                        },
+                      ),
+                    ),
+                    Container(
+                      height: 30,
+                      width: 30,
+                      child: IconButton(
+                        padding: EdgeInsets.zero,
+                        constraints: BoxConstraints(),
+                        icon: Icon(Icons.qr_code_scanner, size: 20, color: Colors.black),
+                        onPressed: scanBarcode,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            )
-          ]),
+            ),
+          ],
         ),
       ),
       body: Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Form(
-            key: _formkey,
-            child: Column(
-              children: [
-                ValueListenableBuilder(
-                    valueListenable: _isList,
-                    builder: (_, __, ___) {
-                      return Visibility(
-                          visible: _isList.value,
-                          child: listCards.exibirProducao(
-                                      context, producaoList) !=
-                                  null
-                              ? listCards.exibirProducao(context, producaoList)
-                              : Text(''));
-                    }),
-                ValueListenableBuilder(
-                    valueListenable: _isListQualidade,
-                    builder: (_, __, ___) {
-                      return Visibility(
-                          visible: _isListQualidade.value,
-                          child: listCards.exibirQualidade(
-                                      context, qualidadePesquisa) !=
-                                  null
-                              ? listCards.exibirQualidade(
-                                  context, qualidadePesquisa)
-                              : Text(''));
-                    }),
-                Visibility(
-                  child: listCards.exibirListaConsulta(
-                              context, qualidadeList) !=
-                          null
-                      ? listCards.exibirListaConsulta(context, qualidadeList)
-                      : loading.value
-                          ? cicleLoading(context)
-                          : qualidadeList.length == 0
-                              ? Text('')
-                              : '',
-                ),
-              ],
-            ),
-          )),
+        padding: EdgeInsets.all(8.0),
+        child: Form(
+          key: _formkey,
+          child: Column(
+            children: [
+              ValueListenableBuilder(
+                valueListenable: _isList,
+                builder: (_, __, ___) {
+                  return Visibility(
+                    visible: _isList.value,
+                    child: listCards.exibirProducao(context, producaoList) != null
+                        ? listCards.exibirProducao(context, producaoList)
+                        : Text(''),
+                  );
+                },
+              ),
+              ValueListenableBuilder(
+                valueListenable: _isListQualidade,
+                builder: (_, __, ___) {
+                  return Visibility(
+                    visible: _isListQualidade.value,
+                    child: listCards.exibirQualidade(context, qualidadePesquisa) != null
+                        ? listCards.exibirQualidade(context, qualidadePesquisa)
+                        : Text(''),
+                  );
+                },
+              ),
+              Visibility(
+                child: listCards.exibirListaConsulta(context, qualidadeList) != null
+                    ? listCards.exibirListaConsulta(context, qualidadeList)
+                    : loading.value
+                    ? cicleLoading(context)
+                    : qualidadeList.length == 0
+                    ? Text('')
+                    : '',
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

@@ -231,7 +231,8 @@ class ListaProducaoState extends State<ListaProducao> {
                 mode: Mode.BOTTOM_SHEET,
                 showSearchBox: true,
                 label: "Modelo",
-                validator: (value) => value == null ? 'Não pode ser nulo' : null,
+                validator: (value) =>
+                    value == null ? 'Não pode ser nulo' : null,
                 items: modeloList,
                 selectedItem: modeloSelected,
                 itemAsString: (Modelo m) => m.descricao,
@@ -244,7 +245,6 @@ class ListaProducaoState extends State<ListaProducao> {
                   });
                 },
               ),
-
               Row(
                 children: [
                   Expanded(
@@ -339,7 +339,60 @@ class ListaProducaoState extends State<ListaProducao> {
                                 child: Text('Nenhuma produção encontrada'));
                           }
                           return listCards.exibirListaConsulta(
-                              context, producaoList);
+                            context,
+                            producaoList,
+                            onDelete: (index) async {
+                              bool confirm = await showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  title: Text("Excluir"),
+                                  content: Text(
+                                      "Excluir item ${producaoList[index].carcaca.numeroEtiqueta}?"),
+                                  actions: [
+                                    TextButton(
+                                      child: Text("Não"),
+                                      onPressed: () =>
+                                          Navigator.pop(context, false),
+                                    ),
+                                    TextButton(
+                                      child: Text("Sim"),
+                                      onPressed: () =>
+                                          Navigator.pop(context, true),
+                                    ),
+                                  ],
+                                ),
+                              );
+
+                              if (confirm) {
+                                try {
+                                  bool deleted = await Provider.of<ProducaoApi>(
+                                          context,
+                                          listen: false)
+                                      .delete(producaoList[index].id);
+                                  if (deleted) {
+                                    setState(() {
+                                      producaoList.removeAt(index);
+                                    });
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(deleteMessage(context));
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      errorMessage(
+                                          context, 'Erro ao excluir produção.'),
+                                    );
+                                  }
+                                } catch (e) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    errorMessage(
+                                        context,
+                                        e
+                                            .toString()
+                                            .replaceAll('Exception: ', '')),
+                                  );
+                                }
+                              }
+                            },
+                          );
                         },
                       );
                     }
@@ -355,8 +408,12 @@ class ListaProducaoState extends State<ListaProducao> {
 }
 
 class DinamicListCard extends ChangeNotifier {
-  Widget exibirListaConsulta(BuildContext context, List<Producao> listaProducao,
-      {String etiquetaDestacada}) {
+  Widget exibirListaConsulta(
+    BuildContext context,
+    List<Producao> listaProducao, {
+    String etiquetaDestacada,
+    void Function(int index) onDelete,
+  }) {
     return ListView.builder(
       itemCount: listaProducao.length,
       itemBuilder: (context, index) {
@@ -419,8 +476,7 @@ class DinamicListCard extends ChangeNotifier {
                         SizedBox(height: 6),
                         Row(
                           children: [
-                            Icon(Icons.rule,
-                                size: 16, color: Colors.grey[600]),
+                            Icon(Icons.rule, size: 16, color: Colors.grey[600]),
                             SizedBox(width: 4),
                             Text('Regra: ${producao.regra?.id ?? ''}'),
                           ],
@@ -458,38 +514,9 @@ class DinamicListCard extends ChangeNotifier {
                       ),
                       IconButton(
                         icon: Icon(Icons.delete, color: Colors.red),
-                        onPressed: () async {
-                          bool confirm = await showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                              title: Text("Excluir"),
-                              content: Text(
-                                  "Excluir item ${producao.carcaca.numeroEtiqueta}?"),
-                              actions: [
-                                TextButton(
-                                  child: Text("Não"),
-                                  onPressed: () =>
-                                      Navigator.pop(context, false),
-                                ),
-                                TextButton(
-                                  child: Text("Sim"),
-                                  onPressed: () =>
-                                      Navigator.pop(context, true),
-                                ),
-                              ],
-                            ),
-                          );
-                          if (confirm) {
-                            bool deleted =
-                            await Provider.of<ProducaoApi>(context,
-                                listen: false)
-                                .delete(producao.id);
-                            if (deleted) {
-                              listaProducao.removeAt(index);
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(deleteMessage(context));
-                              notifyListeners();
-                            }
+                        onPressed: () {
+                          if (onDelete != null) {
+                            onDelete(index);
                           }
                         },
                       ),
