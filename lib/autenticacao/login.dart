@@ -108,14 +108,6 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         key: _formKey,
                         child: Column(
                           children: [
-                            Text(
-                              'Faça seu login',
-                              style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                            ),
                             SizedBox(height: 20),
                             TextFormField(
                               controller: usuarioController,

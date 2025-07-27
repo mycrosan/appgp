@@ -22,7 +22,6 @@ class _AjustesState extends State<Ajustes> with TickerProviderStateMixin {
     {'label': 'Antiquebra', 'icon': Icons.security, 'route': '/antiquebra', 'color': Colors.red.shade700},
     {'label': 'Espessuramento', 'icon': Icons.compress, 'route': '/espessuramento', 'color': Colors.blueGrey.shade600},
     {'label': 'Usuários', 'icon': Icons.group, 'route': '/usuarios', 'color': Colors.grey.shade800},
-    {'label': 'Cobertura', 'icon': Icons.layers, 'route': '/cobertura', 'color': Colors.brown.shade600},
   ];
 
   @override

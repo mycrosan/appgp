@@ -20,12 +20,14 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     },
     {
       'label': 'Regra',
-      'icon': CommunityMaterialIcons.scale_balance, // Balança para representar regras/justiça
+      'icon': CommunityMaterialIcons.scale_balance,
+      // Balança para representar regras/justiça
       'route': '/regras'
     },
     {
       'label': 'Produção',
-      'icon': CommunityMaterialIcons.factory, // Fábrica representa bem a produção
+      'icon': CommunityMaterialIcons.factory,
+      // Fábrica representa bem a produção
       'route': '/producao'
     },
     {
@@ -35,7 +37,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     },
     {
       'label': 'Proibidas',
-      'icon': CommunityMaterialIcons.close_octagon_outline, // Sinal de proibição
+      'icon': CommunityMaterialIcons.close_octagon_outline,
+      // Sinal de proibição
       'route': '/proibidas'
     },
     {
@@ -45,11 +48,23 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     },
     {
       'label': 'Ajustes',
-      'icon': CommunityMaterialIcons.cog_outline, // Ícone clássico de configurações
+      'icon': CommunityMaterialIcons.cog_outline,
+      // Ícone clássico de configurações
       'route': '/ajustes'
     },
+    {
+      'label': 'Cobertura',
+      'icon': Icons.layers,
+      'route': '/cobertura',
+      'color': Colors.brown.shade600
+    },
+    {
+      'label': 'Resumo',
+      'icon': Icons.pie_chart,
+      'route': '/resumo',
+      'color': Colors.brown.shade600
+    },
   ];
-
 
   @override
   void initState() {

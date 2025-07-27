@@ -116,4 +116,17 @@ class ProducaoApi extends ChangeNotifier {
       throw Exception('Falha ao carregar producões');
     }
   }
+  Future<Map<String, int>> getResumo() async {
+    var objData = ConfigRequest();
+    var response = await objData.requestGet('resumo/$ENDPOINT');
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return Map<String, int>.from(
+        data.map((key, value) => MapEntry(key, value as int)),
+      );
+    } else {
+      throw Exception('Falha ao carregar resumo de produção');
+    }
+  }
 }

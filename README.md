@@ -69,4 +69,8 @@ flutter build apk --release
 
 flutter build appbundle --release
 
+Launched DevTools manually from terminal dart devtools
+After that run the web app flutter run -d 11836f8
+Copied the debug service listener URL to DevTools server.
+
 

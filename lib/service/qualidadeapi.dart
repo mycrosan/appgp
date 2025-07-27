@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:GPPremium/models/responseMessage.dart';
 
-
 import '../models/producao.dart';
 import 'config_request.dart';
 
@@ -99,8 +98,8 @@ class QualidadeApi extends ChangeNotifier {
       throw Exception('Falha ao tentar excluir carcaça');
     }
   }
-  Future<Object> consultaProducao(Producao producao) async {
 
+  Future<Object> consultaProducao(Producao producao) async {
     var objData = new ConfigRequest();
     var response = await objData.requestQueryProducao(ENDPOINT, producao);
 
@@ -133,10 +132,10 @@ class QualidadeApi extends ChangeNotifier {
   //   }
   // }
 
-  Future<Object>consultaQualidade(numeroEtiqueta) async {
-
+  Future<Object> consultaQualidade(numeroEtiqueta) async {
     var objData = new ConfigRequest();
-    var response = await objData.requestQueryQualidade(ENDPOINT, numeroEtiqueta);
+    var response =
+        await objData.requestQueryQualidade(ENDPOINT, numeroEtiqueta);
 
     if (response.statusCode == 200) {
       try {
@@ -151,6 +150,20 @@ class QualidadeApi extends ChangeNotifier {
       }
     } else {
       throw Exception('Falha ao carregar Carcaça');
+    }
+  }
+
+  Future<Map<String, int>> getResumo() async {
+    var objData = ConfigRequest();
+    var response = await objData.requestGet('resumo/$ENDPOINT');
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return Map<String, int>.from(
+        data.map((key, value) => MapEntry(key, value as int)),
+      );
+    } else {
+      throw Exception('Falha ao carregar resumo de qualidade');
     }
   }
 

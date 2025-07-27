@@ -1,3 +1,4 @@
+import 'package:GPPremium/screens/Resumo/ResumoCarcacas.dart';
 import 'package:GPPremium/screens/antiquebra/ListaAntiquebra.dart';
 import 'package:GPPremium/screens/camelback/ListaCamelback.dart';
 import 'package:GPPremium/screens/carcaca/ListaCarcacas.dart';
@@ -91,6 +92,7 @@ class GpPremiumApp extends StatelessWidget {
           '/relatorio': (_) => ListaRelatorio(),
           '/usuarios': (_) => ListaUsuarios(),
           '/cobertura': (_) => ListaCobertura(),
+          '/resumo': (_) => ResumoCarcacasPage(),
         },
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
