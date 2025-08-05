@@ -69,29 +69,37 @@ class CoberturaApi extends ChangeNotifier {
 
   // Criar uma nova cobertura
   Future<Object> create(Cobertura cobertura) async {
-
-    print('📦 Enviando cobertura 1: ${jsonEncode(cobertura.toJson())}');
-  
+    print('📦 Enviando cobertura: ${jsonEncode(cobertura.toJson())}');
 
     var map = cobertura.toJson();
-    var objData = new ConfigRequest();
+    var objData = ConfigRequest();
     var response = await objData.requestPost(ENDPOINT, map);
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201 || response.statusCode == 200) {
       try {
-        var value = Cobertura.fromJson(jsonDecode(response.body));
-        if (value.id != null) {
-          return value;
+        final json = jsonDecode(response.body);
+
+        // Se tiver um ID válido, retorna a Cobertura
+        if (json['id'] != null) {
+          return Cobertura.fromJson(json);
         } else {
-          return responseMessage.fromJson(jsonDecode(response.body));
+          // Caso contrário, possivelmente erro do tipo responseMessage
+          return responseMessage.fromJson(json);
         }
       } catch (e) {
-        return responseMessage.fromJson(jsonDecode(response.body));
+        print("Erro ao decodificar resposta da cobertura: $e");
+        return responseMessage(debugMessage: "Erro ao interpretar resposta do servidor.");
       }
     } else {
-      throw Exception('Falha ao tentar salvar a cobertura');
+      print("Erro HTTP ${response.statusCode}: ${response.body}");
+      try {
+        return responseMessage.fromJson(jsonDecode(response.body));
+      } catch (_) {
+        throw Exception('Falha ao tentar salvar a cobertura (${response.statusCode})');
+      }
     }
   }
+
 
   // Atualizar uma cobertura existente
   Future<Object> update(Cobertura cobertura) async {
