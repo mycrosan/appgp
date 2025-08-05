@@ -135,44 +135,79 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
               itemBuilder: (BuildContext ctxt, int index) {
                 final imageWidget = snapshot.data[index];
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 6),
-                  child: GestureDetector(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (_) => Dialog(
-                          backgroundColor: Colors.black,
-                          insetPadding: EdgeInsets.all(10),
-                          child: InteractiveViewer(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: imageWidget,
+                return Stack(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 6),
+                      child: GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (_) => Dialog(
+                              backgroundColor: Colors.black,
+                              insetPadding: EdgeInsets.all(10),
+                              child: InteractiveViewer(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: imageWidget,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      );
-                    },
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        width: 140,
-                        height: 180,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey.shade300),
+                          );
+                        },
+                        child: ClipRRect(
                           borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: FittedBox(
-                          fit: BoxFit.cover,
-                          child: SizedBox(
+                          child: Container(
                             width: 140,
                             height: 180,
-                            child: imageWidget,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey.shade300),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: FittedBox(
+                              fit: BoxFit.cover,
+                              child: SizedBox(
+                                width: 140,
+                                height: 180,
+                                child: imageWidget,
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
+                    Positioned(
+                      top: 4,
+                      right: 4,
+                      child: GestureDetector(
+                        onTap: () async {
+                          bool confirmed = await showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: Text('Remover imagem'),
+                              content: Text('Deseja realmente remover esta imagem?'),
+                              actions: [
+                                TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text('Cancelar')),
+                                TextButton(onPressed: () => Navigator.pop(ctx, true), child: Text('Remover')),
+                              ],
+                            ),
+                          );
+
+                          if (confirmed == true) {
+                            // 1. Decodificar a string JSON para uma lista real
+                            List<String> listaFotos = List<String>.from(json.decode(cobertura.fotos));
+
+                            setState(() {
+                              listaFotos.removeAt(index);
+                            });
+                            cobertura.fotos = json.encode(listaFotos);
+                            await CoberturaApi().update(cobertura);
+                          }
+                        },
+                        child: Icon(Icons.cancel, color: Colors.red),
+                      ),
+                    ),
+                  ],
                 );
               },
             );
@@ -341,23 +376,32 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
                   scrollDirection: Axis.horizontal,
                   itemCount: _imageFileList.length,
                   itemBuilder: (context, index) {
-                    return Container(
-                      margin: const EdgeInsets.all(3.0),
-                      child: InteractiveViewer(
-                        clipBehavior: Clip.none,
-                        child: AspectRatio(
-                          aspectRatio: 0.75,
+                    return Stack(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.all(6.0),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(12),
                             child: Image.file(File(_imageFileList[index].path)),
                           ),
                         ),
-                      ),
+                        Positioned(
+                          top: 4,
+                          right: 4,
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _imageFileList.removeAt(index);
+                              });
+                            },
+                            child: Icon(Icons.cancel, color: Colors.red),
+                          ),
+                        ),
+                      ],
                     );
                   },
                 ),
               ),
-            SizedBox(height: 80),
           ],
         ),
       ),
@@ -384,77 +428,90 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
               heroTag: 'salvar',
               backgroundColor: Colors.black,
               child: Icon(Icons.save),
-              onPressed: () async {
-                if (_imageFileList.isNotEmpty && _producao != null) {
-                  _btnController1.start();
-                  try {
-                    Map<String, String> body = {'title': 'cobertura'};
-                    responseMessageSimple imageResponse =
-                        await UploadApi().addImage(body, _imageFileList);
+                onPressed: () async {
+                  if (_imageFileList.isNotEmpty && _producao != null) {
+                    _btnController1.start();
+                    try {
+                      Map<String, String> body = {'title': 'cobertura'};
+                      responseMessageSimple imageResponse =
+                      await UploadApi().addImage(body, _imageFileList);
 
-                    cobertura.fotos = json.encode(imageResponse.content);
-                    cobertura.producao = Producao(id: _producao.id);
+                      // Decodifica a lista atual de fotos da cobertura, ou inicia uma lista vazia
+                      List<String> fotosExistentes = [];
+                      if (cobertura.fotos != null && cobertura.fotos.isNotEmpty) {
+                        fotosExistentes = List<String>.from(json.decode(cobertura.fotos));
+                      }
 
-                    var response = await CoberturaApi().create(cobertura);
+                      // Fotos novas do upload (supondo que imageResponse.content seja List<String>)
+                      List<String> fotosNovas = List<String>.from(imageResponse.content);
 
-                    if (response is Cobertura && response.id != null) {
-                      _btnController1.success();
+                      // Junta as duas listas, removendo duplicados se quiser
+                      List<String> fotosAtualizadas = [...fotosExistentes, ...fotosNovas];
+
+                      // Atualiza o objeto cobertura
+                      cobertura.fotos = json.encode(fotosAtualizadas);
+                      cobertura.producao = Producao(id: _producao.id);
+
+                      var response = await CoberturaApi().create(cobertura);
+
+                      if (response is Cobertura && response.id != null) {
+                        _btnController1.success();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Cobertura salva com sucesso!"),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                        await Future.delayed(Duration(seconds: 1));
+                        Navigator.of(context).popUntil((route) => route.isFirst);
+                      } else if (response is responseMessage) {
+                        _btnController1.reset();
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text("Erro ao salvar"),
+                              content: Text(response.debugMessage ??
+                                  "Erro inesperado ao salvar"),
+                              actions: [
+                                TextButton(
+                                  child: Text("OK"),
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      } else {
+                        _btnController1.reset();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Erro inesperado ao salvar cobertura."),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                    } catch (e) {
+                      _btnController1.reset();
+                      print('Erro durante o salvamento da cobertura: $e');
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text("Cobertura salva com sucesso!"),
-                          backgroundColor: Colors.green,
-                        ),
-                      );
-                      await Future.delayed(Duration(seconds: 1));
-                      Navigator.of(context).popUntil((route) => route.isFirst);
-                    } else if (response is responseMessage) {
-                      _btnController1.reset();
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text("Erro ao salvar"),
-                            content: Text(response.debugMessage ??
-                                "Erro inesperado ao salvar"),
-                            actions: [
-                              TextButton(
-                                child: Text("OK"),
-                                onPressed: () => Navigator.pop(context),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    } else {
-                      _btnController1.reset();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text("Erro inesperado ao salvar cobertura."),
+                          content: Text("Erro interno ao salvar."),
                           backgroundColor: Colors.red,
                         ),
                       );
                     }
-                  } catch (e) {
+                  } else {
                     _btnController1.reset();
-                    print('Erro durante o salvamento da cobertura: $e');
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text("Erro interno ao salvar."),
-                        backgroundColor: Colors.red,
+                        content: Text('Adicione imagens e selecione uma produção.'),
+                        backgroundColor: Colors.orange,
                       ),
                     );
                   }
-                } else {
-                  _btnController1.reset();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content:
-                          Text('Adicione imagens e selecione uma produção.'),
-                      backgroundColor: Colors.orange,
-                    ),
-                  );
                 }
-              },
+
             ),
           ),
         ],
