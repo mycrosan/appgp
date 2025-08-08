@@ -88,11 +88,12 @@ class GpPremiumApp extends StatelessWidget {
           '/home': (_) => Home(),
           '/qualidade': (_) => ListaQualidade(),
           '/proibidas': (_) => ListaRejeitadas(),
-          '/ajustes': (_) => Ajustes(),
           '/relatorio': (_) => ListaRelatorio(),
           '/usuarios': (_) => ListaUsuarios(),
           '/cobertura': (_) => ListaCobertura(),
           '/resumo': (_) => ResumoCarcacasPage(),
+          '/cola': (_) => ResumoCarcacasPage(),
+          '/ajustes': (_) => Ajustes(),
         },
         debugShowCheckedModeBanner: false,
         theme: ThemeData(

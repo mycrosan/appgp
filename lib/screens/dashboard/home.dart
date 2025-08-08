@@ -1,6 +1,7 @@
 import 'package:GPPremium/autenticacao/login.dart';
 import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'factory/menu.dart';
 
 class Home extends StatefulWidget {
@@ -47,12 +48,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       'route': '/relatorio'
     },
     {
-      'label': 'Ajustes',
-      'icon': CommunityMaterialIcons.cog_outline,
-      // Ícone clássico de configurações
-      'route': '/ajustes'
-    },
-    {
       'label': 'Cobertura',
       'icon': Icons.layers,
       'route': '/cobertura',
@@ -63,6 +58,17 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       'icon': Icons.pie_chart,
       'route': '/resumo',
       'color': Colors.brown.shade600
+    },
+    {
+      'label': 'Cola',
+      'iconSvg': 'assets/images/cola.svg',
+      'route': '/cola',
+      'color': Colors.brown.shade600
+    },
+    {
+      'label': 'Ajustes',
+      'icon': CommunityMaterialIcons.cog_outline,
+      'route': '/ajustes'
     },
   ];
 

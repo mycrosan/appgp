@@ -160,7 +160,7 @@ class _ResumoCarcacasPageState extends State<ResumoCarcacasPage> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         SizedBox(height: 24),
-        Text(titulo, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        Text(titulo, style: TextStyle(color: Colors.white ,fontSize: 18, fontWeight: FontWeight.bold)),
         SizedBox(height: 12),
         Wrap(
           spacing: 12,
@@ -216,11 +216,11 @@ class _ResumoCarcacasPageState extends State<ResumoCarcacasPage> {
               bottom: 16,
               left: 16,
               child: FloatingActionButton(
-                backgroundColor: Colors.white,
+                backgroundColor: Colors.black,
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Icon(Icons.arrow_back, color: Colors.black),
+                child: Icon(Icons.arrow_back, color: Colors.white),
                 tooltip: "Voltar para o início",
               ),
             ),

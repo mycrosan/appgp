@@ -3,8 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class GPMenu extends StatelessWidget {
   final String name;
-  final IconData icon;
-  final String iconSvg; // novo campo para SVG
+  final dynamic icon; // Pode ser IconData ou Widget
+  final String iconSvg;
   final VoidCallback onClick;
   final Color color;
 
@@ -28,8 +28,17 @@ class GPMenu extends StatelessWidget {
         height: 60,
         color: color,
       );
+    } else if (icon is IconData) {
+      iconWidget = Icon(
+        icon,
+        size: 60,
+        semanticLabel: name,
+        color: color,
+      );
+    } else if (icon is Widget) {
+      iconWidget = icon;
     } else {
-      iconWidget = Icon(icon, size: 60, semanticLabel: name, color: color);
+      iconWidget = Icon(Icons.help_outline, size: 60, color: color); // fallback
     }
 
     return InkWell(

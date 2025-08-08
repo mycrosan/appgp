@@ -1,0 +1,13 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" fill="black">
+  <!-- Pote de cola -->
+  <rect x="16" y="24" width="32" height="28" rx="4" ry="4" stroke="black" stroke-width="2" fill="black"></rect>
+  
+  <!-- Tampa -->
+  <rect x="18" y="18" width="28" height="8" rx="2" ry="2" stroke="black" stroke-width="2" fill="black"></rect>
+
+  <!-- Cabo do pincel -->
+  <rect x="44" y="8" width="4" height="18" fill="black" transform="rotate(20 44 8)"></rect>
+
+  <!-- Cerdas do pincel -->
+  <path d="M46 25 L48 30 L42 30 L44 25 Z" fill="black"></path>
+</svg>
