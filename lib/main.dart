@@ -3,6 +3,7 @@ import 'package:GPPremium/screens/antiquebra/ListaAntiquebra.dart';
 import 'package:GPPremium/screens/camelback/ListaCamelback.dart';
 import 'package:GPPremium/screens/carcaca/ListaCarcacas.dart';
 import 'package:GPPremium/screens/cobertura/ListaCobertura.dart';
+import 'package:GPPremium/screens/cola/ListaCola.dart';
 import 'package:GPPremium/screens/dashboard/ajustes.dart';
 import 'package:GPPremium/screens/dashboard/home.dart';
 import 'package:GPPremium/screens/espessuramento/ListaEspessuramento.dart';
@@ -92,7 +93,7 @@ class GpPremiumApp extends StatelessWidget {
           '/usuarios': (_) => ListaUsuarios(),
           '/cobertura': (_) => ListaCobertura(),
           '/resumo': (_) => ResumoCarcacasPage(),
-          '/cola': (_) => ResumoCarcacasPage(),
+          '/cola': (_) => ListaColaPage(),
           '/ajustes': (_) => Ajustes(),
         },
         debugShowCheckedModeBanner: false,

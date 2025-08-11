@@ -7,7 +7,8 @@ import 'package:GPPremium/models/responseMessage.dart';
 import '../models/producao.dart'; // Modelo para resposta genérica
 
 class CoberturaApi extends ChangeNotifier {
-  static const ENDPOINT = 'cobertura'; // Definir o endpoint específico para Cobertura
+  static const ENDPOINT =
+      'cobertura'; // Definir o endpoint específico para Cobertura
 
   // Obter todas as coberturas
   Future<List<Cobertura>> getAll() async {
@@ -34,37 +35,24 @@ class CoberturaApi extends ChangeNotifier {
       throw Exception('Falha ao carregar a cobertura');
     }
   }
+
 // Adicione dentro da classe CoberturaApi
-  Future<Object> getByEtiqueta(String etiqueta) async {
+  Future<Map<String, dynamic>> getByEtiqueta(String etiqueta) async {
     var objData = ConfigRequest();
     var response = await objData.requestGet('$ENDPOINT/etiqueta/$etiqueta');
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
-
-      if (jsonData == null) return null;
-
-      // Se tiver campo 'producao', é Cobertura
-      if (jsonData.containsKey('producao')) {
-        return Cobertura.fromJson(jsonData);
+      if (jsonData is Map<String, dynamic>) {
+        return jsonData;
       }
-
-      // Se tiver campo 'carcaca', é Producao
-      else if (jsonData.containsKey('carcaca')) {
-        return Producao.fromJson(jsonData);
-      }
-
-      // Se não, não encontrou nada válido
-      return null;
+      return {};
     } else if (response.statusCode == 404) {
-      return null;
+      return {};
     } else {
       throw Exception('Erro na API: ${response.statusCode}');
     }
-
-
   }
-
 
 
   // Criar uma nova cobertura
@@ -88,18 +76,19 @@ class CoberturaApi extends ChangeNotifier {
         }
       } catch (e) {
         print("Erro ao decodificar resposta da cobertura: $e");
-        return responseMessage(debugMessage: "Erro ao interpretar resposta do servidor.");
+        return responseMessage(
+            debugMessage: "Erro ao interpretar resposta do servidor.");
       }
     } else {
       print("Erro HTTP ${response.statusCode}: ${response.body}");
       try {
         return responseMessage.fromJson(jsonDecode(response.body));
       } catch (_) {
-        throw Exception('Falha ao tentar salvar a cobertura (${response.statusCode})');
+        throw Exception(
+            'Falha ao tentar salvar a cobertura (${response.statusCode})');
       }
     }
   }
-
 
   // Atualizar uma cobertura existente
   Future<Object> update(Cobertura cobertura) async {

@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:GPPremium/models/producao.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import '../../components/dateFormatPtBr.dart';
 import '../../models/cobertura.dart';
@@ -27,11 +26,13 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
   Producao _producao;
   bool _carregando = false;
   String _erro = '';
+  String _mensagemBackend = ''; // Mensagem que vem do backend sobre a cola
   final ImagePicker _picker = ImagePicker();
   List _imageFileList = [];
   String _retrieveDataError;
   final RoundedLoadingButtonController _btnController1 =
-  RoundedLoadingButtonController();
+      RoundedLoadingButtonController();
+  bool _colaValida = false;
 
   final _formkey = GlobalKey<FormState>();
   Cobertura cobertura = Cobertura();
@@ -66,9 +67,10 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
   }
 
   Future<void> _buscarProducao(String etiqueta) async {
-    if (etiqueta == null || etiqueta.trim().isEmpty || etiqueta.length != 6) {
+    if (etiqueta.trim().isEmpty || etiqueta.length != 6) {
       setState(() {
         _erro = 'Informe uma etiqueta com exatamente 6 dígitos.';
+        _mensagemBackend = '';
       });
       return;
     }
@@ -76,33 +78,50 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
     setState(() {
       _carregando = true;
       _erro = '';
+      _mensagemBackend = '';
       _producao = null;
-      cobertura = Cobertura(); // limpa cobertura
+      cobertura = Cobertura();
+      _colaValida = false;
+      var coberturaJaExiste = false;
     });
 
     try {
       var apiCobertura = CoberturaApi();
-      var resultado =
-      await apiCobertura.getByEtiqueta(etiqueta.padLeft(6, '0'));
+      var resultado = await apiCobertura.getByEtiqueta(etiqueta.padLeft(6, '0'));
 
-      if (resultado is Cobertura && resultado.producao != null) {
+      if (resultado.isNotEmpty) {
+        final producaoMap = resultado['producao'];
+        final colaMap = resultado['cola'];
+        final mensagem = resultado['mensagem'] ?? '';
+        final colaValida = resultado['colaValida'] ?? false;
+
         setState(() {
-          cobertura = resultado;
-          _producao = resultado.producao;
-        });
-      } else if (resultado is Producao) {
-        setState(() {
-          cobertura = Cobertura();
-          _producao = resultado;
+          _colaValida = colaValida;
+          _mensagemBackend = mensagem;
+
+          if (producaoMap != null) {
+            _producao = Producao.fromJson(producaoMap);
+          }
+
+          if (colaMap != null) {
+            cobertura = Cobertura.fromJson(colaMap);
+
+            // Aqui a lógica para realmente saber se já existe cobertura salva
+            var coberturaJaExiste = (cobertura.id != null) &&
+                (cobertura.fotos != null) &&
+                (cobertura.fotos.isNotEmpty) &&
+                (cobertura.fotos != '[]');
+          } else {
+            cobertura = Cobertura();
+            var coberturaJaExiste = false;
+          }
         });
       } else {
         setState(() {
-          _erro =
-          'Nenhuma cobertura ou produção encontrada para a etiqueta informada';
+          _erro = 'Nenhuma produção encontrada para a etiqueta.';
         });
       }
     } catch (e) {
-      print(e);
       setState(() {
         _erro = 'Erro ao buscar por etiqueta: $e';
       });
@@ -184,16 +203,23 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
                               context: context,
                               builder: (ctx) => AlertDialog(
                                 title: Text('Remover imagem'),
-                                content: Text('Deseja realmente remover esta imagem?'),
+                                content: Text(
+                                    'Deseja realmente remover esta imagem?'),
                                 actions: [
-                                  TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text('Cancelar')),
-                                  TextButton(onPressed: () => Navigator.pop(ctx, true), child: Text('Remover')),
+                                  TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(ctx, false),
+                                      child: Text('Cancelar')),
+                                  TextButton(
+                                      onPressed: () => Navigator.pop(ctx, true),
+                                      child: Text('Remover')),
                                 ],
                               ),
                             );
 
                             if (confirmed == true) {
-                              List<String> listaFotos = List<String>.from(json.decode(cobertura.fotos));
+                              List<String> listaFotos = List<String>.from(
+                                  json.decode(cobertura.fotos));
                               setState(() {
                                 listaFotos.removeAt(index);
                               });
@@ -269,6 +295,21 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
               _producao.regra.espessuramento?.descricao ?? '-',
               style: TextStyle(fontSize: 18),
             ),
+            Divider(height: 28, thickness: 1),
+            if (_mensagemBackend.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(
+                  _mensagemBackend,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: (_mensagemBackend.toLowerCase().contains('válida'))
+                        ? Colors.green
+                        : Colors.red,
+                  ),
+                ),
+              )
           ],
         ),
       ),
@@ -283,7 +324,10 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
 
   @override
   Widget build(BuildContext context) {
-    bool coberturaJaExiste = cobertura != null && cobertura.id != null;
+    bool coberturaJaExiste = cobertura.id != null &&
+        cobertura.fotos != null &&
+        cobertura.fotos.isNotEmpty &&
+        cobertura.fotos != '[]';
 
     return Scaffold(
       appBar: AppBar(
@@ -310,7 +354,7 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
                           contentPadding: EdgeInsets.all(12.0),
                         ),
                         keyboardType:
-                        TextInputType.numberWithOptions(decimal: true),
+                            TextInputType.numberWithOptions(decimal: true),
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
                           LengthLimitingTextInputFormatter(6),
@@ -325,6 +369,7 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
                               _producao = null;
                               cobertura = Cobertura();
                               _erro = '';
+                              _mensagemBackend = '';
                             });
                           }
                         },
@@ -356,16 +401,16 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
             _carregando
                 ? Center(child: CircularProgressIndicator())
                 : _erro.isNotEmpty
-                ? Text(_erro, style: TextStyle(color: Colors.red))
-                : _producao != null
-                ? Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildCardProducao(),
-                _buildImagensCoberturaSalva(coberturaJaExiste),
-              ],
-            )
-                : SizedBox(),
+                    ? Text(_erro, style: TextStyle(color: Colors.red))
+                    : _producao != null
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildCardProducao(),
+                              _buildImagensCoberturaSalva(coberturaJaExiste),
+                            ],
+                          )
+                        : SizedBox(),
             SizedBox(height: 16),
             if (_imageFileList.isNotEmpty)
               Container(
@@ -403,122 +448,120 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
           ],
         ),
       ),
-      floatingActionButton: coberturaJaExiste
-          ? null
-          : Stack(
-        children: [
-          Positioned(
-            bottom: 16,
-            left: 46,
-            child: FloatingActionButton(
-              heroTag: 'camera',
-              backgroundColor: Colors.blue,
-              onPressed: getImage,
-              tooltip: 'Adicionar Imagem',
-              child: Icon(Icons.camera_alt),
-            ),
-          ),
-          Positioned(
-            bottom: 16,
-            right: 16,
-            child: FloatingActionButton(
-              heroTag: 'salvar',
-              backgroundColor: Colors.black,
-              child: Icon(Icons.save),
-              onPressed: () async {
-                if (_imageFileList.isNotEmpty && _producao != null) {
-                  _btnController1.start();
-                  try {
-                    Map<String, String> body = {'title': 'cobertura'};
-                    responseMessageSimple imageResponse =
-                    await UploadApi().addImage(body, _imageFileList);
+      floatingActionButton: (_colaValida && !coberturaJaExiste)
+          ? Stack(
+              children: [
+                Positioned(
+                  bottom: 16,
+                  left: 46,
+                  child: FloatingActionButton(
+                    heroTag: 'camera',
+                    backgroundColor: Colors.blue,
+                    onPressed: getImage,
+                    tooltip: 'Adicionar Imagem',
+                    child: Icon(Icons.camera_alt),
+                  ),
+                ),
+                Positioned(
+                  bottom: 16,
+                  right: 16,
+                  child: FloatingActionButton(
+                    heroTag: 'salvar',
+                    backgroundColor: Colors.black,
+                    child: Icon(Icons.save),
+                    onPressed: () async {
+                      if (_imageFileList.isNotEmpty && _producao != null) {
+                        _btnController1.start();
+                        try {
+                          Map<String, String> body = {'title': 'cobertura'};
+                          responseMessageSimple imageResponse =
+                              await UploadApi().addImage(body, _imageFileList);
 
-                    List<String> fotosExistentes = [];
-                    if (cobertura.fotos != null &&
-                        cobertura.fotos.isNotEmpty) {
-                      fotosExistentes =
-                      List<String>.from(json.decode(cobertura.fotos));
-                    }
+                          List<String> fotosExistentes = [];
+                          if (cobertura.fotos != null &&
+                              cobertura.fotos.isNotEmpty) {
+                            fotosExistentes =
+                                List<String>.from(json.decode(cobertura.fotos));
+                          }
 
-                    List<String> fotosNovas =
-                    List<String>.from(imageResponse.content);
+                          List<String> fotosNovas =
+                              List<String>.from(imageResponse.content);
 
-                    List<String> fotosAtualizadas = [
-                      ...fotosExistentes,
-                      ...fotosNovas
-                    ];
+                          List<String> fotosAtualizadas = [
+                            ...fotosExistentes,
+                            ...fotosNovas
+                          ];
 
-                    cobertura.fotos = json.encode(fotosAtualizadas);
-                    cobertura.producao = Producao(id: _producao.id);
+                          cobertura.fotos = json.encode(fotosAtualizadas);
+                          cobertura.producao = Producao(id: _producao.id);
 
-                    var response =
-                    await CoberturaApi().create(cobertura);
+                          var resp = await CoberturaApi().create(cobertura);
 
-                    if (response is Cobertura && response.id != null) {
-                      _btnController1.success();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text("Cobertura salva com sucesso!"),
-                          backgroundColor: Colors.green,
-                        ),
-                      );
-                      await Future.delayed(Duration(seconds: 1));
-                      Navigator.of(context)
-                          .popUntil((route) => route.isFirst);
-                    } else if (response is responseMessage) {
-                      _btnController1.reset();
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text("Erro ao salvar"),
-                            content: Text(response.debugMessage ??
-                                "Erro inesperado ao salvar"),
-                            actions: [
-                              TextButton(
-                                child: Text("OK"),
-                                onPressed: () =>
-                                    Navigator.pop(context),
+                          if (resp is Cobertura && resp.id != null) {
+                            _btnController1.success();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text("Cobertura salva com sucesso!"),
+                                backgroundColor: Colors.green,
                               ),
-                            ],
+                            );
+                            await Future.delayed(Duration(seconds: 1));
+                            Navigator.of(context)
+                                .popUntil((route) => route.isFirst);
+                          } else if (resp is responseMessage) {
+                            _btnController1.reset();
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text("Erro ao salvar"),
+                                  content: Text(resp.debugMessage ??
+                                      "Erro inesperado ao salvar"),
+                                  actions: [
+                                    TextButton(
+                                      child: Text("OK"),
+                                      onPressed: () => Navigator.pop(context),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          } else {
+                            _btnController1.reset();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    "Erro inesperado ao salvar cobertura."),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          _btnController1.reset();
+                          print('Erro durante o salvamento da cobertura: $e');
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Erro interno ao salvar."),
+                              backgroundColor: Colors.red,
+                            ),
                           );
-                        },
-                      );
-                    } else {
-                      _btnController1.reset();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                              "Erro inesperado ao salvar cobertura."),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                    }
-                  } catch (e) {
-                    _btnController1.reset();
-                    print('Erro durante o salvamento da cobertura: $e');
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text("Erro interno ao salvar."),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                  }
-                } else {
-                  _btnController1.reset();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                          'Adicione imagens e selecione uma produção.'),
-                      backgroundColor: Colors.orange,
-                    ),
-                  );
-                }
-              },
-            ),
-          ),
-        ],
-      ),
+                        }
+                      } else {
+                        _btnController1.reset();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                                'Adicione imagens e selecione uma produção.'),
+                            backgroundColor: Colors.orange,
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ],
+            )
+          : null,
     );
   }
 }

@@ -42,9 +42,6 @@ class ConfigRequest {
   Future<Response> requestPost(String endpoint, Map dataMap) async {
     final String bodyData = jsonEncode(dataMap);
 
-    print('📦 Enviando cobertura: ${jsonEncode(bodyData)}');
-
-
     var jwt = await new AuthUtil().jwtOrEmpty;
     if (jwt != null) {
       http.Response response = await http.post(Uri.parse(SERVER_IP + endpoint),
