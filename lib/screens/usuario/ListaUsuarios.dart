@@ -37,7 +37,22 @@ class _ListaUsuariosPageState extends State<ListaUsuarios> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Usuários")),
+      appBar: AppBar(
+        title: Text("Usuários"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            tooltip: "Adicionar usuário",
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => AdicionarUsuariosPage()),
+              );
+              buscarUsuarios(); // Atualiza lista após novo cadastro
+            },
+          ),
+        ],
+      ),
       body: _loading
           ? Center(child: CircularProgressIndicator())
           : usuarios.isEmpty
@@ -57,7 +72,6 @@ class _ListaUsuariosPageState extends State<ListaUsuarios> {
                   Text('Login: ${usuario.login ?? ''}'),
                   if (usuario.perfil != null && usuario.perfil.isNotEmpty)
                     Text('Perfil: ${usuario.perfil.map((p) => p.descricao).join(', ')}'),
-                  // Text('Status: ${usuario.status == true ? "Ativo" : "Inativo"}'),
                 ],
               ),
               trailing: IconButton(
@@ -75,16 +89,6 @@ class _ListaUsuariosPageState extends State<ListaUsuarios> {
             ),
           );
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => AdicionarUsuariosPage()),
-          );
-          buscarUsuarios(); // Atualiza lista após novo cadastro
-        },
-        child: Icon(Icons.add),
       ),
     );
   }

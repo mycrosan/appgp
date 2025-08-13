@@ -82,12 +82,20 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
       _producao = null;
       cobertura = Cobertura();
       _colaValida = false;
-      var coberturaJaExiste = false;
     });
 
     try {
       var apiCobertura = CoberturaApi();
       var resultado = await apiCobertura.getByEtiqueta(etiqueta.padLeft(6, '0'));
+
+      // Detecta erro enviado pelo backend (como a cobertura já existente)
+      if (resultado is Map && resultado.containsKey('statusCode') && resultado['statusCode'] >= 400) {
+        // Exemplo de tratamento, ajuste conforme a estrutura real da sua API
+        setState(() {
+          _erro = resultado['message'] ?? 'Erro desconhecido ao buscar etiqueta.';
+        });
+        return;
+      }
 
       if (resultado.isNotEmpty) {
         final producaoMap = resultado['producao'];
@@ -105,15 +113,8 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
 
           if (colaMap != null) {
             cobertura = Cobertura.fromJson(colaMap);
-
-            // Aqui a lógica para realmente saber se já existe cobertura salva
-            var coberturaJaExiste = (cobertura.id != null) &&
-                (cobertura.fotos != null) &&
-                (cobertura.fotos.isNotEmpty) &&
-                (cobertura.fotos != '[]');
           } else {
             cobertura = Cobertura();
-            var coberturaJaExiste = false;
           }
         });
       } else {
@@ -131,6 +132,7 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
       });
     }
   }
+
 
   Widget _buildImagensCoberturaSalva(bool coberturaJaExiste) {
     if (cobertura.fotos == null || cobertura.fotos.isEmpty) {

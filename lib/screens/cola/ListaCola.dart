@@ -124,7 +124,7 @@ class _ListaColaPageState extends State<ListaColaPage> {
       appBar: AppBar(
         title: Row(
           children: [
-            Expanded(child: Text("Processo de Cola")),
+            Expanded(child: Text("Cola")),
             Expanded(
               child: Container(
                 height: 30,
