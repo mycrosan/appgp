@@ -62,35 +62,33 @@ class _ListaColaPageState extends State<ListaColaPage> {
   Future<void> _adicionarCola(String etiqueta) async {
     if (etiqueta.isEmpty || etiqueta.length != 6) return;
 
-    // Busca cola já cadastrada para essa etiqueta
-    var colaExistente = await ColaApi().getByEtiqueta(etiqueta);
+    var resultado = await ColaApi().getByEtiqueta(etiqueta);
 
-    if (colaExistente is Cola) {
-      // Atualiza dataInicio para o horário atual
-      colaExistente.dataInicio = DateTime.now();
+    if (resultado is Map && resultado['conflito'] == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(resultado['mensagem'])),
+      );
+      return;
+    }
 
-      // Atualiza a cola no backend
-      await ColaApi().update(colaExistente);
-
+    if (resultado is Cola) {
+      resultado.dataInicio = DateTime.now();
+      await ColaApi().update(resultado);
       await _carregarCola();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Cola atualizada com sucesso!')),
       );
+    } else if (resultado is Producao) {
+      Cola nova = Cola(producao: resultado);
+      await ColaApi().create(nova);
+      await _carregarCola();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Etiqueta adicionada com sucesso!')),
+      );
     } else {
-      // Não existe cola, busca a produção para criar nova cola
-      var producao = await ColaApi().getByEtiqueta(etiqueta);
-      if (producao is Producao) {
-        Cola nova = Cola(producao: producao);
-        await ColaApi().create(nova);
-        await _carregarCola();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Etiqueta adicionada com sucesso!')),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Etiqueta não encontrada na produção')),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Etiqueta não encontrada na produção')),
+      );
     }
   }
 

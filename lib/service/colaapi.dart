@@ -47,26 +47,37 @@ class ColaApi {
     }
   }
 
-  /// Busca por etiqueta (pode retornar Cola ou Producao)
+  /// Busca por etiqueta (pode retornar Cola, Producao ou mensagem de conflito)
   Future<dynamic> getByEtiqueta(String etiqueta) async {
-    final response =
-        await ConfigRequest().requestGet('$endpoint/etiqueta/$etiqueta');
+    final response = await ConfigRequest().requestGet('$endpoint/etiqueta/$etiqueta');
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
 
-      if (jsonData is Map && jsonData.containsKey('carcaca')) {
-        return Producao.fromJson(jsonData);
-      }
+      if (jsonData is Map && jsonData.containsKey('dados')) {
+        final dados = jsonData['dados'];
 
-      if (jsonData is Map && jsonData.containsKey('producao')) {
-        return Cola.fromJson(jsonData);
+        if (dados is Map && dados.containsKey('carcaca')) {
+          return Producao.fromJson(dados);
+        }
+
+        if (dados is Map && dados.containsKey('producao')) {
+          return Cola.fromJson(dados);
+        }
       }
       return null;
     } else if (response.statusCode == 404) {
       return null;
+    } else if (response.statusCode == 409) {
+      // Conflito → já existe cobertura cadastrada
+      final jsonData = json.decode(response.body);
+      return {
+        'conflito': true,
+        'mensagem': jsonData['mensagem'] ?? 'Já existe cobertura cadastrada para esse pneu.'
+      };
     } else {
       throw Exception('Erro na API: ${response.statusCode}');
     }
   }
+
 }
