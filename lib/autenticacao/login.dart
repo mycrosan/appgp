@@ -1,4 +1,4 @@
-import 'package:GPPremium/service/authapi.dart';
+import 'package:GPPremium/service/authapi.dart'; // Verifique se o caminho está correto
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -66,10 +66,12 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Colors.white, // Fundo branco da tela
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(
-            horizontal: screenWidth * 0.06, vertical: screenHeight * 0.05),
+          horizontal: screenWidth * 0.06,
+          vertical: screenHeight * 0.05,
+        ),
         child: Center(
           child: ConstrainedBox(
             constraints: BoxConstraints(maxWidth: 500),
@@ -94,12 +96,12 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     child: Container(
                       padding: EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Colors.white, // Área do login preta
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 8,
+                            color: Colors.black26,
+                            blurRadius: 10,
                             offset: Offset(0, 4),
                           )
                         ],
@@ -114,14 +116,14 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                               decoration: InputDecoration(
                                 labelText: 'Usuário',
                                 border: OutlineInputBorder(),
-                                prefixIcon: Icon(Icons.person_outline),
-                                counterText: '',
+                                prefixIcon: Icon(Icons.person_outline,
+                                    color: Colors.black),
+                                filled: true,
+                                fillColor: Colors.white, // fundo branco do input
+                                labelStyle: TextStyle(color: Colors.black),
                               ),
-                              keyboardType: TextInputType.text,
-                              inputFormatters: [
-                                LengthLimitingTextInputFormatter(10),
-                              ],
-                              style: TextStyle(fontSize: 20),
+                              style:
+                              TextStyle(fontSize: 20, color: Colors.black), // texto preto
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Informe o usuário';
@@ -135,16 +137,15 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                               decoration: InputDecoration(
                                 labelText: 'Senha',
                                 border: OutlineInputBorder(),
-                                prefixIcon: Icon(Icons.lock_outline),
-                                counterText: '',
+                                prefixIcon: Icon(Icons.lock_outline,
+                                    color: Colors.black),
+                                filled: true,
+                                fillColor: Colors.white, // fundo branco do input
+                                labelStyle: TextStyle(color: Colors.black),
                               ),
-                              keyboardType: TextInputType.number,
                               obscureText: true,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                                LengthLimitingTextInputFormatter(6),
-                              ],
-                              style: TextStyle(fontSize: 20),
+                              style:
+                              TextStyle(fontSize: 20, color: Colors.black), // texto preto
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Informe a senha';
@@ -161,16 +162,20 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                               height: 50,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  primary: Theme.of(context).primaryColor,
+                                  primary: Colors.black, // botão branco
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                 ),
                                 child: isLoading
                                     ? CircularProgressIndicator(
-                                    color: Colors.white)
-                                    : Text('Entrar',
-                                    style: TextStyle(fontSize: 18)),
+                                  color: Colors.white,
+                                )
+                                    : Text(
+                                  'Entrar',
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.white),
+                                ),
                                 onPressed: isLoading
                                     ? null
                                     : () async {
@@ -203,8 +208,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                             TextButton(
                                               child: Text("OK"),
                                               onPressed: () {
-                                                Navigator.of(context)
-                                                    .pop();
+                                                Navigator.of(context).pop();
                                               },
                                             ),
                                           ],
@@ -225,8 +229,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 FadeTransition(
                   opacity: _formOpacity,
                   child: Text(
-                    'v1.4.1',
-                    style: TextStyle(color: Colors.white70),
+                    'v1.5.0',
+                    style: TextStyle(color: Colors.grey[600]),
                   ),
                 ),
               ],
