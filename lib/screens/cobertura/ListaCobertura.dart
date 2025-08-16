@@ -11,6 +11,7 @@ import '../../components/dateFormatPtBr.dart';
 import '../../models/cobertura.dart';
 import '../../models/responseMessage.dart';
 import '../../models/responseMessageSimple.dart';
+import '../../models/usuario.dart';
 import '../../service/coberturaapi.dart';
 import '../../service/get_image.dart';
 import '../../service/uploadapi.dart';
@@ -33,6 +34,7 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
   final RoundedLoadingButtonController _btnController1 =
       RoundedLoadingButtonController();
   bool _colaValida = false;
+  Usuario _usuario;
 
   final _formkey = GlobalKey<FormState>();
   Cobertura cobertura = Cobertura();
@@ -82,17 +84,22 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
       _producao = null;
       cobertura = Cobertura();
       _colaValida = false;
+      _usuario = Usuario();
     });
 
     try {
       var apiCobertura = CoberturaApi();
-      var resultado = await apiCobertura.getByEtiqueta(etiqueta.padLeft(6, '0'));
+      var resultado =
+          await apiCobertura.getByEtiqueta(etiqueta.padLeft(6, '0'));
 
       // Detecta erro enviado pelo backend (como a cobertura já existente)
-      if (resultado is Map && resultado.containsKey('statusCode') && resultado['statusCode'] >= 400) {
+      if (resultado is Map &&
+          resultado.containsKey('statusCode') &&
+          resultado['statusCode'] >= 400) {
         // Exemplo de tratamento, ajuste conforme a estrutura real da sua API
         setState(() {
-          _erro = resultado['message'] ?? 'Erro desconhecido ao buscar etiqueta.';
+          _erro =
+              resultado['message'] ?? 'Erro desconhecido ao buscar etiqueta.';
         });
         return;
       }
@@ -102,15 +109,17 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
         final colaMap = resultado['cola'];
         final mensagem = resultado['mensagem'] ?? '';
         final colaValida = resultado['colaValida'] ?? false;
+        final usuarioMap = resultado['usuario'];
 
         setState(() {
           _colaValida = colaValida;
           _mensagemBackend = mensagem;
-
+          if (usuarioMap != null) {
+            _usuario = Usuario.fromJson(usuarioMap);
+          }
           if (producaoMap != null) {
             _producao = Producao.fromJson(producaoMap);
           }
-
           if (colaMap != null) {
             cobertura = Cobertura.fromJson(colaMap);
           } else {
@@ -132,7 +141,6 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
       });
     }
   }
-
 
   Widget _buildImagensCoberturaSalva(bool coberturaJaExiste) {
     if (cobertura.fotos == null || cobertura.fotos.isEmpty) {
@@ -281,7 +289,7 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
                 'FABRICADO EM: ${formatarDataHoraBrasil(_producao.dtCreate) ?? '-'}',
                 style: TextStyle(fontSize: 16)),
             SizedBox(height: 8),
-            Text('RESPONSÁVEL: ${_producao.criadoPor.nome ?? '---'}',
+            Text('RESPONSÁVEL: ${_usuario.nome ?? '---'}',
                 style: TextStyle(fontSize: 16)),
             Divider(height: 28, thickness: 1),
             Text('CAMELBACK',
