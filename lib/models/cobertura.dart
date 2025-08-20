@@ -1,22 +1,22 @@
-import 'producao.dart';
+import 'cola.dart';
 
 class Cobertura {
   int id;
   String fotos;
-  Producao producao;
+  Cola cola;
 
   Cobertura({
     this.id,
     this.fotos,
-    this.producao,
+    this.cola,
   });
 
   factory Cobertura.fromJson(Map<String, dynamic> json) {
     return Cobertura(
       id: json['id'],
       fotos: json['fotos'],
-      producao: json['producao'] != null && json['producao'] is Map<String, dynamic>
-          ? Producao.fromJson(json['producao'])
+      cola: json['cola'] != null && json['cola'] is Map<String, dynamic>
+          ? Cola.fromJson(json['cola'])
           : null,
     );
   }
@@ -25,7 +25,7 @@ class Cobertura {
     return {
       'id': id,
       'fotos': fotos,
-      'producao': producao != null ? {'id': producao.id} : null,
+      'cola': cola != null ? {'id': cola.id} : null,
     };
   }
 }

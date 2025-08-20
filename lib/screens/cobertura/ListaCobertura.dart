@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import '../../components/dateFormatPtBr.dart';
 import '../../models/cobertura.dart';
+import '../../models/cola.dart';
 import '../../models/responseMessage.dart';
 import '../../models/responseMessageSimple.dart';
 import '../../models/usuario.dart';
@@ -27,7 +28,7 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
   Producao _producao;
   bool _carregando = false;
   String _erro = '';
-  String _mensagemBackend = ''; // Mensagem que vem do backend sobre a cola
+  String _mensagemBackend = '';
   final ImagePicker _picker = ImagePicker();
   List _imageFileList = [];
   String _retrieveDataError;
@@ -35,36 +36,17 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
       RoundedLoadingButtonController();
   bool _colaValida = false;
   Usuario _usuario;
-
-  final _formkey = GlobalKey<FormState>();
+  Cola _cola;
   Cobertura cobertura = Cobertura();
 
+  // ------------------------- BUSCA PRODUÇÃO -------------------------
   Future<void> _scanBarcode() async {
     String etiqueta = await FlutterBarcodeScanner.scanBarcode(
         '#ff6666', 'Cancelar', true, ScanMode.BARCODE);
-
     if (etiqueta != '-1') {
       etiqueta = etiqueta.padLeft(6, '0').substring(0, 6);
       _etiquetaController.text = etiqueta;
       await _buscarProducao(etiqueta);
-    }
-  }
-
-  Future getImage() async {
-    try {
-      final pickedFile = await _picker.pickImage(
-        source: ImageSource.camera,
-        imageQuality: 25,
-      );
-      if (pickedFile != null) {
-        setState(() {
-          _imageFileList.add(pickedFile);
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _retrieveDataError = e.toString();
-      });
     }
   }
 
@@ -85,6 +67,7 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
       cobertura = Cobertura();
       _colaValida = false;
       _usuario = Usuario();
+      _imageFileList.clear();
     });
 
     try {
@@ -92,11 +75,9 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
       var resultado =
           await apiCobertura.getByEtiqueta(etiqueta.padLeft(6, '0'));
 
-      // Detecta erro enviado pelo backend (como a cobertura já existente)
       if (resultado is Map &&
           resultado.containsKey('statusCode') &&
           resultado['statusCode'] >= 400) {
-        // Exemplo de tratamento, ajuste conforme a estrutura real da sua API
         setState(() {
           _erro =
               resultado['message'] ?? 'Erro desconhecido ao buscar etiqueta.';
@@ -106,25 +87,21 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
 
       if (resultado.isNotEmpty) {
         final producaoMap = resultado['producao'];
-        final colaMap = resultado['cola'];
+        final coberturaMap = resultado['cobertura'];
         final mensagem = resultado['mensagem'] ?? '';
         final colaValida = resultado['colaValida'] ?? false;
         final usuarioMap = resultado['usuario'];
+        final colaMap = resultado['cola'];
 
         setState(() {
           _colaValida = colaValida;
           _mensagemBackend = mensagem;
-          if (usuarioMap != null) {
-            _usuario = Usuario.fromJson(usuarioMap);
-          }
-          if (producaoMap != null) {
-            _producao = Producao.fromJson(producaoMap);
-          }
-          if (colaMap != null) {
-            cobertura = Cobertura.fromJson(colaMap);
-          } else {
-            cobertura = Cobertura();
-          }
+
+          if (usuarioMap != null) _usuario = Usuario.fromJson(usuarioMap);
+          if (producaoMap != null) _producao = Producao.fromJson(producaoMap);
+          if (coberturaMap != null)
+            cobertura = Cobertura.fromJson(coberturaMap);
+          if (colaMap != null) _cola = Cola.fromJson(colaMap);
         });
       } else {
         setState(() {
@@ -142,117 +119,29 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
     }
   }
 
-  Widget _buildImagensCoberturaSalva(bool coberturaJaExiste) {
-    if (cobertura.fotos == null || cobertura.fotos.isEmpty) {
-      return SizedBox.shrink();
+  // ------------------------- CAPTURA DE IMAGEM -------------------------
+  Future<void> getImage() async {
+    try {
+      final pickedFile = await _picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 25,
+      );
+      if (pickedFile != null) {
+        setState(() {
+          _imageFileList.add(pickedFile);
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _retrieveDataError = e.toString();
+      });
     }
-
-    return Container(
-      margin: const EdgeInsets.only(top: 24, bottom: 16),
-      height: 200.0,
-      child: FutureBuilder(
-        future: ImageService().showImage(cobertura.fotos, "cobertura"),
-        builder: (context, AsyncSnapshot snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasData && snapshot.data.length > 0) {
-            return ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: snapshot.data.length,
-              itemBuilder: (BuildContext ctxt, int index) {
-                final imageWidget = snapshot.data[index];
-
-                return Stack(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child: GestureDetector(
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (_) => Dialog(
-                              backgroundColor: Colors.black,
-                              insetPadding: EdgeInsets.all(10),
-                              child: InteractiveViewer(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: imageWidget,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Container(
-                            width: 140,
-                            height: 180,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey.shade300),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: FittedBox(
-                              fit: BoxFit.cover,
-                              child: SizedBox(
-                                width: 140,
-                                height: 180,
-                                child: imageWidget,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    if (!coberturaJaExiste) // só mostra remover se for nova
-                      Positioned(
-                        top: 4,
-                        right: 4,
-                        child: GestureDetector(
-                          onTap: () async {
-                            bool confirmed = await showDialog(
-                              context: context,
-                              builder: (ctx) => AlertDialog(
-                                title: Text('Remover imagem'),
-                                content: Text(
-                                    'Deseja realmente remover esta imagem?'),
-                                actions: [
-                                  TextButton(
-                                      onPressed: () =>
-                                          Navigator.pop(ctx, false),
-                                      child: Text('Cancelar')),
-                                  TextButton(
-                                      onPressed: () => Navigator.pop(ctx, true),
-                                      child: Text('Remover')),
-                                ],
-                              ),
-                            );
-
-                            if (confirmed == true) {
-                              List<String> listaFotos = List<String>.from(
-                                  json.decode(cobertura.fotos));
-                              setState(() {
-                                listaFotos.removeAt(index);
-                              });
-                              cobertura.fotos = json.encode(listaFotos);
-                              await CoberturaApi().update(cobertura);
-                            }
-                          },
-                          child: Icon(Icons.cancel, color: Colors.red),
-                        ),
-                      ),
-                  ],
-                );
-              },
-            );
-          } else {
-            return Center(child: Text("Nenhuma imagem encontrada."));
-          }
-        },
-      ),
-    );
   }
 
+  // ------------------------- CARD PRODUÇÃO -------------------------
   Widget _buildCardProducao() {
+    if (_producao == null) return SizedBox.shrink();
+
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -275,10 +164,7 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
             Center(
               child: Text(
                 _producao.carcaca.numeroEtiqueta ?? '-',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
             Divider(height: 28, thickness: 1),
@@ -314,24 +200,72 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: (_mensagemBackend.toLowerCase().contains('válida'))
-                        ? Colors.green
-                        : Colors.red,
+                    color: (_mensagemBackend.toLowerCase().contains('inválida'))
+                        ? Colors.red
+                        : Colors.green,
                   ),
                 ),
-              )
+              ),
           ],
         ),
       ),
     );
   }
 
-  @override
-  void dispose() {
-    _etiquetaController.dispose();
-    super.dispose();
+  // ------------------------- EXIBIÇÃO DE IMAGENS SALVAS -------------------------
+  Widget _buildImagensCoberturaSalva() {
+    if (cobertura.fotos == null || cobertura.fotos.isEmpty || cobertura.fotos == '[]') {
+      return SizedBox.shrink();
+    }
+
+    return FutureBuilder(
+      future: ImageService().showImage(cobertura.fotos, "cobertura"),
+      builder: (context, AsyncSnapshot snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Text('Erro ao carregar imagens');
+        } else if (!snapshot.hasData || snapshot.data.isEmpty) {
+          return SizedBox.shrink();
+        } else if (snapshot.data is responseMessage) {
+          // Caso de erro retornado do ImageService
+          return Text(snapshot.data.message ?? "Erro desconhecido");
+        } else {
+          // snapshot.data é List<dynamic>, vamos converter para List<Image>
+          List<Image> imagens = [];
+          for (var item in snapshot.data) {
+            if (item is Image) {
+              imagens.add(item);
+            }
+          }
+
+          if (imagens.isEmpty) return SizedBox.shrink();
+
+          return Container(
+            height: 200.0,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: imagens.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  margin: const EdgeInsets.all(6.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: imagens[index],
+                  ),
+                );
+              },
+            ),
+          );
+        }
+      },
+    );
   }
 
+
+
+
+  // ------------------------- BUILD -------------------------
   @override
   Widget build(BuildContext context) {
     bool coberturaJaExiste = cobertura.id != null &&
@@ -380,6 +314,7 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
                               cobertura = Cobertura();
                               _erro = '';
                               _mensagemBackend = '';
+                              _imageFileList.clear();
                             });
                           }
                         },
@@ -417,44 +352,49 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               _buildCardProducao(),
-                              _buildImagensCoberturaSalva(coberturaJaExiste),
+                              if (coberturaJaExiste)
+                                _buildImagensCoberturaSalva(),
+                              if (!coberturaJaExiste &&
+                                  _imageFileList.isNotEmpty)
+                                Container(
+                                  height: 200.0,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: _imageFileList.length,
+                                    itemBuilder: (context, index) {
+                                      return Stack(
+                                        children: [
+                                          Container(
+                                            margin: const EdgeInsets.all(6.0),
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              child: Image.file(File(
+                                                  _imageFileList[index].path)),
+                                            ),
+                                          ),
+                                          Positioned(
+                                            top: 4,
+                                            right: 4,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  _imageFileList
+                                                      .removeAt(index);
+                                                });
+                                              },
+                                              child: Icon(Icons.cancel,
+                                                  color: Colors.red),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ),
                             ],
                           )
                         : SizedBox(),
-            SizedBox(height: 16),
-            if (_imageFileList.isNotEmpty)
-              Container(
-                height: 200.0,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _imageFileList.length,
-                  itemBuilder: (context, index) {
-                    return Stack(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.all(6.0),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.file(File(_imageFileList[index].path)),
-                          ),
-                        ),
-                        Positioned(
-                          top: 4,
-                          right: 4,
-                          child: GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _imageFileList.removeAt(index);
-                              });
-                            },
-                            child: Icon(Icons.cancel, color: Colors.red),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
           ],
         ),
       ),
@@ -502,8 +442,20 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
                             ...fotosNovas
                           ];
 
+                          if (_cola == null || _cola.id == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content:
+                                    Text("Nenhuma cola válida encontrada."),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                            _btnController1.reset();
+                            return;
+                          }
+
                           cobertura.fotos = json.encode(fotosAtualizadas);
-                          cobertura.producao = Producao(id: _producao.id);
+                          cobertura.cola = Cola(id: _cola.id);
 
                           var resp = await CoberturaApi().create(cobertura);
 
@@ -573,5 +525,11 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
             )
           : null,
     );
+  }
+
+  @override
+  void dispose() {
+    _etiquetaController.dispose();
+    super.dispose();
   }
 }
