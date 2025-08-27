@@ -212,7 +212,7 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
     );
   }
 
-  // ------------------------- EXIBIÇÃO DE IMAGENS SALVAS -------------------------
+// ------------------------- EXIBIÇÃO DE IMAGENS SALVAS -------------------------
   Widget _buildImagensCoberturaSalva() {
     if (cobertura.fotos == null || cobertura.fotos.isEmpty || cobertura.fotos == '[]') {
       return SizedBox.shrink();
@@ -228,10 +228,8 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
         } else if (!snapshot.hasData || snapshot.data.isEmpty) {
           return SizedBox.shrink();
         } else if (snapshot.data is responseMessage) {
-          // Caso de erro retornado do ImageService
           return Text(snapshot.data.message ?? "Erro desconhecido");
         } else {
-          // snapshot.data é List<dynamic>, vamos converter para List<Image>
           List<Image> imagens = [];
           for (var item in snapshot.data) {
             if (item is Image) {
@@ -247,11 +245,25 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
               scrollDirection: Axis.horizontal,
               itemCount: imagens.length,
               itemBuilder: (context, index) {
-                return Container(
-                  margin: const EdgeInsets.all(6.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: imagens[index],
+                return GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (_) => Dialog(
+                        insetPadding: EdgeInsets.all(10),
+                        backgroundColor: Colors.transparent,
+                        child: InteractiveViewer(
+                          child: imagens[index],
+                        ),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.all(6.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: imagens[index],
+                    ),
                   ),
                 );
               },
@@ -261,6 +273,7 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
       },
     );
   }
+
 
 
 
