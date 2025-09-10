@@ -10,6 +10,7 @@ import 'package:GPPremium/service/medidaapi.dart';
 import 'package:GPPremium/service/modeloapi.dart';
 import 'package:GPPremium/service/paisapi.dart';
 import 'package:GPPremium/service/uploadapi.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -165,61 +166,56 @@ class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
             },
           ),
           SizedBox(height: 10),
-          DropdownButtonFormField(
-            decoration: InputDecoration(labelText: "Modelo"),
+          DropdownSearch<Modelo>(
+            mode: Mode.BOTTOM_SHEET,
+            showSearchBox: true,
+            label: "Modelo",
             validator: (value) => value == null ? 'Não pode ser nulo' : null,
-            value: modeloSelected,
-            isExpanded: true,
-            onChanged: (Modelo modelo) {
+            items: modeloList,
+            selectedItem: modeloSelected,
+            itemAsString: (Modelo m) => m.descricao,
+            onChanged: (modelo) {
               setState(() {
                 modeloSelected = modelo;
                 carcaca.modelo = modeloSelected;
               });
             },
-            items: modeloList.map((Modelo modelo) {
-              return DropdownMenuItem(
-                value: modelo,
-                child: Text(modelo.descricao),
-              );
-            }).toList(),
           ),
+
           SizedBox(height: 10),
-          DropdownButtonFormField(
-            decoration: InputDecoration(labelText: "Medida"),
+
+          DropdownSearch<Medida>(
+            mode: Mode.BOTTOM_SHEET,
+            showSearchBox: true,
+            label: "Medida",
             validator: (value) => value == null ? 'Não pode ser nulo' : null,
-            value: medidaSelected,
-            isExpanded: true,
-            onChanged: (Medida medida) {
+            items: medidaList,
+            selectedItem: medidaSelected,
+            itemAsString: (Medida m) => m.descricao,
+            onChanged: (medida) {
               setState(() {
                 medidaSelected = medida;
                 carcaca.medida = medidaSelected;
               });
             },
-            items: medidaList.map((Medida medida) {
-              return DropdownMenuItem(
-                value: medida,
-                child: Text(medida.descricao),
-              );
-            }).toList(),
           ),
+
           SizedBox(height: 10),
-          DropdownButtonFormField(
-            decoration: InputDecoration(labelText: "País"),
+
+          DropdownSearch<Pais>(
+            mode: Mode.BOTTOM_SHEET,
+            showSearchBox: true,
+            label: "País",
             validator: (value) => value == null ? 'Não pode ser nulo' : null,
-            value: paisSelected,
-            isExpanded: true,
-            onChanged: (Pais pais) {
+            items: paisList,
+            selectedItem: paisSelected,
+            itemAsString: (Pais p) => p.descricao,
+            onChanged: (pais) {
               setState(() {
                 paisSelected = pais;
                 carcaca.pais = paisSelected;
               });
             },
-            items: paisList.map((Pais pais) {
-              return DropdownMenuItem(
-                value: pais,
-                child: Text(pais.descricao),
-              );
-            }).toList(),
           ),
           SizedBox(height: 10),
           Center(child: showImage(_imageFileList, "adicionar")),

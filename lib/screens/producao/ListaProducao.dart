@@ -248,66 +248,57 @@ class ListaProducaoState extends State<ListaProducao> {
               Row(
                 children: [
                   Expanded(
-                    child: DropdownButtonFormField(
-                      decoration: InputDecoration(labelText: "Medida"),
+                    child: DropdownSearch<Medida>(
+                      mode: Mode.BOTTOM_SHEET,
+                      showSearchBox: true,
+                      label: "Medida",
                       validator: (value) =>
-                          value == null ? 'Não pode ser nulo' : null,
-                      value: medidaSelected,
-                      isExpanded: true,
-                      onChanged: (Medida medida) {
+                      value == null ? 'Não pode ser nulo' : null,
+                      items: medidaList,
+                      selectedItem: medidaSelected,
+                      itemAsString: (Medida m) => m.descricao,
+                      onChanged: (medida) {
                         setState(() {
                           medidaSelected = medida;
                           producao.carcaca.medida = medidaSelected;
                         });
                       },
-                      items: medidaList.map((medida) {
-                        return DropdownMenuItem(
-                          value: medida,
-                          child: Text(medida.descricao),
-                        );
-                      }).toList(),
                     ),
                   ),
                   Expanded(
-                    child: DropdownButtonFormField(
-                      decoration: InputDecoration(labelText: "País"),
+                    child: DropdownSearch<Pais>(
+                      mode: Mode.BOTTOM_SHEET,
+                      showSearchBox: true,
+                      label: "País",
                       validator: (value) =>
-                          value == null ? 'Não pode ser nulo' : null,
-                      value: paisSelected,
-                      isExpanded: true,
-                      onChanged: (Pais pais) {
+                      value == null ? 'Não pode ser nulo' : null,
+                      items: paisList,
+                      selectedItem: paisSelected,
+                      itemAsString: (Pais p) => p.descricao,
+                      onChanged: (pais) {
                         setState(() {
                           paisSelected = pais;
                           producao.carcaca.pais = paisSelected;
                         });
                       },
-                      items: paisList.map((pais) {
-                        return DropdownMenuItem(
-                          value: pais,
-                          child: Text(pais.descricao),
-                        );
-                      }).toList(),
                     ),
                   ),
                   Expanded(
-                    child: DropdownButtonFormField(
-                      decoration: InputDecoration(labelText: "Marca"),
+                    child: DropdownSearch<Marca>(
+                      mode: Mode.BOTTOM_SHEET,
+                      showSearchBox: true,
+                      label: "Marca",
                       validator: (value) =>
-                          value == null ? 'Não pode ser nulo' : null,
-                      value: marcaSelected,
-                      isExpanded: true,
-                      onChanged: (Marca marca) {
+                      value == null ? 'Não pode ser nulo' : null,
+                      items: marcaList,
+                      selectedItem: marcaSelected,
+                      itemAsString: (Marca m) => m.descricao,
+                      onChanged: (marca) {
                         setState(() {
                           marcaSelected = marca;
                           producao.carcaca.modelo.marca = marcaSelected;
                         });
                       },
-                      items: marcaList.map((marca) {
-                        return DropdownMenuItem(
-                          value: marca,
-                          child: Text(marca.descricao),
-                        );
-                      }).toList(),
                     ),
                   ),
                 ],

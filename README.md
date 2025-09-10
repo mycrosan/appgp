@@ -78,11 +78,14 @@ Copied the debug service listener URL to DevTools server.
  flutter pub get
   ```
  ```bash
-  flutter build appbundle --release
+ fvm flutter build appbundle --release
 ```
 ```bash
  fvm global 2.10.5
 ```
+
+Carlos
+8950
 
 
 

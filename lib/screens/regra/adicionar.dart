@@ -10,8 +10,9 @@ import 'package:GPPremium/models/responseMessage.dart';
 import 'package:GPPremium/service/matrizapi.dart';
 import 'package:GPPremium/service/regraapi.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:dropdown_search/dropdown_search.dart';
+
 import '../../service/antiquebraapi.dart';
 import '../../service/camelbackapi.dart';
 import '../../service/espessuramento.dart';
@@ -67,24 +68,6 @@ class AdicionarRegraPageState extends State<AdicionarRegraPage> {
   List<Espessuramento> espessuramentoList = [];
   Espessuramento espessuramentoSelected;
 
-  void _showToast(BuildContext context) {
-    final scaffold = ScaffoldMessenger.of(context);
-    scaffold.showSnackBar(
-      SnackBar(
-        content: const Text('Added to favorite'),
-        action: SnackBarAction(
-            label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    // Clean up the controller when the Widget is disposed
-    // textEditingControllerPneuRaspado.dispose();
-    // super.dispose();
-  }
-
   @override
   void initState() {
     super.initState();
@@ -96,43 +79,43 @@ class AdicionarRegraPageState extends State<AdicionarRegraPage> {
 
     pais = TextEditingController();
 
-    MatrizApi().getAll().then((List<Matriz> value) {
+    MatrizApi().getAll().then((value) {
       setState(() {
         matrizList = value;
       });
     });
 
-    MedidaApi().getAll().then((List<Medida> value) {
+    MedidaApi().getAll().then((value) {
       setState(() {
         medidaList = value;
       });
     });
 
-    ModeloApi().getAll().then((List<Modelo> value) {
+    ModeloApi().getAll().then((value) {
       setState(() {
         modeloList = value;
-       
       });
     });
 
-    PaisApi().getAll().then((List<Pais> value) {
+    PaisApi().getAll().then((value) {
       setState(() {
         paisList = value;
-       
       });
     });
 
-    CamelbackApi().getAll().then((List<Camelback> value) {
+    CamelbackApi().getAll().then((value) {
       setState(() {
         camelbackList = value;
       });
     });
-    AntiquebraApi().getAll().then((List<Antiquebra> value) {
+
+    AntiquebraApi().getAll().then((value) {
       setState(() {
         antiquebraList = value;
       });
     });
-    EspessuramentoApi().getAll().then((List<Espessuramento> value) {
+
+    EspessuramentoApi().getAll().then((value) {
       setState(() {
         espessuramentoList = value;
       });
@@ -155,309 +138,258 @@ class AdicionarRegraPageState extends State<AdicionarRegraPage> {
   }
 
   Widget _construirFormulario(context) {
-    // var regraApi = new RegraApi();
     return Form(
       key: _formkey,
       child: Column(
         children: [
-          DropdownButtonFormField(
-            decoration: InputDecoration(
-              labelText: "Matriz",
-            ),
+          DropdownSearch<Matriz>(
+            mode: Mode.BOTTOM_SHEET,
+            showSearchBox: true,
+            label: "Matriz",
             validator: (value) => value == null ? 'Não pode ser nulo' : null,
-            value: matrizSelected,
-            isExpanded: true,
-            onChanged: (Matriz matriz) {
-              // var regra = regraList.firstWhere((regra) => regra.id == matriz.id);
+            items: matrizList,
+            selectedItem: matrizSelected,
+            itemAsString: (Matriz m) => m.descricao,
+            onChanged: (matriz) {
               setState(() {
                 matrizSelected = matriz;
                 regra.matriz = matrizSelected;
               });
             },
-            items: matrizList.map((Matriz matriz) {
-              return DropdownMenuItem(
-                value: matriz,
-                child: Text(matriz.descricao),
-              );
-            }).toList(),
           ),
-          DropdownButtonFormField(
-            decoration: InputDecoration(
-              labelText: "Medida",
-            ),
+          DropdownSearch<Medida>(
+            mode: Mode.BOTTOM_SHEET,
+            showSearchBox: true,
+            label: "Medida",
             validator: (value) => value == null ? 'Não pode ser nulo' : null,
-            value: medidaSelected,
-            isExpanded: true,
-            onChanged: (Medida medida) {
-              // var regra = regraList.firstWhere((regra) => regra.id == matriz.id);
+            items: medidaList,
+            selectedItem: medidaSelected,
+            itemAsString: (Medida m) => m.descricao,
+            onChanged: (medida) {
               setState(() {
                 medidaSelected = medida;
                 regra.medida = medidaSelected;
               });
             },
-            items: medidaList.map((Medida medida) {
-              return DropdownMenuItem(
-                value: medida,
-                child: Text(medida.descricao),
-              );
-            }).toList(),
           ),
-          DropdownButtonFormField(
-            decoration: InputDecoration(
-              labelText: "Modelo",
-            ),
+          DropdownSearch<Modelo>(
+            mode: Mode.BOTTOM_SHEET,
+            showSearchBox: true,
+            label: "Modelo",
             validator: (value) => value == null ? 'Não pode ser nulo' : null,
-            value: modeloSelected,
-            isExpanded: true,
-            onChanged: (Modelo modelo) {
-              // var regra = regraList.firstWhere((regra) => regra.id == modelo.id);
+            items: modeloList,
+            selectedItem: modeloSelected,
+            itemAsString: (Modelo m) => m.descricao,
+            onChanged: (modelo) {
               setState(() {
                 modeloSelected = modelo;
                 regra.modelo = modeloSelected;
               });
             },
-            items: modeloList.map((Modelo modelo) {
-              return DropdownMenuItem(
-                value: modelo,
-                child: Text(modelo.descricao),
-              );
-            }).toList(),
           ),
-          DropdownButtonFormField(
-            decoration: InputDecoration(
-              labelText: "Pais",
-            ),
+          DropdownSearch<Pais>(
+            mode: Mode.BOTTOM_SHEET,
+            showSearchBox: true,
+            label: "País",
             validator: (value) => value == null ? 'Não pode ser nulo' : null,
-            value: paisSelected,
-            isExpanded: true,
-            onChanged: (Pais pais) {
-              // var regra = regraList.firstWhere((regra) => regra.id == pais.id);
+            items: paisList,
+            selectedItem: paisSelected,
+            itemAsString: (Pais p) => p.descricao,
+            onChanged: (pais) {
               setState(() {
                 paisSelected = pais;
                 regra.pais = paisSelected;
               });
             },
-            items: paisList.map((Pais pais) {
-              return DropdownMenuItem(
-                value: pais,
-                child: Text(pais.descricao),
-              );
-            }).toList(),
           ),
           Row(
             children: [
               Expanded(
-                  child: TextFormField(
-                controller: textEditingControllerTamanhoMin,
-                decoration: InputDecoration(
-                  labelText: "Tamanho mínimo",
+                child: TextFormField(
+                  controller: textEditingControllerTamanhoMin,
+                  decoration: InputDecoration(
+                    labelText: "Tamanho mínimo",
+                  ),
+                  validator: (value) {
+                    if (value.length == 0) return 'Não pode ser nulo';
+                    return null;
+                  },
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  onChanged: (newValue) {
+                    setState(() {
+                      regra.tamanhoMin = double.parse(newValue);
+                    });
+                  },
                 ),
-                validator: (value) {
-                  if (value.length == 0) return 'Não pode ser nulo';
-                },
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                onChanged: (String newValue) {
-                  setState(() {
-                    regra.tamanhoMin = double.parse(newValue);
-                  });
-                },
-              )),
-              Padding(padding: EdgeInsets.all(5)),
+              ),
+              SizedBox(width: 5),
               Expanded(
-                  child: TextFormField(
-                controller: textEditingControllerTamanhoMax,
-                decoration: InputDecoration(
-                  labelText: "Tamanho máximo",
+                child: TextFormField(
+                  controller: textEditingControllerTamanhoMax,
+                  decoration: InputDecoration(
+                    labelText: "Tamanho máximo",
+                  ),
+                  validator: (value) {
+                    if (value.length == 0) return 'Não pode ser nulo';
+                    return null;
+                  },
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  onChanged: (newValue) {
+                    setState(() {
+                      regra.tamanhoMax = double.parse(newValue);
+                    });
+                  },
                 ),
-                validator: (value) {
-                  if (value.length == 0) return 'Não pode ser nulo';
-                },
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                onChanged: (String newValue) {
-                  setState(() {
-                    regra.tamanhoMax = double.parse(newValue);
-                  });
-                },
-              )),
+              ),
             ],
           ),
-          DropdownButtonFormField(
-            decoration: InputDecoration(
-              labelText: "Camelback",
-            ),
-            validator: (value) => value == null ? 'Não pode ser nulo' : null,
-            value: camelbackSelected,
-            isExpanded: true,
+// Camelback
+          DropdownSearch<Camelback>(
+            mode: Mode.MENU,
+            showSearchBox: true,
+            label: "Camelback",
+            selectedItem: camelbackSelected,
             onChanged: (Camelback camelback) {
               setState(() {
                 camelbackSelected = camelback;
                 regra.camelback = camelbackSelected;
               });
             },
-            items: camelbackList.map((camelback) {
-              return DropdownMenuItem(
-                value: camelback,
-                child: Text(camelback.descricao),
-              );
-            }).toList(),
+            items: camelbackList,
+            itemAsString: (Camelback c) => c.descricao,
+            validator: (value) => value == null ? 'Não pode ser nulo' : null,
           ),
-          Row(children: [
-            Expanded(
-              child: DropdownButtonFormField(
-                decoration: InputDecoration(
-                  labelText: "Antiquebra 1",
-                ),
-                validator: (value) =>
-                    value == null ? 'Não pode ser nulo' : null,
-                value: antiquebra1Selected,
-                isExpanded: true,
-                onChanged: (Antiquebra antiquebra) {
-                  setState(() {
-                    antiquebra1Selected = antiquebra;
-                    regra.antiquebra1 = antiquebra1Selected;
-                  });
-                },
-                items: antiquebraList.map((antiquebra) {
-                  return DropdownMenuItem(
-                    value: antiquebra,
-                    child: Text(antiquebra.descricao),
-                  );
-                }).toList(),
-              ),
+
+// Antiquebra 1
+          DropdownSearch<Antiquebra>(
+            mode: Mode.MENU,
+            showSearchBox: true,
+            label: "Antiquebra 1",
+            selectedItem: antiquebra1Selected,
+            onChanged: (Antiquebra antiquebra) {
+              setState(() {
+                antiquebra1Selected = antiquebra;
+                regra.antiquebra1 = antiquebra1Selected;
+              });
+            },
+            items: antiquebraList,
+            itemAsString: (Antiquebra a) => a.descricao,
+            validator: (value) => value == null ? 'Não pode ser nulo' : null,
+          ),
+
+// Antiquebra 2
+          DropdownSearch<Antiquebra>(
+            mode: Mode.MENU,
+            showSearchBox: true,
+            label: "Antiquebra 2",
+            selectedItem: antiquebra2Selected,
+            onChanged: (Antiquebra antiquebra) {
+              setState(() {
+                antiquebra2Selected = antiquebra;
+                regra.antiquebra2 = antiquebra2Selected;
+              });
+            },
+            items: antiquebraList,
+            itemAsString: (Antiquebra a) => a.descricao,
+          ),
+
+// Antiquebra 3
+          DropdownSearch<Antiquebra>(
+            mode: Mode.MENU,
+            showSearchBox: true,
+            label: "Antiquebra 3",
+            selectedItem: antiquebra3Selected,
+            onChanged: (Antiquebra antiquebra) {
+              setState(() {
+                antiquebra3Selected = antiquebra;
+                regra.antiquebra3 = antiquebra3Selected;
+              });
+            },
+            items: antiquebraList,
+            itemAsString: (Antiquebra a) => a.descricao,
+          ),
+
+// Espessuramento
+          DropdownSearch<Espessuramento>(
+            mode: Mode.MENU,
+            showSearchBox: true,
+            label: "Espessuramento",
+            selectedItem: espessuramentoSelected,
+            onChanged: (Espessuramento espessuramento) {
+              setState(() {
+                espessuramentoSelected = espessuramento;
+                regra.espessuramento = espessuramentoSelected;
+              });
+            },
+            items: espessuramentoList,
+            itemAsString: (Espessuramento e) => e.descricao,
+          ),
+
+// Tempo
+          TextFormField(
+            controller: textEditingControllerTempo,
+            decoration: InputDecoration(
+              labelText: "Tempo",
             ),
-            Padding(padding: EdgeInsets.all(5)),
-            Expanded(
-              child: DropdownButtonFormField(
-                decoration: InputDecoration(
-                  labelText: "Antiquebra 2",
-                ),
-                value: antiquebra2Selected,
-                isExpanded: true,
-                onChanged: (Antiquebra antiquebra) {
-                  setState(() {
-                    antiquebra2Selected = antiquebra;
-                    regra.antiquebra2 = antiquebra2Selected;
-                  });
-                },
-                items: antiquebraList.map((antiquebra) {
-                  return DropdownMenuItem(
-                    value: antiquebra,
-                    child: Text(antiquebra.descricao),
-                  );
-                }).toList(),
-              ),
-            ),
-            Padding(padding: EdgeInsets.all(5)),
-            Expanded(
-              child: DropdownButtonFormField(
-                decoration: InputDecoration(
-                  labelText: "Antiquebra 3",
-                ),
-                value: antiquebra3Selected,
-                isExpanded: true,
-                onChanged: (Antiquebra antiquebra) {
-                  setState(() {
-                    antiquebra3Selected = antiquebra;
-                    regra.antiquebra3 = antiquebra3Selected;
-                  });
-                },
-                items: antiquebraList.map((antiquebra) {
-                  return DropdownMenuItem(
-                    value: antiquebra,
-                    child: Text(antiquebra.descricao),
-                  );
-                }).toList(),
-              ),
-            )
-          ]),
-          Row(children: [
-            Expanded(
-              child: DropdownButtonFormField(
-                decoration: InputDecoration(
-                  labelText: "Espessuramento",
-                ),
-                value: espessuramentoSelected,
-                isExpanded: true,
-                onChanged: (Espessuramento espessuramento) {
-                  setState(() {
-                    espessuramentoSelected = espessuramento;
-                    regra.espessuramento = espessuramentoSelected;
-                  });
-                },
-                items: espessuramentoList.map((espessuramento) {
-                  return DropdownMenuItem(
-                    value: espessuramento,
-                    child: Text(espessuramento.descricao),
-                  );
-                }).toList(),
-              ),
-            ),
-            Padding(padding: EdgeInsets.all(5)),
-            Expanded(
-              child: TextFormField(
-                controller: textEditingControllerTempo,
-                decoration: InputDecoration(
-                  labelText: "Tempo",
-                ),
-                validator: (value) =>
-                    value.length == 0 ? 'Não pode ser nulo' : null,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                onChanged: (String newValue) {
-                  setState(() {
-                    regra.tempo = newValue;
-                  });
-                },
-              ),
-            )
-          ]),
-          Padding(padding: EdgeInsets.all(10)),
+            validator: (value) => value.length == 0 ? 'Não pode ser nulo' : null,
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            onChanged: (String newValue) {
+              setState(() {
+                regra.tempo = newValue;
+              });
+            },
+          ),
+
+          SizedBox(height: 10),
           Row(
             children: [
               Expanded(
-                  child: ElevatedButton(
-                child: Text("Cancelar"),
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, "/home");
-                },
-              )),
-              Padding(padding: EdgeInsets.all(5)),
+                child: ElevatedButton(
+                  child: Text("Cancelar"),
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(context, "/home");
+                  },
+                ),
+              ),
+              SizedBox(width: 5),
               Expanded(
-                  child: ElevatedButton(
-                child: Text("Salvar"),
-                onPressed: () async {
-                  if (_formkey.currentState.validate()) {
-                    var response = await RegraApi().create(regra);
-                    if (response is Regra && response != null) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ListaRegras(),
-                        ),
-                      );
-                    } else {
-                      responseMessage value =
-                          response != null ? response : null;
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text("Atenção! \n" + value.message),
-                            content: Text(value.debugMessage),
-                            actions: [
-                              TextButton(
-                                child: Text("OK"),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
+                child: ElevatedButton(
+                  child: Text("Salvar"),
+                  onPressed: () async {
+                    if (_formkey.currentState.validate()) {
+                      var response = await RegraApi().create(regra);
+                      if (response is Regra && response != null) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ListaRegras(),
+                          ),
+                        );
+                      } else {
+                        responseMessage value =
+                        response != null ? response : null;
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text("Atenção! \n" + value.message),
+                              content: Text(value.debugMessage),
+                              actions: [
+                                TextButton(
+                                  child: Text("OK"),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
                     }
-                  }
-                },
-              )),
+                  },
+                ),
+              ),
             ],
           )
         ],

@@ -1,4 +1,5 @@
 import 'package:GPPremium/service/regraapi.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../components/Loading.dart';
@@ -165,104 +166,89 @@ class ListaRegraState extends State<ListaRegras> {
       body: Padding(
         padding: EdgeInsets.all(8.0),
         child: Column(children: [
-          Row(children: [
-            Expanded(
-              child: DropdownButtonFormField(
-                decoration: InputDecoration(
-                  labelText: "Modelo",
+          Row(
+            children: [
+              Expanded(
+                child: DropdownSearch<Modelo>(
+                  mode: Mode.BOTTOM_SHEET,
+                  showSearchBox: true,
+                  label: "Modelo",
+                  validator: (value) => value == null ? 'Não pode ser nulo' : null,
+                  items: modeloList,
+                  selectedItem: modeloSelected,
+                  itemAsString: (Modelo m) => m.descricao,
+                  onChanged: (modelo) {
+                    setState(() {
+                      modeloSelected = modelo;
+                      regra.modelo = modeloSelected;
+                      marcaSelected = modeloSelected.marca;
+                      regra.modelo.marca = marcaSelected;
+                    });
+                  },
                 ),
-                validator: (value) =>
-                    value == null ? 'Não pode ser nulo' : null,
-                value: modeloSelected,
-                isExpanded: true,
-                onChanged: (Modelo modelo) {
-                  setState(() {
-                    modeloSelected = modelo;
-                    regra.modelo = modeloSelected;
-                    marcaSelected = modeloSelected.marca;
-                    regra.modelo.marca = marcaSelected;
-                  });
-                },
-                items: modeloList.map((Modelo modelo) {
-                  return DropdownMenuItem(
-                    value: modelo,
-                    child: Text(modelo.descricao),
-                  );
-                }).toList(),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(5),
-            ),
-            Expanded(
-                child: DropdownButtonFormField(
-              decoration: InputDecoration(
-                labelText: "Marca",
+              const SizedBox(width: 5),
+              Expanded(
+                child: DropdownSearch<Marca>(
+                  mode: Mode.BOTTOM_SHEET,
+                  showSearchBox: true,
+                  label: "Marca",
+                  validator: (value) => value == null ? 'Não pode ser nulo' : null,
+                  items: marcaList,
+                  selectedItem: marcaSelected,
+                  itemAsString: (Marca m) => m.descricao,
+                  onChanged: (marca) {
+                    setState(() {
+                      marcaSelected = marca;
+                      regra.modelo.marca = marcaSelected;
+                    });
+                  },
+                ),
               ),
-              validator: (value) => value == null ? 'Não pode ser nulo' : null,
-              value: marcaSelected,
-              isExpanded: true,
-              onChanged: (Marca marca) {
-                setState(() {
-                  marcaSelected = marca;
-                  regra.modelo.marca = marcaSelected;
-                });
-              },
-              items: marcaList.map((Marca marca) {
-                return DropdownMenuItem(
-                  value: marca,
-                  child: Text(marca.descricao),
-                );
-              }).toList(),
-            )),
-            Padding(
-              padding: EdgeInsets.all(5),
-            ),
-          ]),
-          Row(children: [
-            Expanded(
-                child: DropdownButtonFormField(
-              decoration: InputDecoration(
-                labelText: "Medida",
+            ],
+          ),
+
+          const SizedBox(height: 5),
+
+          Row(
+            children: [
+              Expanded(
+                child: DropdownSearch<Medida>(
+                  mode: Mode.BOTTOM_SHEET,
+                  showSearchBox: true,
+                  label: "Medida",
+                  validator: (value) => value == null ? 'Não pode ser nulo' : null,
+                  items: medidaList,
+                  selectedItem: medidaSelected,
+                  itemAsString: (Medida m) => m.descricao,
+                  onChanged: (medida) {
+                    setState(() {
+                      medidaSelected = medida;
+                      regra.medida = medidaSelected;
+                    });
+                  },
+                ),
               ),
-              validator: (value) => value == null ? 'Não pode ser nulo' : null,
-              value: medidaSelected,
-              isExpanded: true,
-              onChanged: (Medida medida) {
-                setState(() {
-                  medidaSelected = medida;
-                  regra.medida = medidaSelected;
-                });
-              },
-              items: medidaList.map((Medida medida) {
-                return DropdownMenuItem(
-                  value: medida,
-                  child: Text(medida.descricao),
-                );
-              }).toList(),
-            )),
-            Expanded(
-                child: DropdownButtonFormField(
-              decoration: InputDecoration(
-                labelText: "País",
+              const SizedBox(width: 5),
+              Expanded(
+                child: DropdownSearch<Pais>(
+                  mode: Mode.BOTTOM_SHEET,
+                  showSearchBox: true,
+                  label: "País",
+                  validator: (value) => value == null ? 'Não pode ser nulo' : null,
+                  items: paisList,
+                  selectedItem: paisSelected,
+                  itemAsString: (Pais p) => p.descricao,
+                  onChanged: (pais) {
+                    setState(() {
+                      paisSelected = pais;
+                      regra.pais = paisSelected;
+                    });
+                  },
+                ),
               ),
-              validator: (value) => value == null ? 'Não pode ser nulo' : null,
-              value: paisSelected,
-              isExpanded: true,
-              onChanged: (Pais pais) {
-                setState(() {
-                  paisSelected = pais;
-                  regra.pais = paisSelected;
-                });
-              },
-              items: paisList.map((Pais pais) {
-                return DropdownMenuItem(
-                  value: pais,
-                  child: Text(pais.descricao),
-                );
-              }).toList(),
-            )),
-          ]),
+            ],
+          ),
           Padding(
             padding: EdgeInsets.all(5),
           ),

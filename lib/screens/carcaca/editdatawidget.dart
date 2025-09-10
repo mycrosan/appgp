@@ -7,6 +7,7 @@ import 'package:GPPremium/service/get_image.dart';
 import 'package:GPPremium/service/medidaapi.dart';
 import 'package:GPPremium/service/modeloapi.dart';
 import 'package:GPPremium/service/paisapi.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -140,76 +141,65 @@ class EditarCarcacaPageState extends State<EditarCarcacaPage> {
                       });
                     },
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(10),
-                  ),
-                  DropdownButtonFormField(
-                    // hint: Text("Selecione um modelo"),
-                    decoration: InputDecoration(
-                      labelText: "Modelo",
-                    ),
+                  SizedBox(height: 10),
+
+                  // MODELO
+                  DropdownSearch<Modelo>(
+                    mode: Mode.BOTTOM_SHEET,
+                    showSearchBox: true,
+                    label: "Modelo",
                     validator: (value) =>
-                        value == null ? 'Não pode ser nulo' : null,
-                    value: modeloSelected,
-                    isExpanded: true,
+                    value == null ? 'Não pode ser nulo' : null,
+                    items: modeloList,
+                    selectedItem: modeloSelected,
+                    itemAsString: (Modelo m) => m.descricao,
                     onChanged: (modelo) {
                       setState(() {
                         modeloSelected = modelo;
                         carcaca.modelo = modeloSelected;
                       });
                     },
-                    items: modeloList.map((modelo) {
-                      return DropdownMenuItem(
-                        value: modelo,
-                        child: Text(modelo.descricao),
-                      );
-                    }).toList(),
                   ),
-                  DropdownButtonFormField(
-                    // hint: Text("Selecione um medida"),
-                    decoration: InputDecoration(
-                      labelText: "Medida",
-                    ),
+                  SizedBox(height: 10),
+
+                  // MEDIDA
+                  DropdownSearch<Medida>(
+                    mode: Mode.BOTTOM_SHEET,
+                    showSearchBox: true,
+                    label: "Medida",
                     validator: (value) =>
-                        value == null ? 'Não pode ser nulo' : null,
-                    value: medidaSelected,
-                    isExpanded: true,
+                    value == null ? 'Não pode ser nulo' : null,
+                    items: medidaList,
+                    selectedItem: medidaSelected,
+                    itemAsString: (Medida m) => m.descricao,
                     onChanged: (medida) {
                       setState(() {
                         medidaSelected = medida;
                         carcaca.medida = medidaSelected;
                       });
                     },
-                    items: medidaList.map((medida) {
-                      return DropdownMenuItem(
-                        value: medida,
-                        child: Text(medida.descricao),
-                      );
-                    }).toList(),
                   ),
-                  DropdownButtonFormField(
-                    // hint: Text("Selecione um pais"),
-                    decoration: InputDecoration(
-                      labelText: "País",
-                    ),
+                  SizedBox(height: 10),
+
+                  // PAÍS
+                  DropdownSearch<Pais>(
+                    mode: Mode.BOTTOM_SHEET,
+                    showSearchBox: true,
+                    label: "País",
                     validator: (value) =>
-                        value == null ? 'Não pode ser nulo' : null,
-                    value: paisSelected,
-                    isExpanded: true,
+                    value == null ? 'Não pode ser nulo' : null,
+                    items: paisList,
+                    selectedItem: paisSelected,
+                    itemAsString: (Pais p) => p.descricao,
                     onChanged: (pais) {
                       setState(() {
                         paisSelected = pais;
                         carcaca.pais = paisSelected;
                       });
                     },
-                    items: paisList.map((pais) {
-                      return DropdownMenuItem(
-                        value: pais,
-                        child: Text(pais.descricao),
-                      );
-                    }).toList(),
                   ),
-                  Padding(padding: EdgeInsets.all(10)),
+
+                  SizedBox(height: 20),
                   Container(
                     child: FutureBuilder(
                         future: new ImageService().showImage(carcaca.fotos, "carcaca"),

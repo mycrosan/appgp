@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:GPPremium/models/carcaca.dart';
 import 'package:GPPremium/models/matriz.dart';
@@ -471,25 +472,32 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
                   )
                 : Text('Sem carcaça'),
           ),
-          DropdownButtonFormField(
-            decoration: InputDecoration(
-              labelText: "Matriz",
-            ),
+          DropdownSearch<Matriz>(
+            mode: Mode.BOTTOM_SHEET,
+            showSearchBox: true,
+            isFilteredOnline: false,
+            dropdownBuilder: (context, selectedItem) {
+              return Text(
+                selectedItem?.descricao ?? "Selecione",
+                style: const TextStyle(fontSize: 16),
+              );
+            },
+            popupItemBuilder: (context, item, isSelected) {
+              return ListTile(
+                title: Text(item.descricao),
+              );
+            },
             validator: (value) => value == null ? 'Não pode ser nulo' : null,
-            value: matrizSelected,
-            isExpanded: true,
+            items: matrizList,
+            selectedItem: matrizSelected,
+            itemAsString: (Matriz m) => m.descricao,
             onChanged: (Matriz matriz) {
               setState(() {
                 matrizSelected = matriz;
               });
             },
-            items: matrizList.map((Matriz matriz) {
-              return DropdownMenuItem(
-                value: matriz,
-                child: Text(matriz.descricao),
-              );
-            }).toList(),
           ),
+
           Padding(
             padding: EdgeInsets.all(5),
           ),
