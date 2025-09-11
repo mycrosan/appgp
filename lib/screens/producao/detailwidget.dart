@@ -24,32 +24,107 @@ class DetalhesProducaoPage extends StatefulWidget {
 class _DetalhesProducaoPageState extends State<DetalhesProducaoPage> {
   // ======== Funções de impressão (não alterei muito) ========
   Future<void> printEtiqueta(NetworkPrinter printer) async {
+    // Print image
+    // final ByteData data = await rootBundle.load('assets/images/banner.png');
+    // final Uint8List bytes = data.buffer.asUint8List();
+    // final Image image = decodeImage(bytes);
+    // printer.image(image);
     printer.row([
       PosColumn(text: 'Cod. da etiqueta', width: 5),
-      PosColumn(
-        text: widget.producao.carcaca.numeroEtiqueta,
+      PosColumn(text: this.widget.producao.carcaca.numeroEtiqueta, styles: PosStyles(
+        align: PosAlign.right,
+        height: PosTextSize.size3,
+        width: PosTextSize.size3,
+        bold: true,
+      ), width: 7),
+    ]);
+    printer.hr(ch: '-');
+    printer.text('Matriz', styles: PosStyles(align: PosAlign.center));
+    printer.text(this.widget.producao.regra.matriz.descricao,
+        styles: PosStyles(
+          align: PosAlign.center,
+          height: PosTextSize.size3,
+          width: PosTextSize.size3,
+          bold: true,
+        ),
+        linesAfter: 1);
+
+    printer.hr(ch: '-');
+    printer.text('Camelback', styles: PosStyles(align: PosAlign.left));
+    printer.text(this.widget.producao.regra.camelback.descricao,
+        styles: PosStyles(
+          align: PosAlign.center,
+          height: PosTextSize.size4,
+          width: PosTextSize.size4,
+          bold: true,
+        ),
+        linesAfter: 1);
+
+    printer.hr(ch: '-');
+    printer.text('Anti quebra 1', styles: PosStyles(align: PosAlign.left));
+    printer.text(this.widget.producao.regra.antiquebra1.descricao,
         styles: PosStyles(
           align: PosAlign.right,
           height: PosTextSize.size3,
           width: PosTextSize.size3,
           bold: true,
         ),
-        width: 7,
-      ),
-    ]);
+        linesAfter: 1);
+
     printer.hr(ch: '-');
-    printer.text('Matriz', styles: PosStyles(align: PosAlign.center));
-    printer.text(
-      widget.producao.regra.matriz.descricao,
-      styles: PosStyles(
-        align: PosAlign.center,
-        height: PosTextSize.size3,
-        width: PosTextSize.size3,
-        bold: true,
-      ),
-      linesAfter: 1,
-    );
-    // ... resto segue igual
+    printer.text('Anti quebra 2', styles: PosStyles(align: PosAlign.left));
+    printer.text(this.widget.producao.regra.antiquebra2.descricao,
+        styles: PosStyles(
+          align: PosAlign.right,
+          height: PosTextSize.size3,
+          width: PosTextSize.size3,
+          bold: true,
+        ),
+        linesAfter: 1);
+
+    printer.hr(ch: '-');
+    printer.text('Anti quebra 3', styles: PosStyles(align: PosAlign.left));
+    printer.text(this.widget.producao.regra.antiquebra3.descricao,
+        styles: PosStyles(
+          align: PosAlign.right,
+          height: PosTextSize.size3,
+          width: PosTextSize.size3,
+          bold: true,
+        ),
+        linesAfter: 1);
+
+    printer.hr(ch: '-');
+    printer.text('Espessuramento', styles: PosStyles(align: PosAlign.left));
+    printer.text(this.widget.producao.regra.espessuramento.descricao,
+        styles: PosStyles(
+          align: PosAlign.right,
+          height: PosTextSize.size3,
+          width: PosTextSize.size3,
+          bold: true,
+        ),
+        linesAfter: 1);
+
+    printer.hr(ch: '-');
+    printer.text('Tempo', styles: PosStyles(align: PosAlign.left));
+    printer.text(this.widget.producao.regra.tempo,
+        styles: PosStyles(
+          align: PosAlign.center,
+          height: PosTextSize.size8,
+          width: PosTextSize.size8,
+          bold: true,
+        ),
+        linesAfter: 1);
+    printer.hr(ch: '-');
+    printer.text('Modelo', styles: PosStyles(align: PosAlign.left));
+    printer.text(this.widget.producao.carcaca.modelo.descricao,
+        styles: PosStyles(
+          align: PosAlign.center,
+          height: PosTextSize.size3,
+          width: PosTextSize.size3,
+          bold: true,
+        ),
+        linesAfter: 1);
+
     printer.cut();
   }
 
