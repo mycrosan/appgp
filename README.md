@@ -63,7 +63,7 @@ keytool -genkey -v -keystore ~/upload-keystore.jks -keyalg RSA -keysize 2048 -va
 
 ## build
 
-flutter build apk --release
+fvm flutter build apk --release
 
 # Publicar google play console
 ### flutter build appbundle --release
@@ -72,10 +72,10 @@ Launched DevTools manually from terminal dart devtools
 After that run the web app flutter run -d 11836f8
 Copied the debug service listener URL to DevTools server.
 ```bash
- flutter clean
+ fvm flutter clean
  ```
 ```bash
- flutter pub get
+ fvm flutter pub get
   ```
  ```bash
  fvm flutter build appbundle --release

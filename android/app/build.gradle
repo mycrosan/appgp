@@ -24,12 +24,13 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdkVersion 34 // ✅ Atualizado para API 34
+    compileSdkVersion 35 // ✅ Atualizado para Flutter 3 e API 35
+    buildToolsVersion "35.0.1" // ✅ Build tools para Flutter 3
 
     defaultConfig {
         applicationId "br.com.pneusgppremium.gpapp" // ✅ Altere para um nome único!
         minSdkVersion 21
-        targetSdkVersion 34 // ✅ Obrigatório para publicação
+        targetSdkVersion 35 // ✅ Obrigatório para publicação na Google Play
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true

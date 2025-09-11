@@ -17,12 +17,12 @@ class ListaCobertura extends StatefulWidget {
 
 class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
   final _etiquetaController = TextEditingController();
-  Producao _producao;
+  Producao? _producao;
   bool _carregando = false;
   String _erro = '';
   final ImagePicker _picker = ImagePicker();
-  List _imageFileList = [];
-  String _retrieveDataError;
+  List<XFile> _imageFileList = [];
+  String? _retrieveDataError;
 
   Future<void> _scanBarcode() async {
     String etiqueta = await FlutterBarcodeScanner.scanBarcode(
@@ -114,7 +114,7 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
             SizedBox(height: 12),
             Center(
               child: Text(
-                _producao.carcaca.numeroEtiqueta ?? '-',
+                _producao?.carcaca.numeroEtiqueta ?? '-',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -122,27 +122,27 @@ class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
               ),
             ),
             Divider(height: 28, thickness: 1),
-            Text('MEDIDA: ${_producao.carcaca.medida?.descricao ?? '-'}',
+            Text('MEDIDA: ${_producao?.carcaca.medida?.descricao ?? '-'}',
                 style: TextStyle(fontSize: 18)),
             SizedBox(height: 8),
             Text(
-                'FABRICADO EM: ${formatarDataHoraBrasil(_producao.dtCreate) ?? '-'}',
+                'FABRICADO EM: ${_producao?.dtCreate != null ? formatarDataHoraBrasil(_producao!.dtCreate) : '-'}',
                 style: TextStyle(fontSize: 16)),
             SizedBox(height: 8),
-            Text('RESPONSÁVEL: ${_producao.criadoPor.nome ?? '---'}',
+            Text('RESPONSÁVEL: ${_producao?.criadoPor.nome ?? '---'}',
                 style: TextStyle(fontSize: 16)),
             Divider(height: 28, thickness: 1),
             Text('CAMELBACK',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             Text(
-              _producao.regra.camelback?.descricao ?? '-',
+              _producao?.regra.camelback?.descricao ?? '-',
               style: TextStyle(fontSize: 18),
             ),
             Divider(height: 28, thickness: 1),
             Text('ESPESSURAMENTO',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             Text(
-              _producao.regra.espessuramento?.descricao ?? '-',
+              _producao?.regra.espessuramento?.descricao ?? '-',
               style: TextStyle(fontSize: 18),
             ),
           ],

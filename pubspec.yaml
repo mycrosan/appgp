@@ -14,56 +14,57 @@ description: Aplicativo GP.
 version: 1.6.0+15
 
 environment:
-  sdk: ">=2.11.1 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   path:
-  http: ^0.13.4
-  flutter_secure_storage: ^3.3.1+1
+  http: ^1.1.0
+  flutter_secure_storage: ^9.2.2
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.2
-  provider: ^5.0.0
-  brasil_fields: ^1.3.0
+  cupertino_icons: ^1.0.6
+  provider: ^6.1.2
+  brasil_fields: ^1.14.1
   date_time_picker: ^2.1.0
-  local_auth: ^1.1.10
-  http_interceptor: ^1.0.2
-  flutter_typeahead: ^3.2.0
-  extended_masked_text: ^2.3.0
-  flutter_vector_icons: ^1.0.0
+  local_auth: ^2.1.8
+  http_interceptor: ^2.0.0
+  flutter_typeahead: ^5.2.0
+  extended_masked_text: ^2.3.1
+  flutter_vector_icons: ^2.0.0
   community_material_icon: ^5.9.55
-  ionicons: ^0.1.2
-  line_icons: ^2.0.1
-  equatable: ^2.0.3
-  image_picker: ^0.8.4+5
+  ionicons: ^0.2.2
+  line_icons: ^2.0.3
+  equatable: ^2.0.5
+  image_picker: ^1.0.7
   #image_cropper: ^1.5.1
   permission_handler:
-  usage: ^4.0.2
+  usage: ^4.1.1
   flutter_quill:
-  rounded_loading_button: ^2.0.9
-  printing: ^5.7.2
-  intl: ^0.17.0
-  open_file: ^3.2.1
-  path_provider: ^2.0.2
-  url_launcher: ^6.0.6
-  device_info_plus: ^3.2.2
+  rounded_loading_button: ^3.0.0
+  printing: ^5.12.0
+  intl: ^0.19.0
+  open_file: ^3.3.2
+  path_provider: ^2.1.2
+  url_launcher: ^6.2.5
+  device_info_plus: ^10.1.0
   esc_pos_printer: ^4.1.0
-  esc_pos_utils: ^1.0.0
+  esc_pos_utils: ^1.1.0
   ping_discover_network: ^0.2.0+1
   flutter_barcode_scanner: ^2.0.0
-  wifi: ^0.1.5
-  flutter_svg: ^0.22.0
-  shimmer: ^2.0.0
-  dropdown_search: ^1.0.0
-  fl_chart: ^0.45.1
-  font_awesome_flutter: ^9.1.0
+  wifi_iot: ^0.3.18
+  flutter_svg: ^2.0.10+1
+  shimmer: ^3.0.0
+  dropdown_search: ^5.0.6
+  fl_chart: ^0.66.2
+  font_awesome_flutter: ^10.7.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^1.0.4
+  flutter_lints: ^3.0.1
 
 
 # For information on the generic Dart part of this file, see the

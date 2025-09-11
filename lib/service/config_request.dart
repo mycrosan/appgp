@@ -117,6 +117,7 @@ class ConfigRequest {
       ).timeout(const Duration(seconds: 60));
       return response;
     }
+    throw Exception('JWT não encontrado');
   }
 
   Future<Response> requestQueryRejeitadas(
@@ -147,6 +148,7 @@ class ConfigRequest {
       ).timeout(Duration(seconds: 60));
       return response;
     }
+    throw Exception('JWT não encontrado');
   }
 
   Future<Response> requestQueryProducao(
@@ -179,6 +181,7 @@ class ConfigRequest {
       ).timeout(Duration(seconds: 60));
       return response;
     }
+    throw Exception('JWT não encontrado');
   }
 
   Future<Response> requestPesquisaRegra(
@@ -211,6 +214,7 @@ class ConfigRequest {
       ).timeout(Duration(seconds: 60));
       return response;
     }
+    throw Exception('JWT não encontrado');
   }
 //Pesquisa observação por classificação
   Future<Response> requestPesquisaObservacao(
@@ -231,6 +235,7 @@ class ConfigRequest {
       ).timeout(Duration(seconds: 60));
       return response;
     }
+    throw Exception('JWT não encontrado');
   }
   Future<Response> requestQueryQualidade(
       String endpoint, String numeroEtiqueta) async {
@@ -246,5 +251,6 @@ class ConfigRequest {
       ).timeout(const Duration(seconds: 60));
       return response;
     }
+    throw Exception('JWT não encontrado');
   }
 }
