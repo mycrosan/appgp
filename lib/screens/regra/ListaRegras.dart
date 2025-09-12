@@ -26,33 +26,33 @@ class ListaRegras extends StatefulWidget {
 class ListaRegraState extends State<ListaRegras> {
   final _formkey = GlobalKey<FormState>();
 
-  TextEditingController textEditingControllerModelo;
-  TextEditingController textEditingControllerMarca;
-  TextEditingController textEditingControllerMedida;
+  late TextEditingController textEditingControllerModelo;
+  late TextEditingController textEditingControllerMarca;
+  late TextEditingController textEditingControllerMedida;
+  late TextEditingController textEditingControllerCarcaca;
 
   final DinamicListRegra listRegras = DinamicListRegra();
 
-  TextEditingController textEditingControllerRegra;
-  Regra regra;
+  late Regra regra;
 
   // bool loading = true;
   var loading = ValueNotifier<bool>(true);
 
   //Modelo
   List<Modelo> modeloList = [];
-  Modelo modeloSelected;
+  late Modelo modeloSelected;
 
   //Medida
   List<Medida> medidaList = [];
-  Medida medidaSelected;
+  late Medida medidaSelected;
 
   //Pais
   List<Pais> paisList = [];
-  Pais paisSelected;
+  late Pais paisSelected;
 
   //Marca
   List<Marca> marcaList = [];
-  Marca marcaSelected;
+  late Marca marcaSelected;
 
   List<Regra> regraList = [];
 

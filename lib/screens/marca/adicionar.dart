@@ -16,8 +16,8 @@ class AdicionarMarcaPageState extends State<AdicionarMarcaPage> {
 
   final _formkey = GlobalKey<FormState>();
 
-  TextEditingController textEditingControllerMarca;
-  Marca marca;
+  late TextEditingController textEditingControllerMarca;
+  late Marca marca;
 
   void _showToast(BuildContext context) {
     final scaffold = ScaffoldMessenger.of(context);
@@ -41,7 +41,7 @@ class AdicionarMarcaPageState extends State<AdicionarMarcaPage> {
   void initState() {
     super.initState();
     textEditingControllerMarca = TextEditingController();
-    marca = Marca();
+    marca = Marca(id: 0, descricao: '');
   }
 
   @override

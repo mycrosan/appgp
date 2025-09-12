@@ -3,10 +3,10 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:GPPremium/models/producao.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:rounded_loading_button/rounded_loading_button.dart';
+// import 'package:rounded_loading_button/rounded_loading_button.dart'; // Removido por incompatibilidade
 import '../../components/dateFormatPtBr.dart';
 import '../../models/cobertura.dart';
 import '../../models/cola.dart';
@@ -25,29 +25,26 @@ class ListaCobertura extends StatefulWidget {
 
 class _ConsultaProducaoEtiquetaPageState extends State<ListaCobertura> {
   final _etiquetaController = TextEditingController();
-  Producao _producao;
+  late Producao _producao;
   bool _carregando = false;
   String _erro = '';
   String _mensagemBackend = '';
   final ImagePicker _picker = ImagePicker();
   List _imageFileList = [];
-  String _retrieveDataError;
-  final RoundedLoadingButtonController _btnController1 =
-      RoundedLoadingButtonController();
-  bool _colaValida = false;
-  Usuario _usuario;
-  Cola _cola;
+  String? _retrieveDataError;
+  late Usuario _usuario;
+  late Cola _cola;
   Cobertura cobertura = Cobertura();
 
   // ------------------------- BUSCA PRODUÇÃO -------------------------
   Future<void> _scanBarcode() async {
-    String etiqueta = await FlutterBarcodeScanner.scanBarcode(
-        '#ff6666', 'Cancelar', true, ScanMode.BARCODE);
-    if (etiqueta != '-1') {
-      etiqueta = etiqueta.padLeft(6, '0').substring(0, 6);
-      _etiquetaController.text = etiqueta;
-      await _buscarProducao(etiqueta);
-    }
+    // String etiqueta = await FlutterBarcodeScanner.scanBarcode( // Removido - usar mobile_scanner
+    //     '#ff6666', 'Cancelar', true, ScanMode.BARCODE);
+    // if (etiqueta != '-1') {
+    //   etiqueta = etiqueta.padLeft(6, '0').substring(0, 6);
+    //   _etiquetaController.text = etiqueta;
+    //   await _buscarProducao(etiqueta);
+    // }
   }
 
   Future<void> _buscarProducao(String etiqueta) async {

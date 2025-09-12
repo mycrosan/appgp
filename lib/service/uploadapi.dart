@@ -2,9 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:GPPremium/main.dart';
-import 'package:GPPremium/models/responseMessage.dart';
 import 'package:GPPremium/models/responseMessageSimple.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -34,26 +32,16 @@ class UploadApi {
       final responseData = json.decode(responsed.body);
 
       if (response.statusCode==200) {
-        print("SUCCESS");
         return responseMessageSimple.fromJson(responseData);
       }
       else {
-        print("ERROR");
+        throw Exception("Erro no upload: ${response.statusCode}");
       }
 
     } on TimeoutException catch (_) {
-      print("Não retornou nenhuma imagem");
+      throw Exception("Timeout: Não retornou nenhuma imagem");
     } on SocketException catch (_) {
-
+      throw Exception("Erro de conexão");
     }
-
-
-
-    // if (response.statusCode == 200) {
-    //   responseMessage.fromJson(jsonDecode(response);
-    //   return response;
-    // } else {
-    //   return response;
-    // }
   }
 }

@@ -1,7 +1,7 @@
 class Pais {
   Pais({
-    this.id,
-    this.descricao,
+    required this.id,
+    required this.descricao,
   });
 
   int id;

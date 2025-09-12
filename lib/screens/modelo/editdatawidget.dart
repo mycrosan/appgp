@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class EditModeloPage extends StatefulWidget {
-  int id;
+  int id = 0;
   Modelo modeloEdit;
 
   EditModeloPage({Key key, this.modeloEdit}) : super(key: key);
@@ -21,20 +21,22 @@ class EditModeloPage extends StatefulWidget {
 }
 
 class EditModeloPageState extends State<EditModeloPage> {
+  int id = 0;
+
   final _formkey = GlobalKey<FormState>();
 
-  TextEditingController textEditingControllerModelo;
-  Modelo modelo;
+  late TextEditingController textEditingControllerModelo;
+  late Modelo modelo;
 
   //Modelo
   List<Modelo> modeloList = [];
-  Modelo modeloSelected;
+  late Modelo modeloSelected;
 
   @override
   void initState() {
     super.initState();
     textEditingControllerModelo = new TextEditingController();
-    modelo = new Modelo();
+    modelo = Modelo(id: 0, descricao: '');
 
     ModeloApi().getAll().then((List<Modelo> value) {
       setState(() {

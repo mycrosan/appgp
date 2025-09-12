@@ -18,10 +18,9 @@ import '../../service/get_image.dart';
 import 'ListaProducao.dart';
 
 class EditarProducaoPage extends StatefulWidget {
-  int id;
-  Producao producao;
+  final Producao? producao;
 
-  EditarProducaoPage({Key key, this.producao}) : super(key: key);
+  const EditarProducaoPage({Key? key, this.producao}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -32,40 +31,42 @@ class EditarProducaoPage extends StatefulWidget {
 class EditarProducaoPageState extends State<EditarProducaoPage> {
   final _formkey = GlobalKey<FormState>();
 
-  TextEditingController textEditingControllerCarcaca;
-  MaskedTextController textEditingControllerPneuRaspado;
-  TextEditingController textEditingControllerDados;
-  TextEditingController textEditingControllerRegra;
+  String? inputMedidaPneuRapspado;
 
-  Medida medidaCarcaca;
-  Modelo modeloCarcaca;
-  Pais paisCarcaca;
-  bool mostrarCarcacaSelecionada = true;
+  // Removido RoundedLoadingButtonController por incompatibilidade
+  String? _retrieveDataError;
+  final ImagePicker _picker = ImagePicker();
 
-  TextEditingController camelBackASerUsado;
-  TextEditingController antiquebra1;
-  TextEditingController antiquebra2;
-  TextEditingController antiquebra3;
-  TextEditingController espessuraemnto;
-  TextEditingController tempo;
+  late TextEditingController textEditingControllerCarcaca;
+  late MaskedTextController textEditingControllerPneuRaspado;
+  late TextEditingController textEditingControllerDados;
+  late TextEditingController textEditingControllerRegra;
 
-  Producao producao;
+  late Medida medidaCarcaca;
+  late Modelo modeloCarcaca;
+  late Pais paisCarcaca;
 
+  late TextEditingController camelBackASerUsado;
+  late TextEditingController antiquebra1;
+  late TextEditingController antiquebra2;
+  late TextEditingController antiquebra3;
+  late TextEditingController espessuraemnto;
+  late TextEditingController tempo;
+
+  late Producao producao;
   bool idRegra = false;
-
-  String inputMedidaPneuRapspado;
 
   //Pneu
   List<Carcaca> carcacaList = [];
-  Carcaca carcacaSelected;
+  Carcaca? carcacaSelected;
 
   //Regra
   List<Matriz> matrizList = [];
-  Matriz matrizSelected;
+  Matriz? matrizSelected;
 
   //Regra
   List<Regra> regraList = [];
-  Regra regraSelected;
+  Regra? regraSelected;
 
   @override
   void initState() {
@@ -74,7 +75,11 @@ class EditarProducaoPageState extends State<EditarProducaoPage> {
     textEditingControllerPneuRaspado = MaskedTextController(mask: '0.000');
     textEditingControllerDados = TextEditingController();
     textEditingControllerRegra = TextEditingController();
-    producao = Producao();
+    producao = Producao(
+      id: 0,
+      dados: '',
+      fotos: '',
+    );
 
     camelBackASerUsado = TextEditingController();
     antiquebra1 = TextEditingController();

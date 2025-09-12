@@ -3,26 +3,26 @@ import 'package:GPPremium/components/OrderData.dart';
 import 'package:GPPremium/models/modelo.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
-import 'package:http_interceptor/http/interceptor_contract.dart';
-import 'package:http_interceptor/models/request_data.dart';
-import 'package:http_interceptor/models/response_data.dart';
+// import 'package:http_interceptor/http/interceptor_contract.dart'; // Removido por incompatibilidade
+// import 'package:http_interceptor/models/request_data.dart'; // Removido por incompatibilidade
+// import 'package:http_interceptor/models/response_data.dart'; // Removido por incompatibilidade
 import 'package:GPPremium/models/responseMessage.dart';
 
 import 'config_request.dart';
 
-class LoggingInterceptor implements InterceptorContract {
-  @override
-  Future<RequestData> interceptRequest({RequestData data}) async {
-    print(data.toString());
-    return data;
-  }
-
-  @override
-  Future<ResponseData> interceptResponse({ResponseData data}) async {
-    print(data.toString());
-    return data;
-  }
-}
+// class LoggingInterceptor implements InterceptorContract { // Removido por incompatibilidade
+//   @override
+//   Future<RequestData> interceptRequest({RequestData data}) async {
+//     print(data.toString());
+//     return data;
+//   }
+//
+//   @override
+//   Future<ResponseData> interceptResponse({ResponseData data}) async {
+//     print(data.toString());
+//     return data;
+//   }
+// }
 
 class ModeloApi extends ChangeNotifier {
 

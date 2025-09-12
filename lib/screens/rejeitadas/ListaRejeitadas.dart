@@ -28,31 +28,29 @@ class ListaRejeitadas extends StatefulWidget {
 class ListaRejeitadasState extends State<ListaRejeitadas> {
   final _formkey = GlobalKey<FormState>();
 
-  TextEditingController textEditingControllerModelo;
-  TextEditingController textEditingControllerMarca;
-  TextEditingController textEditingControllerMedida;
-  TextEditingController textEditingControllerCarcaca;
+  late TextEditingController textEditingControllerModelo;
+  late TextEditingController textEditingControllerMarca;
+  late TextEditingController textEditingControllerMedida;
+  late TextEditingController textEditingControllerCarcaca;
 
-  final DinamicListRejeitada listCards = DinamicListRejeitada();
-  Rejeitadas rejeitada;
-
-  var loading = ValueNotifier<bool>(true);
+  List<Rejeitadas> rejeitadasList = [];
+  late Rejeitadas rejeitada;
 
   //Modelo
   List<Modelo> modeloList = [];
-  Modelo modeloSelected;
+  late Modelo modeloSelected;
 
   //Medida
   List<Medida> medidaList = [];
-  Medida medidaSelected;
+  late Medida medidaSelected;
 
   //Pais
   List<Pais> paisList = [];
-  Pais paisSelected;
+  late Pais paisSelected;
 
   //Marca
   List<Marca> marcaList = [];
-  Marca marcaSelected;
+  late Marca marcaSelected;
 
   List<Rejeitadas> carcacaList = [];
 
@@ -64,11 +62,15 @@ class ListaRejeitadasState extends State<ListaRejeitadas> {
     textEditingControllerMedida = TextEditingController();
     textEditingControllerCarcaca = TextEditingController();
 
-    rejeitada = Rejeitadas();
-    rejeitada.modelo = Modelo();
-    rejeitada.medida = Medida();
-    rejeitada.pais = Pais();
-    rejeitada.modelo.marca = Marca();
+    rejeitada = Rejeitadas(
+      id: 0,
+      etiqueta: '',
+      dot: '',
+      marca: Marca(id: 0, descricao: ''),
+      medida: Medida(id: 0, descricao: ''),
+      pais: Pais(id: 0, descricao: ''),
+      modelo: Modelo(id: 0, descricao: '', marca: null)
+    );
 
     ModeloApi().getAll().then((value) {
       setState(() {

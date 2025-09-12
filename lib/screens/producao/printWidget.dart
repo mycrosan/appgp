@@ -11,9 +11,9 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
 class PrintPage extends StatefulWidget {
-  Producao producaoPrint;
+  final Producao producaoPrint;
 
-  PrintPage({Key key, this.producaoPrint}) : super(key: key);
+  const PrintPage({Key? key, required this.producaoPrint}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -95,8 +95,7 @@ class PrintPageState extends State<PrintPage> {
                                                       pw.FontWeight.bold)),
                                       // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
                                       pw.Text(
-                                          widget.producaoPrint.regra.matriz
-                                              .descricao,
+                                          widget.producaoPrint.regra?.matriz?.descricao ?? '',
                                           textScaleFactor: 2,
                                           style: pw.Theme.of(context)
                                               .defaultTextStyle
@@ -119,9 +118,7 @@ class PrintPageState extends State<PrintPage> {
                                                     pw.FontWeight.bold)),
                                     // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
                                     pw.Text(
-                                        widget.producaoPrint.carcaca
-                                            .numeroEtiqueta
-                                            .toString(),
+                                        widget.producaoPrint.carcaca?.numeroEtiqueta?.toString() ?? '',
                                         textScaleFactor: 2,
                                         style: pw.Theme.of(context)
                                             .defaultTextStyle
@@ -154,8 +151,7 @@ class PrintPageState extends State<PrintPage> {
                                                       pw.FontWeight.bold)),
                                       // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
                                       pw.Text(
-                                          widget.producaoPrint.carcaca.medida
-                                              .descricao,
+                                          widget.producaoPrint.carcaca?.medida?.descricao ?? '',
                                           textScaleFactor: 1.3,
                                           style: pw.Theme.of(context)
                                               .defaultTextStyle
@@ -179,11 +175,9 @@ class PrintPageState extends State<PrintPage> {
                                                     pw.FontWeight.bold)),
                                     // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
                                     pw.Text(
-                                        widget.producaoPrint.carcaca.modelo
-                                                .marca.descricao +
+                                        (widget.producaoPrint.carcaca?.modelo?.marca?.descricao ?? '') +
                                             " " +
-                                            widget.producaoPrint.carcaca.modelo
-                                                .descricao,
+                                            (widget.producaoPrint.carcaca?.modelo?.descricao ?? ''),
                                         textScaleFactor: 0.8,
                                         style: pw.Theme.of(context)
                                             .defaultTextStyle
@@ -216,14 +210,13 @@ class PrintPageState extends State<PrintPage> {
                                                       pw.FontWeight.bold)),
                                       // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
                                       pw.Text(
-                                          widget.producaoPrint.regra.id
-                                              .toString(),
+                                          widget.producaoPrint.regra?.id?.toString() ?? '',
                                           textScaleFactor: 1.5,
                                           style: pw.Theme.of(context)
                                               .defaultTextStyle
                                               .copyWith(
-                                                fontWeight: pw.FontWeight.bold,
-                                              ))
+                                                  fontWeight:
+                                                      pw.FontWeight.bold)),
                                     ])),
                                 pw.Container(
                                   width: 100.0,
@@ -241,8 +234,7 @@ class PrintPageState extends State<PrintPage> {
                                                     pw.FontWeight.bold)),
                                     // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
                                     pw.Text(
-                                        widget.producaoPrint.regra.tamanhoMin
-                                            .toString(),
+                                        widget.producaoPrint.regra?.tamanhoMin?.toString() ?? '',
                                         textScaleFactor: 1.5,
                                         style: pw.Theme.of(context)
                                             .defaultTextStyle
@@ -269,8 +261,7 @@ class PrintPageState extends State<PrintPage> {
                                                     pw.FontWeight.bold)),
                                     // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
                                     pw.Text(
-                                        widget.producaoPrint.regra.tamanhoMax
-                                            .toString(),
+                                        widget.producaoPrint.regra?.tamanhoMax?.toString() ?? '',
                                         textScaleFactor: 1.5,
                                         style: pw.Theme.of(context)
                                             .defaultTextStyle
@@ -296,8 +287,7 @@ class PrintPageState extends State<PrintPage> {
                                                     pw.FontWeight.bold)),
                                     // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
                                     pw.Text(
-                                        widget.producaoPrint.regra.camelback
-                                            .descricao,
+                                        widget.producaoPrint.regra?.camelback?.descricao ?? '',
                                         textScaleFactor: 2,
                                         style: pw.Theme.of(context)
                                             .defaultTextStyle
@@ -329,8 +319,7 @@ class PrintPageState extends State<PrintPage> {
                                                       pw.FontWeight.bold)),
                                       // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
                                       pw.Text(
-                                          widget.producaoPrint.regra.antiquebra1
-                                              .descricao,
+                                          widget.producaoPrint.regra?.antiquebra1?.descricao ?? '',
                                           textScaleFactor: 1.5,
                                           textAlign: pw.TextAlign.center,
                                           style: pw.Theme.of(context)
@@ -355,18 +344,16 @@ class PrintPageState extends State<PrintPage> {
                                                 fontWeight:
                                                     pw.FontWeight.bold)),
                                     // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
-                                    widget.producaoPrint.regra.antiquebra2 !=
+                                    widget.producaoPrint.regra?.antiquebra2 !=
                                             null
                                         ? pw.Text(
-                                            widget.producaoPrint.regra
-                                                .antiquebra2.descricao,
+                                            widget.producaoPrint.regra?.antiquebra2?.descricao ?? '',
                                             textScaleFactor: 1.5,
                                             textAlign: pw.TextAlign.center,
                                             style: pw.Theme.of(context)
                                                 .defaultTextStyle
                                                 .copyWith(
-                                                  fontWeight:
-                                                      pw.FontWeight.bold,
+                                                  fontWeight: pw.FontWeight.bold,
                                                 ))
                                         : pw.Text("NÃO",
                                             textScaleFactor: 2,
@@ -396,11 +383,10 @@ class PrintPageState extends State<PrintPage> {
                                                 fontWeight:
                                                     pw.FontWeight.bold)),
                                     // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
-                                    widget.producaoPrint.regra.antiquebra3 !=
+                                    widget.producaoPrint.regra?.antiquebra3 !=
                                             null
                                         ? pw.Text(
-                                            widget.producaoPrint.regra
-                                                .antiquebra3.descricao,
+                                            widget.producaoPrint.regra?.antiquebra3?.descricao ?? '',
                                             textScaleFactor: 1.5,
                                             textAlign: pw.TextAlign.center,
                                             style: pw.Theme.of(context)
@@ -436,11 +422,10 @@ class PrintPageState extends State<PrintPage> {
                                                 fontWeight:
                                                     pw.FontWeight.bold)),
                                     // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
-                                    widget.producaoPrint.regra.espessuramento !=
+                                    widget.producaoPrint.regra?.espessuramento !=
                                             null
                                         ? pw.Text(
-                                            widget.producaoPrint.regra
-                                                .espessuramento.descricao,
+                                            widget.producaoPrint.regra?.espessuramento?.descricao ?? '',
                                             textScaleFactor: 1.5,
                                             textAlign: pw.TextAlign.center,
                                             style: pw.Theme.of(context)
@@ -475,8 +460,7 @@ class PrintPageState extends State<PrintPage> {
                                                     pw.FontWeight.bold)),
                                     // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
                                     pw.Text(
-                                        widget.producaoPrint.regra.tempo
-                                            .toString(),
+                                        widget.producaoPrint.regra?.tempo?.toString() ?? '',
                                         textScaleFactor: 3.5,
                                         style: pw.Theme.of(context)
                                             .defaultTextStyle

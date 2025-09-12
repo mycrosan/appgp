@@ -1,7 +1,7 @@
 class TipoClassificacao {
   TipoClassificacao({
-    this.id,
-    this.descricao,
+    required this.id,
+    required this.descricao,
   });
 
   int id;
@@ -19,8 +19,8 @@ class TipoClassificacao {
   int get hashCode => descricao.hashCode ^ id.hashCode;
 
   factory TipoClassificacao.fromJson(Map<String, dynamic> json) => TipoClassificacao(
-    id: json["id"],
-    descricao: json["descricao"],
+    id: json["id"] ?? 0,
+    descricao: json["descricao"] ?? '',
   );
 
   Map<String, dynamic> toJson() => {

@@ -8,7 +8,7 @@ import 'ListaMarca.dart';
 
 // ignore: must_be_immutable
 class EditMarcaPage extends StatefulWidget {
-  int id;
+  int id = 0;
   Marca marcaEdit;
 
   EditMarcaPage({Key key, this.marcaEdit}) : super(key: key);
@@ -20,20 +20,22 @@ class EditMarcaPage extends StatefulWidget {
 }
 
 class EditMarcaPageState extends State<EditMarcaPage> {
+  int id = 0;
+
   final _formkey = GlobalKey<FormState>();
 
-  TextEditingController textEditingControllerMarca;
-  Marca marca;
+  late TextEditingController textEditingControllerMarca;
+  late Marca marca;
 
   //Marca
   List<Marca> marcaList = [];
-  Marca marcaSelected;
+  late Marca marcaSelected;
 
   @override
   void initState() {
     super.initState();
     textEditingControllerMarca = new TextEditingController();
-    marca = new Marca();
+    marca = Marca(id: 0, descricao: '');
 
     MarcaApi().getAll().then((List<Marca> value) {
       setState(() {

@@ -4,8 +4,8 @@ class Antiquebra {
   String descricao;
 
   Antiquebra({
-    this.id,
-    this.descricao,
+    required this.id,
+    required this.descricao,
   });
 
   @override

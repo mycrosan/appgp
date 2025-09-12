@@ -8,10 +8,10 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class EditAntiquebraPage extends StatefulWidget {
-  int id;
+  int id = 0;
   Antiquebra antiquebraEdit;
 
-  EditAntiquebraPage({Key key, this.antiquebraEdit}) : super(key: key);
+  EditAntiquebraPage({Key? key, this.antiquebraEdit}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -22,18 +22,18 @@ class EditAntiquebraPage extends StatefulWidget {
 class EditAntiquebraPageState extends State<EditAntiquebraPage> {
   final _formkey = GlobalKey<FormState>();
 
-  TextEditingController textEditingControllerAntiquebra;
-  Antiquebra antiquebra;
+  late TextEditingController textEditingControllerAntiquebra;
+  late Antiquebra antiquebra;
 
   //Antiquebra
-  List<Marca> antiquebraList = [];
-  Antiquebra antiquebraSelected;
+  List<Antiquebra> antiquebraList = [];
+  late Antiquebra antiquebraSelected;
 
   @override
   void initState() {
     super.initState();
     textEditingControllerAntiquebra = new TextEditingController();
-    antiquebra = new Antiquebra();
+    antiquebra = Antiquebra(id: 0, descricao: '');
 
     MarcaApi().getAll().then((List<Marca> value) {
       setState(() {

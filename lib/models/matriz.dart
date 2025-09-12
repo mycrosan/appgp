@@ -2,7 +2,7 @@ class Matriz {
   int id;
   String descricao;
 
-  Matriz({this.id, this.descricao});
+  Matriz({required this.id, required this.descricao});
 
   @override
   bool operator ==(Object other) =>
@@ -15,15 +15,14 @@ class Matriz {
   @override
   int get hashCode => descricao.hashCode ^ id.hashCode;
 
-  Matriz.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    descricao = json['descricao'];
-  }
+  Matriz.fromJson(Map<String, dynamic> json)
+      : id = json['id'] ?? 0,
+        descricao = json['descricao'] ?? '';
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['descricao'] = this.descricao;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['descricao'] = descricao;
     return data;
   }
 }

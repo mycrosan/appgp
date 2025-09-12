@@ -1,15 +1,14 @@
 import 'package:GPPremium/models/camelback.dart';
 import 'package:GPPremium/service/camelbackapi.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'ListaCamelback.dart';
 
 // ignore: must_be_immutable
 class EditCamelBackPage extends StatefulWidget {
-  int id;
+  int id = 0;
   Camelback camelbackEdit;
 
-  EditCamelBackPage({Key key, this.camelbackEdit}) : super(key: key);
+  EditCamelBackPage({Key? key, this.camelbackEdit}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -20,18 +19,18 @@ class EditCamelBackPage extends StatefulWidget {
 class EditDetalhesPaisPageState extends State<EditCamelBackPage> {
   final _formkey = GlobalKey<FormState>();
 
-  TextEditingController textEditingControllerCamelback;
-  Camelback camelback;
+  late TextEditingController textEditingControllerCamelback;
+  late Camelback camelback;
 
   //camelback
   List<Camelback> camelbackList = [];
-  Camelback camelbackSelected;
+  late Camelback camelbackSelected;
 
   @override
   void initState() {
     super.initState();
     textEditingControllerCamelback = new TextEditingController();
-    camelback = new Camelback();
+    camelback = Camelback(id: 0, descricao: '');
 
     CamelbackApi().getAll().then((List<Camelback> value) {
       setState(() {

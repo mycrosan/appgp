@@ -17,27 +17,27 @@ class Carcaca {
   String status;
 
   Carcaca({
-    this.id,
-    this.numeroEtiqueta,
-    this.dot,
-    this.dados,
-    this.modelo,
-    this.medida,
-    this.pais,
-    this.fotos,
-    this.status,
+    required this.id,
+    required this.numeroEtiqueta,
+    required this.dot,
+    required this.dados,
+    required this.modelo,
+    required this.medida,
+    required this.pais,
+    required this.fotos,
+    required this.status,
   });
 
   factory Carcaca.fromJson(Map<String, dynamic> json) => Carcaca(
-    id: json["id"],
-    numeroEtiqueta: json["numero_etiqueta"],
-    dot: json["dot"],
-    dados: json["dados"],
-    modelo: Modelo.fromJson(json["modelo"]),
-    medida: Medida.fromJson(json["medida"]),
-    pais: Pais.fromJson(json["pais"]),
-    fotos: json["fotos"],
-    status: json["status"],
+    id: json["id"] ?? 0,
+    numeroEtiqueta: json["numero_etiqueta"] ?? '',
+    dot: json["dot"] ?? '',
+    dados: json["dados"] ?? '',
+    modelo: json["modelo"] != null ? Modelo.fromJson(json["modelo"]) : Modelo(id: 0, descricao: ''),
+    medida: json["medida"] != null ? Medida.fromJson(json["medida"]) : Medida(id: 0, descricao: ''),
+    pais: json["pais"] != null ? Pais.fromJson(json["pais"]) : Pais(id: 0, descricao: ''),
+    fotos: json["fotos"] ?? '',
+    status: json["status"] ?? '',
   );
 
   Map<String, dynamic> toJson() => {

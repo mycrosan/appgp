@@ -7,7 +7,7 @@ import 'ListaMedida.dart';
 
 // ignore: must_be_immutable
 class EditMedidaPage extends StatefulWidget {
-  int id;
+  int id = 0;
   Medida medidaEdit;
 
   EditMedidaPage({Key key, this.medidaEdit}) : super(key: key);
@@ -19,20 +19,22 @@ class EditMedidaPage extends StatefulWidget {
 }
 
 class EditMedidaPageState extends State<EditMedidaPage> {
+  int id = 0;
+
   final _formkey = GlobalKey<FormState>();
 
-  TextEditingController textEditingControllerMedida;
-  Medida medida;
+  late TextEditingController textEditingControllerMedida;
+  late Medida medida;
 
   //Medida
   List<Medida> medidaList = [];
-  Medida medidaSelected;
+  late Medida medidaSelected;
 
   @override
   void initState() {
     super.initState();
     textEditingControllerMedida = new TextEditingController();
-    medida = new Medida();
+    medida = Medida(id: 0, descricao: '');
 
     MedidaApi().getAll().then((List<Medida> value) {
       setState(() {

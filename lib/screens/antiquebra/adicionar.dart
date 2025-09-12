@@ -16,8 +16,8 @@ class AdicionarAntiquebraPageState extends State<AdicionarAntiquebraPage> {
 
   final _formkey = GlobalKey<FormState>();
 
-  TextEditingController textEditingControllerAntiquebra;
-  Antiquebra antiquebra;
+  late TextEditingController textEditingControllerAntiquebra;
+  late Antiquebra antiquebra;
 
   void _showToast(BuildContext context) {
     final scaffold = ScaffoldMessenger.of(context);
@@ -41,7 +41,7 @@ class AdicionarAntiquebraPageState extends State<AdicionarAntiquebraPage> {
   void initState() {
     super.initState();
     textEditingControllerAntiquebra = TextEditingController();
-    antiquebra = Antiquebra();
+    antiquebra = Antiquebra(id: 0, descricao: '');
   }
 
   @override

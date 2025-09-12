@@ -22,7 +22,7 @@ class _AdicionarUsuariosPageState extends State<AdicionarUsuariosPage> {
   bool _status = true;
 
   List<Perfil> _perfis = [];
-  Perfil _perfilSelecionado;
+  Perfil? _perfilSelecionado;
 
   bool _isSaving = false;
 
@@ -51,7 +51,7 @@ class _AdicionarUsuariosPageState extends State<AdicionarUsuariosPage> {
         if (widget.usuario != null && widget.usuario.perfil.isNotEmpty) {
           _perfilSelecionado = _perfis.firstWhere(
                 (p) => p.id == widget.usuario.perfil[0].id,
-            orElse: () => _perfis.isNotEmpty ? _perfis[0] : null,
+            orElse: () => _perfis.isNotEmpty ? _perfis[0] : _perfis[0],
           );
         } else if (_perfilSelecionado == null && _perfis.isNotEmpty) {
           _perfilSelecionado = _perfis[0];
@@ -64,17 +64,17 @@ class _AdicionarUsuariosPageState extends State<AdicionarUsuariosPage> {
 
 
   void _salvar() async {
-    if (!_formKey.currentState.validate()) return;
+    if (!(_formKey.currentState?.validate() ?? false)) return;
 
     setState(() => _isSaving = true);
 
     Usuario novoUsuario = Usuario(
-      id: widget.usuario != null ? widget.usuario.id : null,
+      id: widget.usuario?.id ?? 0,
       nome: _nomeController.text,
       login: _loginController.text,
       senha: _senhaController.text,
       status: _status,
-      perfil: _perfilSelecionado != null ? [_perfilSelecionado] : [],
+      perfil: _perfilSelecionado != null ? [_perfilSelecionado!] : [],
     );
 
     var objData = ConfigRequest();
@@ -170,18 +170,18 @@ class _AdicionarUsuariosPageState extends State<AdicionarUsuariosPage> {
               TextFormField(
                 controller: _nomeController,
                 decoration: InputDecoration(labelText: 'Nome'),
-                validator: (value) => value.isEmpty ? 'Informe o nome' : null,
+                validator: (value) => value?.isEmpty ?? true ? 'Informe o nome' : null,
               ),
               TextFormField(
                 controller: _loginController,
                 decoration: InputDecoration(labelText: 'Login'),
-                validator: (value) => value.isEmpty ? 'Informe o login' : null,
+                validator: (value) => value?.isEmpty ?? true ? 'Informe o login' : null,
               ),
               TextFormField(
                 controller: _senhaController,
                 decoration: InputDecoration(labelText: 'Senha'),
                 obscureText: true,
-                validator: (value) => value.isEmpty ? 'Informe a senha' : null,
+                validator: (value) => value?.isEmpty ?? true ? 'Informe a senha' : null,
               ),
               SizedBox(height: 16),
               DropdownButtonFormField<Perfil>(

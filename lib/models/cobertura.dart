@@ -6,18 +6,22 @@ class Cobertura {
   Cola cola;
 
   Cobertura({
-    this.id,
-    this.fotos,
-    this.cola,
+    required this.id,
+    required this.fotos,
+    required this.cola,
   });
 
   factory Cobertura.fromJson(Map<String, dynamic> json) {
     return Cobertura(
-      id: json['id'],
-      fotos: json['fotos'],
+      id: json['id'] ?? 0,
+      fotos: json['fotos'] ?? '',
       cola: json['cola'] != null && json['cola'] is Map<String, dynamic>
           ? Cola.fromJson(json['cola'])
-          : null,
+          : Cola(
+              id: 0, 
+              dataInicio: DateTime.now(), 
+              producao: null
+            ),
     );
   }
 
@@ -25,7 +29,7 @@ class Cobertura {
     return {
       'id': id,
       'fotos': fotos,
-      'cola': cola != null ? {'id': cola.id} : null,
+      'cola': {'id': cola.id},
     };
   }
 }

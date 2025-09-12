@@ -22,10 +22,10 @@ import 'package:flutter/material.dart';
 import 'ListaRegras.dart';
 
 class EditarRegraPage extends StatefulWidget {
-  int id;
-  Regra regra;
+  final int id;
+  final Regra? regra;
 
-  EditarRegraPage({Key key, this.regra}) : super(key: key);
+  const EditarRegraPage({Key? key, required this.id, this.regra}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -36,46 +36,46 @@ class EditarRegraPage extends StatefulWidget {
 class EditarRegraPageState extends State<EditarRegraPage> {
   final _formkey = GlobalKey<FormState>();
 
-  MaskedTextController textEditingControllerTamanhoMin;
-  MaskedTextController textEditingControllerTamanhoMax;
-  TextEditingController textEditingControllerCamelback;
-  TextEditingController textEditingControllerAntiquebra1;
-  TextEditingController textEditingControllerAntiquebra2;
-  TextEditingController textEditingControllerAntiquebra3;
-  TextEditingController textEditingControllerEspessuramento;
-  MaskedTextController textEditingControllerTempo;
-  TextEditingController pais;
-  Regra regra;
+  late MaskedTextController textEditingControllerTamanhoMin;
+  late MaskedTextController textEditingControllerTamanhoMax;
+  late TextEditingController textEditingControllerCamelback;
+  late TextEditingController textEditingControllerAntiquebra1;
+  late TextEditingController textEditingControllerAntiquebra2;
+  late TextEditingController textEditingControllerAntiquebra3;
+  late TextEditingController textEditingControllerEspessuramento;
+  late MaskedTextController textEditingControllerTempo;
+  late TextEditingController pais;
+  late Regra regra;
 
   //Regra
   List<Matriz> matrizList = [];
-  Matriz matrizSelected;
+  Matriz? matrizSelected;
 
   //Medida
   List<Medida> medidaList = [];
-  Medida medidaSelected;
+  Medida? medidaSelected;
 
   //Modelo
   List<Modelo> modeloList = [];
-  Modelo modeloSelected;
+  Modelo? modeloSelected;
 
   //Pais
   List<Pais> paisList = [];
-  Pais paisSelected;
+  Pais? paisSelected;
 
   //Cameback
   List<Camelback> camelbackList = [];
-  Camelback camelbackSelected;
+  Camelback? camelbackSelected;
 
   //Antiquebra
   List<Antiquebra> antiquebraList = [];
-  Antiquebra antiquebra1Selected;
-  Antiquebra antiquebra2Selected;
-  Antiquebra antiquebra3Selected;
+  Antiquebra? antiquebra1Selected;
+  Antiquebra? antiquebra2Selected;
+  Antiquebra? antiquebra3Selected;
 
   //Espessuramento
   List<Espessuramento> espessuramentoList = [];
-  Espessuramento espessuramentoSelected;
+  Espessuramento? espessuramentoSelected;
 
   @override
   void initState() {
@@ -87,7 +87,21 @@ class EditarRegraPageState extends State<EditarRegraPage> {
     textEditingControllerAntiquebra3 = TextEditingController();
     textEditingControllerEspessuramento = TextEditingController();
     textEditingControllerTempo = MaskedTextController(mask: '000');
-    regra = Regra();
+    regra = Regra(
+      id: 0,
+      tamanhoMin: 0.0,
+      tamanhoMax: 0.0,
+      tempo: '',
+      antiquebra1: Antiquebra(id: 0, descricao: ''),
+      antiquebra2: Antiquebra(id: 0, descricao: ''),
+      antiquebra3: Antiquebra(id: 0, descricao: ''),
+      espessuramento: Espessuramento(id: 0, descricao: ''),
+      camelback: Camelback(id: 0, descricao: ''),
+      matriz: Matriz(id: 0, descricao: ''),
+      medida: Medida(id: 0, descricao: ''),
+      modelo: Modelo(id: 0, descricao: '', marca: null),
+      pais: Pais(id: 0, descricao: '')
+    );
 
     pais = TextEditingController();
 
@@ -134,24 +148,24 @@ class EditarRegraPageState extends State<EditarRegraPage> {
     });
 
     setState(() {
-      regra.id = widget.regra.id;
+      regra.id = widget.regra?.id ?? 0;
 
-      textEditingControllerTamanhoMin.text = widget.regra.tamanhoMin.toString();
-      textEditingControllerTamanhoMax.text = widget.regra.tamanhoMax.toString();
-      textEditingControllerTempo.text = widget.regra.tempo;
+      textEditingControllerTamanhoMin.text = widget.regra?.tamanhoMin?.toString() ?? '0';
+      textEditingControllerTamanhoMax.text = widget.regra?.tamanhoMax?.toString() ?? '0';
+      textEditingControllerTempo.text = widget.regra?.tempo ?? '';
 
-      regra.tamanhoMin = widget.regra.tamanhoMin;
-      regra.tamanhoMax = widget.regra.tamanhoMax;
-      regra.tempo = widget.regra.tempo;
-      regra.antiquebra1 = widget.regra.antiquebra1;
-      regra.antiquebra2 = widget.regra.antiquebra2;
-      regra.antiquebra3 = widget.regra.antiquebra3;
-      regra.espessuramento = widget.regra.espessuramento;
-      regra.camelback = widget.regra.camelback;
-      regra.matriz = widget.regra.matriz;
-      regra.medida = widget.regra.medida;
-      regra.modelo = widget.regra.modelo;
-      regra.pais = widget.regra.pais;
+      regra.tamanhoMin = widget.regra?.tamanhoMin ?? 0.0;
+      regra.tamanhoMax = widget.regra?.tamanhoMax ?? 0.0;
+      regra.tempo = widget.regra?.tempo ?? '';
+      regra.antiquebra1 = widget.regra?.antiquebra1 ?? Antiquebra(id: 0, descricao: '');
+      regra.antiquebra2 = widget.regra?.antiquebra2 ?? Antiquebra(id: 0, descricao: '');
+      regra.antiquebra3 = widget.regra?.antiquebra3 ?? Antiquebra(id: 0, descricao: '');
+      regra.espessuramento = widget.regra?.espessuramento ?? Espessuramento(id: 0, descricao: '');
+      regra.camelback = widget.regra?.camelback ?? Camelback(id: 0, descricao: '');
+      regra.matriz = widget.regra?.matriz ?? Matriz(id: 0, descricao: '');
+      regra.medida = widget.regra?.medida ?? Medida(id: 0, descricao: '');
+      regra.modelo = widget.regra?.modelo ?? Modelo(id: 0, descricao: '', marca: null);
+      regra.pais = widget.regra?.pais ?? Pais(id: 0, descricao: '');
 
       antiquebra1Selected = regra.antiquebra1;
       antiquebra2Selected = regra.antiquebra2;
@@ -202,7 +216,7 @@ class EditarRegraPageState extends State<EditarRegraPage> {
                         ),
                         // ignore: missing_return
                         validator: (value) {
-                          if (value.length == 0) return 'Não pode ser nulo';
+                          if (value?.isEmpty ?? true) return 'Não pode ser nulo';
                         },
                         keyboardType:
                             TextInputType.numberWithOptions(decimal: true),
@@ -221,7 +235,7 @@ class EditarRegraPageState extends State<EditarRegraPage> {
                         ),
                         // ignore: missing_return
                         validator: (value) {
-                          if (value.length == 0) return 'Não pode ser nulo';
+                          if (value?.isEmpty ?? true) return 'Não pode ser nulo';
                         },
                         keyboardType:
                             TextInputType.numberWithOptions(decimal: true),
@@ -243,10 +257,10 @@ class EditarRegraPageState extends State<EditarRegraPage> {
                             value == null ? 'Não pode ser nulo' : null,
                         value: antiquebra1Selected,
                         isExpanded: true,
-                        onChanged: (Antiquebra antiquebra) {
+                        onChanged: (Antiquebra? antiquebra) {
                           setState(() {
                             antiquebra1Selected = antiquebra;
-                            regra.antiquebra1 = antiquebra1Selected;
+                            if (antiquebra1Selected != null) regra.antiquebra1 = antiquebra1Selected!;
                           });
                         },
                         items: antiquebraList.map((antiquebra) {
@@ -267,10 +281,10 @@ class EditarRegraPageState extends State<EditarRegraPage> {
                             value == null ? 'Não pode ser nulo' : null,
                         value: antiquebra2Selected,
                         isExpanded: true,
-                        onChanged: (Antiquebra antiquebra) {
+                        onChanged: (Antiquebra? antiquebra) {
                           setState(() {
                             antiquebra2Selected = antiquebra;
-                            regra.antiquebra2 = antiquebra2Selected;
+                            if (antiquebra2Selected != null) regra.antiquebra2 = antiquebra2Selected!;
                           });
                         },
                         items: antiquebraList.map((antiquebra) {
@@ -291,10 +305,10 @@ class EditarRegraPageState extends State<EditarRegraPage> {
                             value == null ? 'Não pode ser nulo' : null,
                         value: antiquebra3Selected,
                         isExpanded: true,
-                        onChanged: (Antiquebra antiquebra) {
+                        onChanged: (Antiquebra? antiquebra) {
                           setState(() {
                             antiquebra3Selected = antiquebra;
-                            regra.antiquebra3 = antiquebra3Selected;
+                            if (antiquebra3Selected != null) regra.antiquebra3 = antiquebra3Selected!;
                           });
                         },
                         items: antiquebraList.map((antiquebra) {
@@ -316,10 +330,10 @@ class EditarRegraPageState extends State<EditarRegraPage> {
                             value == null ? 'Não pode ser nulo' : null,
                         value: espessuramentoSelected,
                         isExpanded: true,
-                        onChanged: (Espessuramento espessuramento) {
+                        onChanged: (Espessuramento? espessuramento) {
                           setState(() {
                             espessuramentoSelected = espessuramento;
-                            regra.espessuramento = espessuramentoSelected;
+                            if (espessuramentoSelected != null) regra.espessuramento = espessuramentoSelected!;
                           });
                         },
                         items: espessuramentoList.map((espessuramento) {
@@ -337,8 +351,10 @@ class EditarRegraPageState extends State<EditarRegraPage> {
                         decoration: InputDecoration(
                           labelText: "Tempo",
                         ),
-                        validator: (value) =>
-                            value.length == 0 ? 'Não pode ser nulo' : null,
+                        validator: (value) {
+                          if (value?.isEmpty ?? true) return 'Não pode ser nulo';
+                          return null;
+                        },
                         onChanged: (String newValue) {
                           setState(() {
                             regra.tempo = newValue;
@@ -355,10 +371,10 @@ class EditarRegraPageState extends State<EditarRegraPage> {
                         value == null ? 'Não pode ser nulo' : null,
                     value: camelbackSelected,
                     isExpanded: true,
-                    onChanged: (Camelback camelback) {
+                    onChanged: (Camelback? camelback) {
                       setState(() {
                         camelbackSelected = camelback;
-                        regra.camelback = camelbackSelected;
+                        if (camelbackSelected != null) regra.camelback = camelbackSelected!;
                       });
                     },
                     items: camelbackList.map((camelback) {
@@ -376,11 +392,11 @@ class EditarRegraPageState extends State<EditarRegraPage> {
                         value == null ? 'Não pode ser nulo' : null,
                     value: matrizSelected,
                     isExpanded: true,
-                    onChanged: (Matriz matriz) {
+                    onChanged: (Matriz? matriz) {
                       // var regra = regraList.firstWhere((regra) => regra.id == matriz.id);
                       setState(() {
                         matrizSelected = matriz;
-                        regra.matriz = matrizSelected;
+                        if (matrizSelected != null) regra.matriz = matrizSelected!;
                       });
                     },
                     items: matrizList.map((Matriz matriz) {
@@ -398,11 +414,11 @@ class EditarRegraPageState extends State<EditarRegraPage> {
                         value == null ? 'Não pode ser nulo' : null,
                     value: medidaSelected,
                     isExpanded: true,
-                    onChanged: (Medida medida) {
+                    onChanged: (Medida? medida) {
                       // var regra = regraList.firstWhere((regra) => regra.id == matriz.id);
                       setState(() {
                         medidaSelected = medida;
-                        regra.medida = medidaSelected;
+                        if (medidaSelected != null) regra.medida = medidaSelected!;
                       });
                     },
                     items: medidaList.map((Medida medida) {
@@ -420,11 +436,11 @@ class EditarRegraPageState extends State<EditarRegraPage> {
                         value == null ? 'Não pode ser nulo' : null,
                     value: modeloSelected,
                     isExpanded: true,
-                    onChanged: (Modelo modelo) {
+                    onChanged: (Modelo? modelo) {
                       // var regra = regraList.firstWhere((regra) => regra.id == modelo.id);
                       setState(() {
                         modeloSelected = modelo;
-                        regra.modelo = modeloSelected;
+                        if (modeloSelected != null) regra.modelo = modeloSelected!;
                       });
                     },
                     items: modeloList.map((Modelo modelo) {
@@ -442,11 +458,11 @@ class EditarRegraPageState extends State<EditarRegraPage> {
                         value == null ? 'Não pode ser nulo' : null,
                     value: paisSelected,
                     isExpanded: true,
-                    onChanged: (Pais pais) {
+                    onChanged: (Pais? pais) {
                       // var regra = regraList.firstWhere((regra) => regra.id == pais.id);
                       setState(() {
                         paisSelected = pais;
-                        regra.pais = paisSelected;
+                        if (paisSelected != null) regra.pais = paisSelected!;
                       });
                     },
                     items: paisList.map((Pais pais) {

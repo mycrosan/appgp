@@ -6,22 +6,22 @@ class responseMessage {
   String debugMessage;
   String subErrors;
 
-  responseMessage(
-      {this.status,
-        this.timestamp,
-        this.message,
-        this.error,
-        this.debugMessage,
-        this.subErrors});
+  responseMessage({
+    required this.status,
+    required this.timestamp,
+    required this.message,
+    required this.error,
+    required this.debugMessage,
+    required this.subErrors,
+  });
 
-  responseMessage.fromJson(Map<String, dynamic> json) {
-    status = json['status'];
-    timestamp = json['timestamp'];
-    message = json['message'];
-    error = json['error'];
-    debugMessage = json['debugMessage'];
-    subErrors = json['subErrors'];
-  }
+  responseMessage.fromJson(Map<String, dynamic> json)
+      : status = json['status'] ?? '',
+        timestamp = json['timestamp'] ?? '',
+        message = json['message'] ?? '',
+        error = json['error'] ?? '',
+        debugMessage = json['debugMessage'] ?? '',
+        subErrors = json['subErrors'] ?? '';
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();

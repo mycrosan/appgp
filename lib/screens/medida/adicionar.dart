@@ -17,8 +17,8 @@ class AdicionarMedidaPageState extends State<AdicionarMedidaPage> {
 
   final _formkey = GlobalKey<FormState>();
 
-  TextEditingController textEditingControllerMedida;
-  Medida medida;
+  late TextEditingController textEditingControllerMedida;
+  late Medida medida;
 
   void _showToast(BuildContext context) {
     final scaffold = ScaffoldMessenger.of(context);
@@ -42,7 +42,7 @@ class AdicionarMedidaPageState extends State<AdicionarMedidaPage> {
   void initState() {
     super.initState();
     textEditingControllerMedida = TextEditingController();
-    medida = Medida();
+    medida = Medida(id: 0, descricao: '');
   }
 
   @override

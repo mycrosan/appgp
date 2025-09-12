@@ -6,28 +6,24 @@ class Usuario {
   List<Perfil> perfil;
   bool status;
 
-  Usuario(
-      {this.id,
-        this.nome,
-        this.login,
-        this.senha,
-        this.perfil,
-        this.status,
-       });
+  Usuario({
+    required this.id,
+    required this.nome,
+    required this.login,
+    required this.senha,
+    required this.perfil,
+    required this.status,
+  });
 
-  Usuario.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    nome = json['nome'];
-    login = json['login'];
-    senha = json['senha'];
-    status = json['status'];
-    if (json['perfil'] != null) {
-      perfil = new List<Perfil>();
-      json['perfil'].forEach((v) {
-        perfil.add(new Perfil.fromJson(v));
-      });
-    }
-  }
+  Usuario.fromJson(Map<String, dynamic> json)
+      : id = json['id'] ?? 0,
+        nome = json['nome'] ?? '',
+        login = json['login'] ?? '',
+        senha = json['senha'] ?? '',
+        status = json['status'] ?? false,
+        perfil = json['perfil'] != null
+            ? (json['perfil'] as List).map((v) => Perfil.fromJson(v)).toList()
+            : <Perfil>[];
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
@@ -46,13 +42,12 @@ class Perfil {
   String descricao;
   String authority;
 
-  Perfil({this.id, this.descricao, this.authority});
+  Perfil({required this.id, required this.descricao, required this.authority});
 
-  Perfil.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    descricao = json['descricao'];
-    authority = json['authority'];
-  }
+  Perfil.fromJson(Map<String, dynamic> json)
+      : id = json['id'] ?? 0,
+        descricao = json['descricao'] ?? '',
+        authority = json['authority'] ?? '';
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();

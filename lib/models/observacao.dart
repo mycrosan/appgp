@@ -3,9 +3,13 @@ import 'classificacao.dart';
 class TipoObservacao {
   int id;
   String descricao;
-  TipoClassificacao tipoClassificacao;
+  TipoClassificacao? tipoClassificacao;
 
-  TipoObservacao({this.id, this.descricao, this.tipoClassificacao});
+  TipoObservacao({
+    required this.id,
+    required this.descricao,
+    this.tipoClassificacao,
+  });
 
   @override
   bool operator ==(Object other) =>
@@ -17,17 +21,19 @@ class TipoObservacao {
               tipoClassificacao == other.tipoClassificacao;
 
   @override
-  int get hashCode => descricao.hashCode ^ id.hashCode ^ tipoClassificacao.hashCode;
+  int get hashCode => descricao.hashCode ^ id.hashCode ^ (tipoClassificacao?.hashCode ?? 0);
 
   factory TipoObservacao.fromJson(Map<String, dynamic> json) => TipoObservacao(
-    id: json["id"],
-    descricao: json["descricao"],
-    tipoClassificacao: TipoClassificacao.fromJson(json["tipo_classificacao"]),
+    id: json["id"] ?? 0,
+    descricao: json["descricao"] ?? '',
+    tipoClassificacao: json["tipo_classificacao"] != null 
+        ? TipoClassificacao.fromJson(json["tipo_classificacao"])
+        : TipoClassificacao(id: 0, descricao: ''),
   );
   Map<String, dynamic> toJson() => {
     "id": id,
     "descricao": descricao,
-    "tipo_classificacao": tipoClassificacao.toJson(),
+    "tipo_classificacao": tipoClassificacao?.toJson(),
   };
   // Map<String, dynamic> toJson() {
   //   final Map<String, dynamic> data = new Map<String, dynamic>();

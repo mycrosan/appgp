@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class EditDetalhesPaisPage extends StatefulWidget {
-  int id;
+  int id = 0;
   Pais paisEdit;
 
   EditDetalhesPaisPage({Key key, this.paisEdit}) : super(key: key);
@@ -20,20 +20,22 @@ class EditDetalhesPaisPage extends StatefulWidget {
 }
 
 class EditDetalhesPaisPageState extends State<EditDetalhesPaisPage> {
+  int id = 0;
+
   final _formkey = GlobalKey<FormState>();
 
-  TextEditingController textEditingControllerPais;
-  Pais pais;
+  late TextEditingController textEditingControllerPais;
+  late Pais pais;
 
   //Pais
   List<Pais> paisList = [];
-  Pais paisSelected;
+  late Pais paisSelected;
 
   @override
   void initState() {
     super.initState();
     textEditingControllerPais = new TextEditingController();
-    pais = new Pais();
+    pais = Pais(id: 0, descricao: '');
 
     PaisApi().getAll().then((List<Pais> value) {
       setState(() {

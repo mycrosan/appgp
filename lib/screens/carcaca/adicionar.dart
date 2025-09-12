@@ -14,10 +14,10 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
-import 'package:rounded_loading_button/rounded_loading_button.dart';
+// import 'package:rounded_loading_button/rounded_loading_button.dart'; // Removido por incompatibilidade
 import '../../models/responseMessage.dart';
 import 'ListaCarcacas.dart';
 
@@ -31,45 +31,56 @@ class AdicionarCarcacaPage extends StatefulWidget {
 class AdicionarCarcacaPageState extends State<AdicionarCarcacaPage> {
   final _formkey = GlobalKey<FormState>();
 
-  XFile _imageFile1;
-  List _imageFileList = [];
+  XFile? _imageFile1;
+  List<XFile>? _imageFileList;
 
   bool isVideo = false;
 
-  set _imageFile(XFile value) {
+  set _imageFile(XFile? value) {
     _imageFileList = value == null ? null : [value];
   }
 
-  final RoundedLoadingButtonController _btnController1 = RoundedLoadingButtonController();
+  // final RoundedLoadingButtonController _btnController1 = RoundedLoadingButtonController(); // Removido por incompatibilidade
 
-  String _retrieveDataError;
+  String? _retrieveDataError;
   final ImagePicker _picker = ImagePicker();
 
-  MaskedTextController textEditingControllerEtiqueta;
-  MaskedTextController textEditingControllerDot;
-  TextEditingController textEditingControllerModelo;
-  TextEditingController textEditingControllerMarca;
-  TextEditingController textEditingControllerMedida;
-  Carcaca carcaca;
+  late MaskedTextController textEditingControllerEtiqueta;
+  late TextEditingController textEditingControllerDot;
+  late TextEditingController textEditingControllerModelo;
+  late TextEditingController textEditingControllerMarca;
+  late TextEditingController textEditingControllerMedida;
+  late Carcaca carcaca;
 
+  //Modelo
+  late Modelo modeloSelected;
   List<Modelo> modeloList = [];
-  Modelo modeloSelected;
-
+  //Medida
+  late Medida medidaSelected;
   List<Medida> medidaList = [];
-  Medida medidaSelected;
-
+  //Pais
+  late Pais paisSelected;
   List<Pais> paisList = [];
-  Pais paisSelected;
 
   @override
   void initState() {
     super.initState();
     textEditingControllerEtiqueta = MaskedTextController(mask: '000000');
+    textEditingControllerDot = TextEditingController();
     textEditingControllerDot = MaskedTextController(mask: '0000');
     textEditingControllerModelo = TextEditingController();
     textEditingControllerMarca = TextEditingController();
     textEditingControllerMedida = TextEditingController();
-    carcaca = new Carcaca();
+    carcaca = Carcaca(
+      id: 0,
+      etiqueta: '',
+      dot: '',
+      marca: Marca(id: 0, descricao: ''),
+      medida: Medida(id: 0, descricao: ''),
+      pais: Pais(id: 0, descricao: ''),
+      modelo: Modelo(id: 0, descricao: ''),
+      imagem: ''
+    );
 
     ModeloApi().getAll().then((List<Modelo> value) {
       setState(() {

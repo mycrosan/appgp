@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:dropdown_search/dropdown_search.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:GPPremium/models/carcaca.dart';
 import 'package:GPPremium/models/matriz.dart';
 import 'package:GPPremium/models/medida.dart';
@@ -15,14 +15,15 @@ import 'package:GPPremium/service/carcacaapi.dart';
 import 'package:GPPremium/service/matrizapi.dart';
 import 'package:GPPremium/service/producaoapi.dart';
 import 'package:GPPremium/service/regraapi.dart';
-import 'package:esc_pos_printer/esc_pos_printer.dart';
-import 'package:esc_pos_utils/esc_pos_utils.dart';
+// Removido esc_pos_printer - substituído por printing/pdf
+// import 'package:esc_pos_printer/esc_pos_printer.dart';
+// import 'package:esc_pos_utils/esc_pos_utils.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:rounded_loading_button/rounded_loading_button.dart';
+// import 'package:rounded_loading_button/rounded_loading_button.dart'; // Removido por incompatibilidade
 
 import '../../components/ImagePreview.dart';
 import '../../components/snackBar.dart';
@@ -163,7 +164,7 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
 
   final _formkey = GlobalKey<FormState>();
 
-  XFile _imageFile1;
+  XFile? _imageFile1;
   List _imageFileList = [];
 
   bool isVideo = false;
@@ -172,51 +173,39 @@ class AdicionarProducaoPageState extends State<AdicionarProducaoPage> {
     _imageFileList = value == null ? null : [value];
   }
 
-  void _doSomething(RoundedLoadingButtonController controller) async {
-    Timer(Duration(seconds: 10), () {
-      controller.success();
-    });
-  }
+  // Removido RoundedLoadingButtonController por incompatibilidade
 
-  final RoundedLoadingButtonController _btnController1 =
-      RoundedLoadingButtonController();
-
-  String _retrieveDataError;
+  String? _retrieveDataError;
 
   final ImagePicker _picker = ImagePicker();
 
-  TextEditingController textEditingControllerCarcaca;
-  MaskedTextController textEditingControllerPneuRaspado;
-  TextEditingController textEditingControllerDados;
-  TextEditingController textEditingControllerRegra;
+  late TextEditingController textEditingControllerCarcaca;
+  late MaskedTextController textEditingControllerPneuRaspado;
+  late TextEditingController textEditingControllerDados;
+  late TextEditingController textEditingControllerRegra;
 
-  Medida medidaCarcaca;
-  Modelo modeloCarcaca;
-  Pais paisCarcaca;
-  bool mostrarCarcacaSelecionada = false;
+  late TextEditingController camelBackASerUsado;
+  late TextEditingController antiquebra1;
+  late TextEditingController antiquebra2;
+  late TextEditingController antiquebra3;
+  late TextEditingController espessuraemnto;
+  late TextEditingController tempo;
 
-  TextEditingController camelBackASerUsado;
-  TextEditingController antiquebra1;
-  TextEditingController antiquebra2;
-  TextEditingController antiquebra3;
-  TextEditingController espessuraemnto;
-  TextEditingController tempo;
+  late Producao producao;
 
-  Producao producao;
-
-  String inputMedidaPneuRapspado;
+  String inputMedidaPneuRapspado = '';
 
   //Pneu
   List<Carcaca> carcacaList = [];
-  Carcaca carcacaSelected;
+  late Carcaca carcacaSelected;
 
   //Regra
   List<Matriz> matrizList = [];
-  Matriz matrizSelected;
+  late Matriz matrizSelected;
 
   //Regra
   List<Regra> regraList = [];
-  Regra regraSelected;
+  late Regra regraSelected;
 
   @override
   void initState() {

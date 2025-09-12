@@ -11,7 +11,7 @@ class ResumoCarcacasPage extends StatefulWidget {
 }
 
 class _ResumoCarcacasPageState extends State<ResumoCarcacasPage> {
-  Timer _timer;
+  late Timer _timer;
   String _horaAtual = '';
 
   Map<String, int> carcaca = {

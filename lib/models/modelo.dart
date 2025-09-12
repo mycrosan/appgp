@@ -2,14 +2,14 @@ import 'marca.dart';
 
 class Modelo {
   Modelo({
-    this.id,
-    this.descricao,
+    required this.id,
+    required this.descricao,
     this.marca,
   });
 
   int id;
   String descricao;
-  Marca marca;
+  Marca? marca;
 
   @override
   bool operator ==(Object other) =>
@@ -32,6 +32,6 @@ class Modelo {
   Map<String, dynamic> toJson() => {
     "id": id,
     "descricao": descricao,
-    "marca": marca.toJson(),
+    "marca": marca?.toJson(),
   };
 }

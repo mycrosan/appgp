@@ -4,7 +4,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart'; // <-- import shimmer
 import '../../models/carcaca.dart';
@@ -31,26 +31,24 @@ class ListaProducao extends StatefulWidget {
 class ListaProducaoState extends State<ListaProducao> {
   final _formkey = GlobalKey<FormState>();
 
-  TextEditingController textEditingControllerModelo;
-  TextEditingController textEditingControllerMarca;
-  TextEditingController textEditingControllerMedida;
-  TextEditingController textEditingControllerCarcaca;
-  Producao producao;
+  late TextEditingController textEditingControllerModelo;
+  late TextEditingController textEditingControllerMarca;
+  late TextEditingController textEditingControllerMedida;
+  late TextEditingController textEditingControllerCarcaca;
+  late Producao producao;
 
-  var loading = ValueNotifier<bool>(true);
-  var _isList = ValueNotifier<bool>(true);
-
+  //Modelo
   List<Modelo> modeloList = [];
-  Modelo modeloSelected;
-
+  late Modelo modeloSelected;
+  //Medida
   List<Medida> medidaList = [];
-  Medida medidaSelected;
-
+  late Medida medidaSelected;
+  //Pais
   List<Pais> paisList = [];
-  Pais paisSelected;
-
+  late Pais paisSelected;
+  //Marca
   List<Marca> marcaList = [];
-  Marca marcaSelected;
+  late Marca marcaSelected;
 
   List<Producao> producaoList = [];
 

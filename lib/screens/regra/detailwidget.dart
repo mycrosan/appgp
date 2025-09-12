@@ -49,7 +49,7 @@ class DetalhesRegraPageState extends State<DetalhesRegraPage> {
                     children: [
                       Center(
                         child: Text(
-                          "Regra ${regra.id}",
+                          "Regra ${regra?.id ?? 0}",
                           style: TextStyle(
                             fontSize: 26,
                             fontWeight: FontWeight.bold,
@@ -60,21 +60,21 @@ class DetalhesRegraPageState extends State<DetalhesRegraPage> {
                       SizedBox(height: 20),
 
                       // Estes ficam em duas linhas
-                      _buildFieldTwoLines("Matriz", regra.matriz?.descricao ?? "NI"),
-                      _buildFieldTwoLines("Modelo", "${regra.modelo?.descricao ?? 'NI'} - ${regra.modelo?.marca?.descricao ?? ''}"),
+                      _buildFieldTwoLines("Matriz", regra?.matriz?.descricao ?? "NI"),
+                      _buildFieldTwoLines("Modelo", "${regra?.modelo?.descricao ?? 'NI'} - ${regra?.modelo?.marca?.descricao ?? ''}"),
 
                       Divider(height: 30),
 
                       // Estes ficam em uma linha só
-                      _buildFieldOneLine("Tamanho Mínimo", regra.tamanhoMin?.toStringAsFixed(3) ?? "NI"),
-                      _buildFieldOneLine("Tamanho Máximo", regra.tamanhoMax?.toStringAsFixed(3) ?? "NI"),
-                      _buildFieldOneLine("Anti quebra 1", regra.antiquebra1?.descricao ?? "NI"),
-                      _buildFieldOneLine("Anti quebra 2", regra.antiquebra2?.descricao ?? "NI"),
-                      _buildFieldOneLine("Anti quebra 3", regra.antiquebra3?.descricao ?? "NI"),
-                      _buildFieldOneLine("Espessuramento", regra.espessuramento?.descricao ?? "NI"),
-                      _buildFieldOneLine("Tempo", regra.tempo ?? "NI"),
-                      _buildFieldOneLine("Marca", regra.modelo?.marca?.descricao ?? "NI"),
-                      _buildFieldOneLine("Camelback", regra.camelback?.descricao ?? "NI"),
+                      _buildFieldOneLine("Tamanho Mínimo", regra?.tamanhoMin?.toStringAsFixed(3) ?? "NI"),
+                      _buildFieldOneLine("Tamanho Máximo", regra?.tamanhoMax?.toStringAsFixed(3) ?? "NI"),
+                      _buildFieldOneLine("Anti quebra 1", regra?.antiquebra1?.descricao ?? "NI"),
+                      _buildFieldOneLine("Anti quebra 2", regra?.antiquebra2?.descricao ?? "NI"),
+                      _buildFieldOneLine("Anti quebra 3", regra?.antiquebra3?.descricao ?? "NI"),
+                      _buildFieldOneLine("Espessuramento", regra?.espessuramento?.descricao ?? "NI"),
+                      _buildFieldOneLine("Tempo", regra?.tempo ?? "NI"),
+                      _buildFieldOneLine("Marca", regra?.modelo?.marca?.descricao ?? "NI"),
+                      _buildFieldOneLine("Camelback", regra?.camelback?.descricao ?? "NI"),
                     ],
                   ),
                 ),

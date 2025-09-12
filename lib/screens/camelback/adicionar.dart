@@ -16,8 +16,8 @@ class AdicionarCamelbackPageState extends State<AdicionarCamelbackPage> {
 
   final _formkey = GlobalKey<FormState>();
 
-  TextEditingController textEditingControllerCamelback;
-  Camelback camelback;
+  late TextEditingController textEditingControllerCamelback;
+  late Camelback camelback;
 
   void _showToast(BuildContext context) {
     final scaffold = ScaffoldMessenger.of(context);
@@ -41,7 +41,7 @@ class AdicionarCamelbackPageState extends State<AdicionarCamelbackPage> {
   void initState() {
     super.initState();
     textEditingControllerCamelback = TextEditingController();
-    camelback = Camelback();
+    camelback = Camelback(id: 0, descricao: '');
   }
 
   @override

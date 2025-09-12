@@ -32,21 +32,21 @@ class DetalhesRejeitadasPageState extends State<DetalhesRejeitadasPage> {
               return Column(children: [
                 Card(
                   child: ListTile(
-                    title: Text("Modelo: " + snapshot.data.modelo.descricao),
+                    title: Text("Modelo: " + (snapshot.data?.modelo?.descricao ?? '-')),
                     subtitle: Text('Medida: ' +
-                        snapshot.data.medida.descricao +
+                        (snapshot.data?.medida?.descricao ?? '-') +
                         "\n"
                             'Pais: ' +
-                        snapshot.data.pais.descricao +
+                        (snapshot.data?.pais?.descricao ?? '-') +
                         "\n"
                             'Motivo: ' +
-                        ((snapshot.data.motivo != null)
-                            ? snapshot.data.motivo.toString()
+                        ((snapshot.data?.motivo != null)
+                            ? snapshot.data!.motivo.toString()
                             : "NI") +
                         "\n"
                             'Observacao: ' +
-                        ((snapshot.data.descricao != null)
-                            ? snapshot.data.descricao.toString()
+                        ((snapshot.data?.descricao != null)
+                            ? snapshot.data!.descricao.toString()
                             : "NI")),
                   ),
                 ),

@@ -16,8 +16,8 @@ class AdicionarEspessuramentoPageState extends State<AdicionarEspessuramentoPage
 
   final _formkey = GlobalKey<FormState>();
 
-  TextEditingController textEditingControllerEspessuramento;
-  Espessuramento espessuramento;
+  late TextEditingController textEditingControllerEspessuramento;
+  late Espessuramento espessuramento;
 
   void _showToast(BuildContext context) {
     final scaffold = ScaffoldMessenger.of(context);
@@ -41,7 +41,7 @@ class AdicionarEspessuramentoPageState extends State<AdicionarEspessuramentoPage
   void initState() {
     super.initState();
     textEditingControllerEspessuramento = TextEditingController();
-    espessuramento = Espessuramento();
+    espessuramento = Espessuramento(id: 0, descricao: '');
   }
 
   @override

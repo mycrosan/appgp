@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class EditEspessuramentoPage extends StatefulWidget {
-  int id;
+  int id = 0;
   Espessuramento espessuramentoEdit;
 
   EditEspessuramentoPage({Key key, this.espessuramentoEdit}) : super(key: key);
@@ -18,20 +18,22 @@ class EditEspessuramentoPage extends StatefulWidget {
 }
 
 class EditEspessuramentoPageState extends State<EditEspessuramentoPage> {
+  int id = 0;
+
   final _formkey = GlobalKey<FormState>();
 
-  TextEditingController textEditingControllerEspessuramento;
-  Espessuramento espessuramento;
+  late TextEditingController textEditingControllerEspessuramento;
+  late Espessuramento espessuramento;
 
   //Espessuramento
   List<Espessuramento> espessuramentoList = [];
-  Espessuramento espessuramentoSelected;
+  late Espessuramento espessuramentoSelected;
 
   @override
   void initState() {
     super.initState();
     textEditingControllerEspessuramento = new TextEditingController();
-    espessuramento = new Espessuramento();
+    espessuramento = Espessuramento(id: 0, descricao: '');
 
     EspessuramentoApi().getAll().then((List<Espessuramento> value) {
       setState(() {

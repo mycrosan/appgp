@@ -11,6 +11,7 @@ import '../models/regra.dart';
 class ConfigRequest {
   Future<Response> requestGet(String endpoint) async {
     var jwt = await new AuthUtil().jwtOrEmpty;
+
     if (jwt != null) {
       http.Response response = await http.get(
         Uri.parse(SERVER_IP + endpoint),
@@ -22,13 +23,15 @@ class ConfigRequest {
       ).timeout(Duration(seconds: 60));
       return response;
     }
+    throw Exception('JWT não encontrado');
   }
 
   Future<Response> requestGetById(String endpoint, int id) async {
     var jwt = await new AuthUtil().jwtOrEmpty;
+
     if (jwt != null) {
       http.Response response = await http.get(
-        Uri.parse(SERVER_IP + endpoint + "/${id}"),
+        Uri.parse(SERVER_IP + endpoint + "/$id"),
         headers: {
           'Content-type': 'application/json',
           'Accept': 'application/json',
@@ -37,6 +40,7 @@ class ConfigRequest {
       ).timeout(Duration(seconds: 60));
       return response;
     }
+    throw Exception('JWT não encontrado');
   }
 
   Future<Response> requestPost(String endpoint, Map dataMap) async {
@@ -53,6 +57,7 @@ class ConfigRequest {
           body: bodyData);
       return response;
     }
+    throw Exception('JWT não encontrado');
   }
 
   Future<Response> requestUpdate(String endpoint, Map dataMap, int id) async {
@@ -70,19 +75,21 @@ class ConfigRequest {
               body: bodyData);
       return response;
     }
+    throw Exception('JWT não encontrado');
   }
 
   Future<Response> delete(String endpoint, int id) async {
     var jwt = await new AuthUtil().jwtOrEmpty;
+
     if (jwt != null) {
-      http.Response response = await http
-          .delete(Uri.parse(SERVER_IP + endpoint + "/${id}"), headers: {
-        'Content-type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $jwt'
-      }).timeout(Duration(seconds: 60));
+      var url = Uri.parse(SERVER_IP + endpoint + "/$id");
+      http.Response response = await http.delete(
+        url,
+        headers: {'Authorization': 'Bearer $jwt'},
+      ).timeout(Duration(seconds: 60));
       return response;
     }
+    throw Exception('JWT não encontrado');
   }
 
   Future<Response> requestQueryRegra(String endpoint, int matrizId,
@@ -101,6 +108,7 @@ class ConfigRequest {
       ).timeout(Duration(seconds: 60));
       return response;
     }
+    throw Exception('JWT não encontrado');
   }
 
   Future<Response> requestQueryCarcaca(
@@ -126,7 +134,7 @@ class ConfigRequest {
 
     var modeloId = rejeitada.modelo != null ? rejeitada.modelo.id : null;
 
-    var marcaId = rejeitada.modelo.marca != null ? rejeitada.modelo.marca.id : null;
+    var marcaId = rejeitada.modelo?.marca?.id;
 
     var medidaId = rejeitada.medida != null ? rejeitada.medida.id : null;
 
@@ -155,15 +163,15 @@ class ConfigRequest {
       String endpoint, Producao producao) async {
     var jwt = await new AuthUtil().jwtOrEmpty;
 
-    var modeloId = producao.carcaca.modelo != null ? producao.carcaca.modelo.id : null;
+    var modeloId = producao.carcaca?.modelo?.id;
     // if(producao.carcaca.modelo.marca != null)
-    var marcaId = producao.carcaca.modelo != null ? producao.carcaca.modelo.marca.id : null;
+    var marcaId = producao.carcaca?.modelo?.marca?.id;
 
-    var medidaId = producao.carcaca.medida != null ? producao.carcaca.medida.id : null;
+    var medidaId = producao.carcaca?.medida?.id;
 
-    var paisId = producao.carcaca.pais != null ? producao.carcaca.pais.id : null;
+    var paisId = producao.carcaca?.pais?.id;
 
-    var numeroEtiqueta = producao.carcaca.numeroEtiqueta != null ? producao.carcaca.numeroEtiqueta : null;
+    var numeroEtiqueta = producao.carcaca?.numeroEtiqueta;
 
     if (jwt != null) {
 
@@ -190,7 +198,7 @@ class ConfigRequest {
 
     var modeloId = regra.modelo != null ? regra.modelo.id : null;
 
-    var marcaId = regra.modelo.marca != null ? regra.modelo.marca.id : null;
+    var marcaId = regra.modelo?.marca?.id;
 
     var medidaId = regra.medida != null ? regra.medida.id : null;
 

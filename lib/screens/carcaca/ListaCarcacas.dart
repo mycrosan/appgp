@@ -5,7 +5,7 @@ import 'package:GPPremium/screens/carcaca/editdatawidget.dart';
 import 'package:GPPremium/service/carcacaapi.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../components/snackBar.dart';
@@ -19,10 +19,10 @@ class ListaCarcaca extends StatefulWidget {
 }
 
 class ListaCarcacaState extends State<ListaCarcaca> {
-  TextEditingController textEditingControllerCarcaca;
-  Carcaca _responseValue;
-  var _isList = ValueNotifier<bool>(false);
-  Future<List> _carcacasFuture;
+  late TextEditingController textEditingControllerCarcaca;
+  late Carcaca _responseValue;
+  late ValueNotifier<bool> _isList;
+  late Future<List> _carcacasFuture;
 
   @override
   void initState() {

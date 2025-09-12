@@ -20,46 +20,63 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  path:
+  
+  # Core dependencies
+  path: ^1.9.0
   http: ^1.1.0
   flutter_secure_storage: ^9.2.2
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
   provider: ^6.1.2
-  brasil_fields: ^1.14.1
-  date_time_picker: ^2.1.0
-  local_auth: ^2.1.8
-  http_interceptor: ^2.0.0
-  flutter_typeahead: ^5.2.0
+  equatable: ^2.0.5
+  intl: ^0.19.0
+  
+  # UI & Form dependencies
+  brasil_fields: ^1.15.0
   extended_masked_text: ^2.3.1
+  font_awesome_flutter: ^9.2.0
+  # rounded_loading_button: ^2.0.0  # Removido temporariamente por incompatibilidade
+  shimmer: ^3.0.0
+  dropdown_search: ^5.0.6
+  
+  # Icons
   flutter_vector_icons: ^2.0.0
   community_material_icon: ^5.9.55
   ionicons: ^0.2.2
   line_icons: ^2.0.3
-  equatable: ^2.0.5
+  
+  # Media & Scanner
   image_picker: ^1.0.7
-  #image_cropper: ^1.5.1
-  permission_handler:
-  usage: ^4.1.1
-  flutter_quill:
-  rounded_loading_button: ^3.0.0
-  printing: ^5.12.0
-  intl: ^0.19.0
+  mobile_scanner: ^5.2.0
+  
+  # Permissions & Device
+  permission_handler: ^11.3.1
+  local_auth: ^2.1.8
+  device_info_plus: ^10.1.0
+  network_info_plus: ^5.0.0
+  
+  # Files & Storage
   open_file: ^3.3.2
   path_provider: ^2.1.2
   url_launcher: ^6.2.5
-  device_info_plus: ^10.1.0
-  esc_pos_printer: ^4.1.0
-  esc_pos_utils: ^1.1.0
-  ping_discover_network: ^0.2.0+1
-  flutter_barcode_scanner: ^2.0.0
-  wifi_iot: ^0.3.18
-  flutter_svg: ^2.0.10+1
-  shimmer: ^3.0.0
-  dropdown_search: ^5.0.6
+  
+  # Rich Text Editor (versão compatível com Flutter 3)
+  flutter_quill: ^9.4.9
+  
+  # Charts
   fl_chart: ^0.66.2
-  font_awesome_flutter: ^10.7.0
+  
+  # SVG & Images
+  flutter_svg: ^2.0.10+1
+  
+  # Network
+  http_interceptor: ^2.0.0
+  
+  # WiFi (mantendo versão compatível)
+  wifi_iot: ^0.3.19
+  
+  # Printing (versão compatível para impressão fiscal)  
+  printing: ^5.9.3
+  # esc_pos_printer removido - causava conflitos
 
 dev_dependencies:
   flutter_test:

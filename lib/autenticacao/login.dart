@@ -13,12 +13,12 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool isLoading = false;
 
-  AnimationController _logoController;
-  Animation<double> _logoAnimation;
+  late AnimationController _logoController;
+  late Animation<double> _logoAnimation;
 
-  AnimationController _formController;
-  Animation<Offset> _formOffset;
-  Animation<double> _formOpacity;
+  late AnimationController _formController;
+  late Animation<Offset> _formOffset;
+  late Animation<double> _formOpacity;
 
   @override
   void initState() {

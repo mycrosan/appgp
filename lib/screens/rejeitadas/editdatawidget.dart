@@ -15,10 +15,10 @@ import '../../service/rejeitadasapi.dart';
 import 'ListaRejeitadas.dart';
 
 class EditarRejeitadasPage extends StatefulWidget {
-  int id;
-  Rejeitadas carcacaEdit;
+  final int id;
+  final Rejeitadas? carcacaEdit;
 
-  EditarRejeitadasPage({Key key, this.carcacaEdit}) : super(key: key);
+  const EditarRejeitadasPage({Key? key, required this.id, this.carcacaEdit}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -29,31 +29,38 @@ class EditarRejeitadasPage extends StatefulWidget {
 class EditarRejeitadasPageState extends State<EditarRejeitadasPage> {
   final _formkey = GlobalKey<FormState>();
 
-  TextEditingController textEditingControllerDescricao;
-  TextEditingController textEditingControllerMotivo;
+  late TextEditingController textEditingControllerDescricao;
+  late TextEditingController textEditingControllerMotivo;
 
-  Rejeitadas carcaca;
-  Image _image;
+  late Rejeitadas carcaca;
+  Image? _image;
   bool image_ok = false;
 
   //Modelo
   List<Modelo> modeloList = [];
-  Modelo modeloSelected;
+  Modelo? modeloSelected;
 
   //Medida
   List<Medida> medidaList = [];
-  Medida medidaSelected;
+  Medida? medidaSelected;
 
   //Pais
   List<Pais> paisList = [];
-  Pais paisSelected;
+  Pais? paisSelected;
 
   @override
   void initState() {
     super.initState();
     textEditingControllerDescricao = new TextEditingController();
     textEditingControllerMotivo = new TextEditingController();
-    carcaca = new Rejeitadas();
+    carcaca = Rejeitadas(
+      id: 0,
+      modelo: Modelo(id: 0, descricao: '', marca: null),
+      medida: Medida(id: 0, descricao: ''),
+      pais: Pais(id: 0, descricao: ''),
+      motivo: '',
+      descricao: ''
+    );
     // image = showImage( widget.carcacaEdit.fotos);
 
     ModeloApi().getAll().then((List<Modelo> value) {
@@ -78,14 +85,14 @@ class EditarRejeitadasPageState extends State<EditarRejeitadasPage> {
     });
 
     setState(() {
-      carcaca.id = widget.carcacaEdit.id;
-      carcaca.modelo = widget.carcacaEdit.modelo;
-      carcaca.medida = widget.carcacaEdit.medida;
-      carcaca.pais = widget.carcacaEdit.pais;
-      carcaca.motivo = widget.carcacaEdit.motivo;
-      carcaca.descricao = widget.carcacaEdit.descricao;
-      textEditingControllerMotivo.text = widget.carcacaEdit.motivo;
-      textEditingControllerDescricao.text = widget.carcacaEdit.descricao;
+      carcaca.id = widget.carcacaEdit?.id ?? 0;
+      carcaca.modelo = widget.carcacaEdit?.modelo ?? Modelo(id: 0, descricao: '', marca: null);
+      carcaca.medida = widget.carcacaEdit?.medida ?? Medida(id: 0, descricao: '');
+      carcaca.pais = widget.carcacaEdit?.pais ?? Pais(id: 0, descricao: '');
+      carcaca.motivo = widget.carcacaEdit?.motivo ?? '';
+      carcaca.descricao = widget.carcacaEdit?.descricao ?? '';
+      textEditingControllerMotivo.text = widget.carcacaEdit?.motivo ?? '';
+      textEditingControllerDescricao.text = widget.carcacaEdit?.descricao ?? '';
       modeloSelected = carcaca.modelo;
       medidaSelected = carcaca.medida;
       paisSelected = carcaca.pais;
@@ -125,7 +132,7 @@ class EditarRejeitadasPageState extends State<EditarRejeitadasPage> {
                     onChanged: (modelo) {
                       setState(() {
                         modeloSelected = modelo;
-                        carcaca.modelo = modeloSelected;
+                        if (modeloSelected != null) carcaca.modelo = modeloSelected!;
                       });
                     },
                     items: modeloList.map((modelo) {
@@ -147,7 +154,7 @@ class EditarRejeitadasPageState extends State<EditarRejeitadasPage> {
                     onChanged: (medida) {
                       setState(() {
                         medidaSelected = medida;
-                        carcaca.medida = medidaSelected;
+                        if (medidaSelected != null) carcaca.medida = medidaSelected!;
                       });
                     },
                     items: medidaList.map((medida) {
@@ -169,7 +176,7 @@ class EditarRejeitadasPageState extends State<EditarRejeitadasPage> {
                     onChanged: (pais) {
                       setState(() {
                         paisSelected = pais;
-                        carcaca.pais = paisSelected;
+                        if (paisSelected != null) carcaca.pais = paisSelected!;
                       });
                     },
                     items: paisList.map((pais) {

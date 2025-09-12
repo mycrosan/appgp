@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../models/producao.dart';
 import '../../models/cola.dart';
 import '../../service/producaoapi.dart';
@@ -17,7 +17,7 @@ class ListaColaPage extends StatefulWidget {
 class _ListaColaPageState extends State<ListaColaPage> {
   final _etiquetaController = TextEditingController();
   List<Cola> _itensCola = [];
-  Timer _timer;
+  late Timer _timer;
 
   @override
   void initState() {

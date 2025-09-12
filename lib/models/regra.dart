@@ -21,36 +21,36 @@ class Regra {
   Antiquebra antiquebra3;
   Espessuramento espessuramento;
 
-  Regra({this.id,
-    this.tamanhoMin,
-    this.tamanhoMax,
-    this.antiquebra1,
-    this.antiquebra2,
-    this.antiquebra3,
-    this.espessuramento,
-    this.tempo,
-    this.matriz,
-    this.medida,
-    this.modelo,
-    this.pais,
-    this.camelback,
+  Regra({
+    required this.id,
+    required this.tamanhoMin,
+    required this.tamanhoMax,
+    required this.antiquebra1,
+    required this.antiquebra2,
+    required this.antiquebra3,
+    required this.espessuramento,
+    required this.tempo,
+    required this.matriz,
+    required this.medida,
+    required this.modelo,
+    required this.pais,
+    required this.camelback,
   });
 
-  Regra.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    tamanhoMin = json['tamanho_min'];
-    tamanhoMax = json['tamanho_max'];
-    tempo = json['tempo'];
-    matriz = json['matriz'] != null ? new Matriz.fromJson(json['matriz']) : null;
-    medida = json['medida'] != null ? new Medida.fromJson(json['medida']) : null;
-    modelo = json['modelo'] != null ? new Modelo.fromJson(json['modelo']) : null;
-    pais = json['pais'] != null ? new Pais.fromJson(json['pais']) : null;
-    camelback = json['camelback'] != null ? new Camelback.fromJson(json['camelback']) : null;
-    antiquebra1 = json['antiquebra1'] != null ? new Antiquebra.fromJson(json['antiquebra1']) : null;
-    antiquebra2 = json['antiquebra2'] != null ? new Antiquebra.fromJson(json['antiquebra2']) : null;
-    antiquebra3 = json['antiquebra3'] != null ? new Antiquebra.fromJson(json['antiquebra3']) : null;
-    espessuramento = json['espessuramento'] != null ? new Espessuramento.fromJson(json['espessuramento']) : null;
-  }
+  Regra.fromJson(Map<String, dynamic> json)
+      : id = json['id'] ?? 0,
+        tamanhoMin = (json['tamanhoMin'] ?? 0.0).toDouble(),
+        tamanhoMax = (json['tamanhoMax'] ?? 0.0).toDouble(),
+        tempo = json['tempo'] ?? '',
+        matriz = json['matriz'] != null ? Matriz.fromJson(json['matriz']) : Matriz(id: 0, descricao: ''),
+        medida = json['medida'] != null ? Medida.fromJson(json['medida']) : Medida(id: 0, descricao: ''),
+        modelo = json['modelo'] != null ? Modelo.fromJson(json['modelo']) : Modelo(id: 0, descricao: ''),
+        pais = json['pais'] != null ? Pais.fromJson(json['pais']) : Pais(id: 0, descricao: ''),
+        camelback = json['camelback'] != null ? Camelback.fromJson(json['camelback']) : Camelback(id: 0, descricao: ''),
+        antiquebra1 = json['antiquebra1'] != null ? Antiquebra.fromJson(json['antiquebra1']) : Antiquebra(id: 0, descricao: ''),
+        antiquebra2 = json['antiquebra2'] != null ? Antiquebra.fromJson(json['antiquebra2']) : Antiquebra(id: 0, descricao: ''),
+        antiquebra3 = json['antiquebra3'] != null ? Antiquebra.fromJson(json['antiquebra3']) : Antiquebra(id: 0, descricao: ''),
+        espessuramento = json['espessuramento'] != null ? Espessuramento.fromJson(json['espessuramento']) : Espessuramento(id: 0, descricao: '');
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();

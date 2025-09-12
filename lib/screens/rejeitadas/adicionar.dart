@@ -11,7 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
-import 'package:rounded_loading_button/rounded_loading_button.dart';
+// import 'package:rounded_loading_button/rounded_loading_button.dart'; // Removido por incompatibilidade
 
 import '../../models/rejeitadas.dart';
 import '../../service/rejeitadasapi.dart';
@@ -26,6 +26,23 @@ class AdicionarRejeitadasPage extends StatefulWidget {
 }
 
 class AdicionarRejeitadasPageState extends State<AdicionarRejeitadasPage> {
+  late Rejeitadas carcaca;
+  late TextEditingController textEditingControllerDescricao;
+  
+  @override
+  void initState() {
+    super.initState();
+    textEditingControllerDescricao = TextEditingController();
+    carcaca = Rejeitadas(
+      id: 0,
+      modelo: Modelo(id: 0, descricao: '', marca: null),
+      medida: Medida(id: 0, descricao: ''),
+      pais: Pais(id: 0, descricao: ''),
+      motivo: '',
+      descricao: ''
+    );
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,69 +61,51 @@ class AdicionarRejeitadasPageState extends State<AdicionarRejeitadasPage> {
 
   final _formkey = GlobalKey<FormState>();
 
-  XFile _imageFile1;
-  List _imageFileList = [];
+  XFile? _imageFile1;
+  List<XFile>? _imageFileList;
 
-  bool isVideo = false;
-
-  set _imageFile(XFile value) {
+  set _imageFile(XFile? value) {
     _imageFileList = value == null ? null : [value];
   }
 
-  final RoundedLoadingButtonController _btnController1 =
-      RoundedLoadingButtonController();
+  // RoundedLoadingButtonController removido por incompatibilidade
 
-  String _retrieveDataError;
+  String? _retrieveDataError;
 
   final ImagePicker _picker = ImagePicker();
 
-  TextEditingController textEditingControllerModelo;
-  TextEditingController textEditingControllerMarca;
-  TextEditingController textEditingControllerMedida;
-  TextEditingController textEditingControllerDescricao;
-  Rejeitadas carcaca;
-
-  //Modelo
+  // Campos para dropdowns
   List<Modelo> modeloList = [];
-  Modelo modeloSelected;
-
-  //Medida
   List<Medida> medidaList = [];
-  Medida medidaSelected;
-
-  //Pais
   List<Pais> paisList = [];
-  Pais paisSelected;
+  Modelo? modeloSelected;
+  Medida? medidaSelected;
+  Pais? paisSelected;
+  bool isVideo = false;
+
+  // Campos duplicados removidos
 
   @override
   void initState() {
     super.initState();
-    textEditingControllerModelo = TextEditingController();
-    textEditingControllerMarca = TextEditingController();
-    textEditingControllerMedida = TextEditingController();
-    textEditingControllerDescricao = TextEditingController();
-    carcaca = new Rejeitadas();
-
-    ModeloApi().getAll().then((List<Modelo> value) {
-      setState(() {
-        modeloList = value;
-       
-      });
-    });
-
-    MedidaApi().getAll().then((List<Medida> value) {
-      setState(() {
-        medidaList = value;
+    // Carregamento das listas de dados
+    _carregarDados();
+  }
+  
+  void _carregarDados() async {
+    try {
+      final modelos = await ModeloApi().getAll();
+      final medidas = await MedidaApi().getAll();
+      final paises = await PaisApi().getAll();
       
-      });
-    });
-
-    PaisApi().getAll().then((List<Pais> value) {
       setState(() {
-        paisList = value;
-       
+        modeloList = modelos;
+        medidaList = medidas;
+        paisList = paises;
       });
-    });
+    } catch (e) {
+      print('Erro ao carregar dados: $e');
+    }
   }
 
   // XFile _imageFile;
@@ -119,7 +118,10 @@ class AdicionarRejeitadasPageState extends State<AdicionarRejeitadasPage> {
         imageQuality: 25,
       );
       setState(() {
-        _imageFileList.add(pickedFile);
+        if (pickedFile != null) {
+          _imageFileList ??= [];
+          _imageFileList!.add(pickedFile);
+        }
       });
     } catch (e) {
       setState(() {
@@ -145,15 +147,14 @@ class AdicionarRejeitadasPageState extends State<AdicionarRejeitadasPage> {
         });
       }
     } else {
-      _retrieveDataError = response.exception.code;
+      _retrieveDataError = response.exception?.code;
     }
   }
 
   Text _getRetrieveErrorWidget() {
-    final Text result = Text(_retrieveDataError);
+    final Text result = Text(_retrieveDataError ?? 'Erro desconhecido');
     _retrieveDataError = null;
     return result;
-      return null;
   }
 
   Widget _construirFormulario(context) {
@@ -168,10 +169,10 @@ class AdicionarRejeitadasPageState extends State<AdicionarRejeitadasPage> {
             validator: (value) => value == null ? 'Não pode ser nulo' : null,
             value: modeloSelected,
             isExpanded: true,
-            onChanged: (Modelo modelo) {
+            onChanged: (Modelo? modelo) {
               setState(() {
                 modeloSelected = modelo;
-                carcaca.modelo = modeloSelected;
+                if (modeloSelected != null) carcaca.modelo = modeloSelected!;
               });
             },
             items: modeloList.map((Modelo modelo) {
@@ -191,10 +192,10 @@ class AdicionarRejeitadasPageState extends State<AdicionarRejeitadasPage> {
             validator: (value) => value == null ? 'Não pode ser nulo' : null,
             value: medidaSelected,
             isExpanded: true,
-            onChanged: (Medida medida) {
+            onChanged: (Medida? medida) {
               setState(() {
                 medidaSelected = medida;
-                carcaca.medida = medidaSelected;
+                if (medidaSelected != null) carcaca.medida = medidaSelected!;
               });
             },
             items: medidaList.map((Medida medida) {
@@ -214,10 +215,10 @@ class AdicionarRejeitadasPageState extends State<AdicionarRejeitadasPage> {
             validator: (value) => value == null ? 'Não pode ser nulo' : null,
             value: paisSelected,
             isExpanded: true,
-            onChanged: (Pais pais) {
+            onChanged: (Pais? pais) {
               setState(() {
                 paisSelected = pais;
-                carcaca.pais = paisSelected;
+                if (paisSelected != null) carcaca.pais = paisSelected!;
               });
             },
             items: paisList.map((Pais pais) {
@@ -255,18 +256,14 @@ class AdicionarRejeitadasPageState extends State<AdicionarRejeitadasPage> {
               )),
               Padding(padding: EdgeInsets.all(5)),
               Expanded(
-                child: RoundedLoadingButton(
-                  color: Colors.black,
-                  successIcon: Icons.check,
-                  failedIcon: Icons.cottage,
+                child: ElevatedButton(
                   child: Text('Salvar!', style: TextStyle(color: Colors.white)),
-                  controller: _btnController1,
                   onPressed: () async {
-                    if (_formkey.currentState.validate()) {
+                    if (_formkey.currentState?.validate() ?? false) {
 
                       var response = await RejeitadasApi().create(carcaca);
 
-                      _btnController1.success();
+                      // Sucesso ao salvar
 
                       Navigator.push(
                         context,
@@ -275,7 +272,7 @@ class AdicionarRejeitadasPageState extends State<AdicionarRejeitadasPage> {
                         ),
                       );
                     } else {
-                      _btnController1.reset();
+                      // Erro na validação
                     }
                   },
                 ),

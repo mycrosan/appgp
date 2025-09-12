@@ -1,8 +1,9 @@
 import 'package:intl/intl.dart';
 import 'package:GPPremium/models/producao.dart';
 import 'package:GPPremium/service/producaoapi.dart';
-import 'package:esc_pos_printer/esc_pos_printer.dart';
-import 'package:esc_pos_utils/esc_pos_utils.dart';
+// Removido esc_pos_printer - substituído por printing/pdf
+// import 'package:esc_pos_printer/esc_pos_printer.dart';
+// import 'package:esc_pos_utils/esc_pos_utils.dart';
 import 'package:flutter/material.dart' hide Image;
 import 'package:ionicons/ionicons.dart';
 

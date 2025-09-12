@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class EditMatrizPage extends StatefulWidget {
-  int id;
+  int id = 0;
   Matriz matrizEdit;
 
   EditMatrizPage({Key key, this.matrizEdit}) : super(key: key);
@@ -21,20 +21,22 @@ class EditMatrizPage extends StatefulWidget {
 }
 
 class EditMatrizPageState extends State<EditMatrizPage> {
+  int id = 0;
+
   final _formkey = GlobalKey<FormState>();
 
-  TextEditingController textEditingControllerMatriz;
-  Matriz matriz;
+  late TextEditingController textEditingControllerMatriz;
+  late Matriz matriz;
 
   //Matriz
   List<Matriz> matrizList = [];
-  Matriz matrizSelected;
+  late Matriz matrizSelected;
 
   @override
   void initState() {
     super.initState();
     textEditingControllerMatriz = new TextEditingController();
-    matriz = new Matriz();
+    matriz = Matriz(id: 0, descricao: '');
 
     MatrizApi().getAll().then((List<Matriz> value) {
       setState(() {

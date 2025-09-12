@@ -24,13 +24,13 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdkVersion 35 // ✅ Atualizado para Flutter 3 e API 35
-    buildToolsVersion "35.0.1" // ✅ Build tools para Flutter 3
+    compileSdkVersion 34 // Compatível com Flutter 3.24.3
+    buildToolsVersion "34.0.0" // Build tools compatível
 
     defaultConfig {
-        applicationId "br.com.pneusgppremium.gpapp" // ✅ Altere para um nome único!
+        applicationId "br.com.pneusgppremium.gp_app"
         minSdkVersion 21
-        targetSdkVersion 35 // ✅ Obrigatório para publicação na Google Play
+        targetSdkVersion 34 // Compatível com Flutter 3.24.3
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
@@ -54,8 +54,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 

@@ -1,16 +1,15 @@
 class responseMessageSimple {
   String message;
-  List content;
+  List<dynamic> content;
 
   responseMessageSimple({
-    this.message,
-    this.content,
+    required this.message,
+    required this.content,
   });
 
-  responseMessageSimple.fromJson(Map<String, dynamic> json) {
-    message = json['message'];
-    content = json['content'];
-  }
+  responseMessageSimple.fromJson(Map<String, dynamic> json)
+      : message = json['message'] ?? '',
+        content = json['content'] ?? [];
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();

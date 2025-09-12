@@ -1,4 +1,5 @@
 import 'package:GPPremium/models/carcaca.dart';
+import 'package:GPPremium/models/marca.dart';
 import 'package:GPPremium/models/medida.dart';
 import 'package:GPPremium/models/modelo.dart';
 import 'package:GPPremium/models/pais.dart';
@@ -16,10 +17,10 @@ import '../../models/responseMessage.dart';
 import 'ListaCarcacas.dart';
 
 class EditarCarcacaPage extends StatefulWidget {
-  int id;
+  int id = 0;
   Carcaca carcacaEdit;
 
-  EditarCarcacaPage({Key key, this.carcacaEdit, producao}) : super(key: key);
+  EditarCarcacaPage({Key? key, this.carcacaEdit, producao}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -30,30 +31,39 @@ class EditarCarcacaPage extends StatefulWidget {
 class EditarCarcacaPageState extends State<EditarCarcacaPage> {
   final _formkey = GlobalKey<FormState>();
 
-  TextEditingController textEditingControllerEtiqueta;
-  TextEditingController textEditingControllerDot;
-  Carcaca carcaca;
-  Image _image;
+  late TextEditingController textEditingControllerEtiqueta;
+  late TextEditingController textEditingControllerDot;
+  late Carcaca carcaca;
+  Image? _image;
   bool image_ok = false;
 
   //Modelo
   List<Modelo> modeloList = [];
-  Modelo modeloSelected;
+  late Modelo modeloSelected;
 
   //Medida
   List<Medida> medidaList = [];
-  Medida medidaSelected;
+  late Medida medidaSelected;
 
   //Pais
   List<Pais> paisList = [];
-  Pais paisSelected;
+  late Pais paisSelected;
 
   @override
   void initState() {
     super.initState();
     textEditingControllerEtiqueta = new TextEditingController();
     textEditingControllerDot = new TextEditingController();
-    carcaca = new Carcaca();
+    carcaca = Carcaca(
+      id: 0,
+      etiqueta: '',
+      dot: '',
+      marca: Marca(id: 0, descricao: ''),
+      medida: Medida(id: 0, descricao: ''),
+      pais: Pais(id: 0, descricao: ''),
+      modelo: Modelo(id: 0, descricao: ''),
+      imagem: ''
+    );
     // image = showImage( widget.carcacaEdit.fotos);
 
     ModeloApi().getAll().then((List<Modelo> value) {

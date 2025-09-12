@@ -5,7 +5,7 @@ import 'package:GPPremium/service/qualidadeapi.dart';
 import 'package:extended_masked_text/extended_masked_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../models/carcaca.dart';
 import '../../models/classificacao.dart';
@@ -29,26 +29,29 @@ class ListaQualidade extends StatefulWidget {
 class ListaQualidadeState extends State<ListaQualidade> {
   final _formkey = GlobalKey<FormState>();
 
-  TextEditingController textEditingControllerModelo;
-  TextEditingController textEditingControllerMarca;
-  TextEditingController textEditingControllerMedida;
-  TextEditingController textEditingControllerCarcaca;
-  Qualidade qualidade;
+  late TextEditingController textEditingControllerModelo;
+  late TextEditingController textEditingControllerMarca;
+  late TextEditingController textEditingControllerMedida;
+  late TextEditingController textEditingControllerCarcaca;
+  late Qualidade qualidade;
 
   var loading = ValueNotifier<bool>(true);
 
+  //Classificacao
   List<TipoClassificacao> classificacaoList = [];
-  TipoClassificacao classificacaoSelected;
-
+  late TipoClassificacao classificacaoSelected;
+  //Observacao
   List<TipoObservacao> observacaoList = [];
-  TipoObservacao observavaoSelected;
+  late TipoObservacao observavaoSelected;
 
   List<Qualidade> qualidadeList = [];
   List<Producao> producaoList = [];
 
+  //Pesquisa
+  late Qualidade qualidadePesquisa;
+
   final _isList = ValueNotifier<bool>(false);
   final _isListQualidade = ValueNotifier<bool>(false);
-  Qualidade qualidadePesquisa;
 
   final DinamicShowCards listCards = DinamicShowCards();
 

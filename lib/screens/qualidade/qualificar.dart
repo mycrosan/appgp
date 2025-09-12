@@ -7,7 +7,7 @@ import 'package:GPPremium/screens/qualidade/ListaQualidade.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:rounded_loading_button/rounded_loading_button.dart';
+// import 'package:rounded_loading_button/rounded_loading_button.dart'; // Removido por incompatibilidade
 
 import '../../components/ImagePreview.dart';
 import '../../models/classificacao.dart';
@@ -20,10 +20,10 @@ import '../../service/tipo_observacacaoapi.dart';
 import '../../service/uploadapi.dart';
 
 class AdicionarQualificarPage extends StatefulWidget {
-  int id;
-  Producao producao;
+  final int id;
+  final Producao? producao;
 
-  AdicionarQualificarPage({Key key, this.producao}) : super(key: key);
+  const AdicionarQualificarPage({Key? key, required this.id, this.producao}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -49,34 +49,34 @@ class AdicionarQualificarPageState extends State<AdicionarQualificarPage> {
 
   final _formkey = GlobalKey<FormState>();
 
-  XFile _imageFile1;
-  List _imageFileList = [];
+  XFile? _imageFile1;
+  List<XFile>? _imageFileList = [];
 
   bool isVideo = false;
 
-  set _imageFile(XFile value) {
+  set _imageFile(XFile? value) {
     _imageFileList = value == null ? null : [value];
   }
 
   final RoundedLoadingButtonController _btnController1 =
       RoundedLoadingButtonController();
 
-  String _retrieveDataError;
+  String? _retrieveDataError;
 
   final ImagePicker _picker = ImagePicker();
 
-  TextEditingController textEditingControllerObservacao;
-  Qualidade qualidade;
+  late TextEditingController textEditingControllerObservacao;
+  late Qualidade qualidade;
 
   var loading = ValueNotifier<bool>(true);
 
   //Classificacão
   List<TipoClassificacao> classificacaoList = [];
-  TipoClassificacao classificacaoSelected;
+  TipoClassificacao? classificacaoSelected;
 
   //Observacação
   List<TipoObservacao> observacaoList = [];
-  TipoObservacao observacaoSelected;
+  TipoObservacao? observacaoSelected;
 
   List<Qualidade> qualidadeList = [];
 
@@ -84,7 +84,13 @@ class AdicionarQualificarPageState extends State<AdicionarQualificarPage> {
   void initState() {
     super.initState();
     textEditingControllerObservacao = TextEditingController();
-    qualidade = Qualidade();
+    qualidade = Qualidade(
+      id: 0,
+      producao: widget.producao ?? Producao(id: 0, dados: '', fotos: ''),
+      observacao: '',
+      fotos: '',
+      tipo_observacao: TipoObservacao(id: 0, descricao: '', tipoClassificacao: TipoClassificacao(id: 0, descricao: '')),
+    );
 
     TipoClassificacaoApi().getAll().then((List<TipoClassificacao> value) {
       setState(() {

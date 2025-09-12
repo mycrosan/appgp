@@ -16,8 +16,8 @@ class AdicionarPaisPageState extends State<AdicionarPaisPage> {
 
   final _formkey = GlobalKey<FormState>();
 
-  TextEditingController textEditingControllerPais;
-  Pais pais;
+  late TextEditingController textEditingControllerPais;
+  late Pais pais;
 
   void _showToast(BuildContext context) {
     final scaffold = ScaffoldMessenger.of(context);
@@ -41,7 +41,7 @@ class AdicionarPaisPageState extends State<AdicionarPaisPage> {
   void initState() {
     super.initState();
     textEditingControllerPais = TextEditingController();
-    pais = Pais();
+    pais = Pais(id: 0, descricao: '');
   }
 
   @override

@@ -18,12 +18,12 @@ class AdicionarModeloPage extends StatefulWidget {
 class AdicionarModeloPageState extends State<AdicionarModeloPage> {
   final _formkey = GlobalKey<FormState>();
 
-  TextEditingController textEditingControllerModelo;
-  Modelo modelo;
+  late TextEditingController textEditingControllerModelo;
+  late Modelo modelo;
 
   //Marca
   List<Marca> marcaList = [];
-  Marca marcaSelected;
+  late Marca marcaSelected;
 
   void _showToast(BuildContext context) {
     final scaffold = ScaffoldMessenger.of(context);
@@ -47,7 +47,7 @@ class AdicionarModeloPageState extends State<AdicionarModeloPage> {
   void initState() {
     super.initState();
     textEditingControllerModelo = TextEditingController();
-    modelo = Modelo();
+    modelo = Modelo(id: 0, descricao: '');
 
     MarcaApi().getAll().then((List<Marca> value) {
       setState(() {

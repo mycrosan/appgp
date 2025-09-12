@@ -11,9 +11,9 @@ class GPMenu extends StatelessWidget {
   const GPMenu(
       this.name,
       this.icon, {
-        Key key,
-        this.iconSvg,
-        @required this.onClick,
+        Key? key,
+        required this.iconSvg,
+        required this.onClick,
         this.color = Colors.black,
       }) : super(key: key);
 

@@ -4,8 +4,8 @@ class Espessuramento {
   String descricao;
 
   Espessuramento({
-    this.id,
-    this.descricao,
+    required this.id,
+    required this.descricao,
   });
 
   @override

@@ -31,42 +31,42 @@ class AdicionarRegraPage extends StatefulWidget {
 class AdicionarRegraPageState extends State<AdicionarRegraPage> {
   final _formkey = GlobalKey<FormState>();
 
-  MaskedTextController textEditingControllerTamanhoMin;
-  MaskedTextController textEditingControllerTamanhoMax;
-  TextEditingController textEditingControllerCamelback;
-  MaskedTextController textEditingControllerTempo;
-  TextEditingController pais;
-  Regra regra;
+  late MaskedTextController textEditingControllerTamanhoMin;
+  late MaskedTextController textEditingControllerTamanhoMax;
+  late TextEditingController textEditingControllerCamelback;
+  late MaskedTextController textEditingControllerTempo;
+  late TextEditingController pais;
+  late Regra regra;
 
   //Regra
   List<Matriz> matrizList = [];
-  Matriz matrizSelected;
+  Matriz? matrizSelected;
 
   //Medida
   List<Medida> medidaList = [];
-  Medida medidaSelected;
+  Medida? medidaSelected;
 
   //Modelo
   List<Modelo> modeloList = [];
-  Modelo modeloSelected;
+  Modelo? modeloSelected;
 
   //Pais
   List<Pais> paisList = [];
-  Pais paisSelected;
+  Pais? paisSelected;
 
   //Cameback
   List<Camelback> camelbackList = [];
-  Camelback camelbackSelected;
+  Camelback? camelbackSelected;
 
   //Antiquebra
   List<Antiquebra> antiquebraList = [];
-  Antiquebra antiquebra1Selected;
-  Antiquebra antiquebra2Selected;
-  Antiquebra antiquebra3Selected;
+  Antiquebra? antiquebra1Selected;
+  Antiquebra? antiquebra2Selected;
+  Antiquebra? antiquebra3Selected;
 
   //Espessuramento
   List<Espessuramento> espessuramentoList = [];
-  Espessuramento espessuramentoSelected;
+  Espessuramento? espessuramentoSelected;
 
   @override
   void initState() {
@@ -75,7 +75,21 @@ class AdicionarRegraPageState extends State<AdicionarRegraPage> {
     textEditingControllerTamanhoMax = MaskedTextController(mask: '0.000');
     textEditingControllerCamelback = TextEditingController();
     textEditingControllerTempo = MaskedTextController(mask: '000');
-    regra = Regra();
+    regra = Regra(
+      id: 0,
+      tamanhoMin: 0.0,
+      tamanhoMax: 0.0,
+      tempo: '',
+      matriz: Matriz(id: 0, descricao: ''),
+      medida: Medida(id: 0, descricao: ''),
+      modelo: Modelo(id: 0, descricao: ''),
+      pais: Pais(id: 0, descricao: ''),
+      camelback: Camelback(id: 0, descricao: ''),
+      antiquebra1: Antiquebra(id: 0, descricao: ''),
+      antiquebra2: Antiquebra(id: 0, descricao: ''),
+      antiquebra3: Antiquebra(id: 0, descricao: ''),
+      espessuramento: Espessuramento(id: 0, descricao: ''),
+    );
 
     pais = TextEditingController();
 
@@ -211,7 +225,7 @@ class AdicionarRegraPageState extends State<AdicionarRegraPage> {
                     labelText: "Tamanho mínimo",
                   ),
                   validator: (value) {
-                    if (value.length == 0) return 'Não pode ser nulo';
+                    if (value?.isEmpty ?? true) return 'Não pode ser nulo';
                     return null;
                   },
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
@@ -230,7 +244,7 @@ class AdicionarRegraPageState extends State<AdicionarRegraPage> {
                     labelText: "Tamanho máximo",
                   ),
                   validator: (value) {
-                    if (value.length == 0) return 'Não pode ser nulo';
+                    if (value?.isEmpty ?? true) return 'Não pode ser nulo';
                     return null;
                   },
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
@@ -331,7 +345,7 @@ class AdicionarRegraPageState extends State<AdicionarRegraPage> {
             decoration: InputDecoration(
               labelText: "Tempo",
             ),
-            validator: (value) => value.length == 0 ? 'Não pode ser nulo' : null,
+            validator: (value) => value?.isEmpty ?? true ? 'Não pode ser nulo' : null,
             keyboardType: TextInputType.numberWithOptions(decimal: true),
             onChanged: (String newValue) {
               setState(() {
@@ -356,7 +370,7 @@ class AdicionarRegraPageState extends State<AdicionarRegraPage> {
                 child: ElevatedButton(
                   child: Text("Salvar"),
                   onPressed: () async {
-                    if (_formkey.currentState.validate()) {
+                    if (_formkey.currentState?.validate() ?? false) {
                       var response = await RegraApi().create(regra);
                       if (response is Regra && response != null) {
                         Navigator.push(
@@ -367,7 +381,7 @@ class AdicionarRegraPageState extends State<AdicionarRegraPage> {
                         );
                       } else {
                         responseMessage value =
-                        response != null ? response : null;
+                        response as responseMessage?;
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {

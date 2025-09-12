@@ -16,8 +16,8 @@ class AdicionarMatrizPageState extends State<AdicionarMatrizPage> {
 
   final _formkey = GlobalKey<FormState>();
 
-  TextEditingController textEditingControllerMatriz;
-  Matriz matriz;
+  late TextEditingController textEditingControllerMatriz;
+  late Matriz matriz;
 
   void _showToast(BuildContext context) {
     final scaffold = ScaffoldMessenger.of(context);
@@ -41,7 +41,7 @@ class AdicionarMatrizPageState extends State<AdicionarMatrizPage> {
   void initState() {
     super.initState();
     textEditingControllerMatriz = TextEditingController();
-    matriz = Matriz();
+    matriz = Matriz(id: 0, descricao: '');
   }
 
   @override
