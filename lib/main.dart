@@ -42,10 +42,10 @@ final storage = FlutterSecureStorage();
 
 void main() {
   const bool isProduction = bool.fromEnvironment('dart.vm.product');
-  if(isProduction){
+  if (isProduction) {
     SERVER_IP = 'http://192.168.0.220:8080/gp/api/';
-  }else{
-    SERVER_IP = 'http://192.168.0.109:8080/api/';
+  } else {
+    SERVER_IP = 'http://192.168.0.169:8080/api/';
   }
   print("Produção?${isProduction}");
   runApp(GpPremiumApp());
@@ -104,10 +104,9 @@ class GpPremiumApp extends StatelessWidget {
           // ),
           elevatedButtonTheme: ElevatedButtonThemeData(
               style: ElevatedButton.styleFrom(
-                  primary: Colors.black,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-                 )),
+            primary: Colors.black,
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+          )),
           primaryColor: Colors.black,
           buttonTheme: ButtonThemeData(
             buttonColor: Colors.red,
