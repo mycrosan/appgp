@@ -119,11 +119,13 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                 prefixIcon: Icon(Icons.person_outline,
                                     color: Colors.black),
                                 filled: true,
-                                fillColor: Colors.white, // fundo branco do input
+                                fillColor:
+                                    Colors.white, // fundo branco do input
                                 labelStyle: TextStyle(color: Colors.black),
                               ),
-                              style:
-                              TextStyle(fontSize: 20, color: Colors.black), // texto preto
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.black), // texto preto
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Informe o usuário';
@@ -140,12 +142,14 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                 prefixIcon: Icon(Icons.lock_outline,
                                     color: Colors.black),
                                 filled: true,
-                                fillColor: Colors.white, // fundo branco do input
+                                fillColor:
+                                    Colors.white, // fundo branco do input
                                 labelStyle: TextStyle(color: Colors.black),
                               ),
                               obscureText: true,
-                              style:
-                              TextStyle(fontSize: 20, color: Colors.black), // texto preto
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.black), // texto preto
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Informe a senha';
@@ -169,54 +173,55 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                 ),
                                 child: isLoading
                                     ? CircularProgressIndicator(
-                                  color: Colors.white,
-                                )
+                                        color: Colors.white,
+                                      )
                                     : Text(
-                                  'Entrar',
-                                  style: TextStyle(
-                                      fontSize: 18, color: Colors.white),
-                                ),
+                                        'Entrar',
+                                        style: TextStyle(
+                                            fontSize: 18, color: Colors.white),
+                                      ),
                                 onPressed: isLoading
                                     ? null
                                     : () async {
-                                  if (_formKey.currentState.validate()) {
-                                    setState(() {
-                                      isLoading = true;
-                                    });
+                                        if (_formKey.currentState.validate()) {
+                                          setState(() {
+                                            isLoading = true;
+                                          });
 
-                                    var authApi = AuthApi();
-                                    var response = await authApi.auth({
-                                      "login": usuarioController.text,
-                                      "senha": senhaController.text,
-                                    });
+                                          var authApi = AuthApi();
+                                          var response = await authApi.auth({
+                                            "login": usuarioController.text,
+                                            "senha": senhaController.text,
+                                          });
 
-                                    setState(() {
-                                      isLoading = false;
-                                    });
+                                          setState(() {
+                                            isLoading = false;
+                                          });
 
-                                    if (response.status == true) {
-                                      Navigator.pushReplacementNamed(
-                                          context, "/home");
-                                    } else {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => AlertDialog(
-                                          title: Text("Mensagem"),
-                                          content: Text(
-                                              "${response.message}\n\n${response.error}"),
-                                          actions: [
-                                            TextButton(
-                                              child: Text("OK"),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    }
-                                  }
-                                },
+                                          if (response.status == true) {
+                                            Navigator.pushReplacementNamed(
+                                                context, "/home");
+                                          } else {
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) => AlertDialog(
+                                                title: Text("Mensagem"),
+                                                content: Text(
+                                                    "${response.message}\n\n${response.error}"),
+                                                actions: [
+                                                  TextButton(
+                                                    child: Text("OK"),
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          }
+                                        }
+                                      },
                               ),
                             ),
                           ],
@@ -229,7 +234,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 FadeTransition(
                   opacity: _formOpacity,
                   child: Text(
-                    'v1.6.1',
+                    'v1.7.0',
                     style: TextStyle(color: Colors.grey[600]),
                   ),
                 ),
