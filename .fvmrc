@@ -1,8 +1,4 @@
 {
-<<<<<<< HEAD
   "flutter": "2.10.5",
-=======
-  "flutter": "3.0.5",
->>>>>>> 41a653cdb863527e6d5d9f67fe69e7a65efab534
   "flavors": {}
 }

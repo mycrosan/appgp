@@ -39,7 +39,7 @@ dependencies:
   equatable: ^2.0.3
   image_picker: ^0.8.4+5
   #image_cropper: ^1.5.1
-  permission_handler:
+  permission_handler: ^10.0.0
   usage: ^4.0.2
   flutter_quill:
   rounded_loading_button: ^2.0.9
@@ -59,6 +59,7 @@ dependencies:
   dropdown_search: ^1.0.0
   fl_chart: ^0.45.1
   font_awesome_flutter: ^9.1.0
+  file_picker: ^4.6.1
 
 dev_dependencies:
   flutter_test:

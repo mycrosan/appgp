@@ -15,10 +15,8 @@
 *.iws
 .idea/
 .windsurf/
-<<<<<<< HEAD
-=======
 .vscode/
->>>>>>> 41a653cdb863527e6d5d9f67fe69e7a65efab534
+
 
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
