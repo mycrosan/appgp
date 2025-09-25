@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:GPPremium/service/carcacaapi.dart';
 import 'package:GPPremium/service/producaoapi.dart';
 import 'package:GPPremium/service/qualidadeapi.dart';
+import 'package:GPPremium/service/coberturaapi.dart';
 
 class ResumoCarcacasPage extends StatefulWidget {
   @override
@@ -40,6 +41,15 @@ class _ResumoCarcacasPageState extends State<ResumoCarcacasPage> {
     'ontem': 0,
     'hoje': 0,
   };
+  
+  Map<String, int> cobertura = {
+    'mesRetrasado': 0,
+    'mesPassado': 0,
+    'mesAtual': 0,
+    'anteontem': 0,
+    'ontem': 0,
+    'hoje': 0,
+  };
 
   @override
   void initState() {
@@ -64,6 +74,7 @@ class _ResumoCarcacasPageState extends State<ResumoCarcacasPage> {
       _carregarResumoCarcaca(),
       _carregarResumoProducao(),
       _carregarResumoQualidade(),
+      _carregarResumoCobertura(),
     ]);
   }
 
@@ -118,6 +129,24 @@ class _ResumoCarcacasPageState extends State<ResumoCarcacasPage> {
       });
     } catch (e) {
       print('Erro ao carregar resumo Qualidade: $e');
+    }
+  }
+  
+  Future<void> _carregarResumoCobertura() async {
+    try {
+      final resumo = await CoberturaApi().getResumo();
+      setState(() {
+        cobertura = {
+          'mesRetrasado': resumo['mesRetrasado'] ?? 0,
+          'mesPassado': resumo['mesPassado'] ?? 0,
+          'mesAtual': resumo['mesAtual'] ?? 0,
+          'anteontem': resumo['anteontem'] ?? 0,
+          'ontem': resumo['ontem'] ?? 0,
+          'hoje': resumo['hoje'] ?? 0,
+        };
+      });
+    } catch (e) {
+      print('Erro ao carregar resumo Cobertura: $e');
     }
   }
 
@@ -206,6 +235,7 @@ class _ResumoCarcacasPageState extends State<ResumoCarcacasPage> {
                       buildResumo("Carcaça", carcaca),
                       buildResumo("Produção", producao),
                       buildResumo("Qualidade", qualidade),
+                      buildResumo("Cobertura", cobertura),
                       SizedBox(height: 80),
                     ],
                   ),

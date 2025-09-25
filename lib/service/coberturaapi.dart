@@ -54,7 +54,6 @@ class CoberturaApi extends ChangeNotifier {
     }
   }
 
-
   // Criar uma nova cobertura
   Future<Object> create(Cobertura cobertura) async {
     print('📦 Enviando cobertura: ${jsonEncode(cobertura.toJson())}');
@@ -122,6 +121,24 @@ class CoberturaApi extends ChangeNotifier {
       return true;
     } else {
       throw Exception('Falha ao tentar excluir a cobertura');
+    }
+  }
+
+  // Obter resumo de coberturas por período
+  Future<Map<String, dynamic>> getResumo() async {
+    var objData = new ConfigRequest();
+    var response = await objData.requestGet('resumo/$ENDPOINT');
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      if (jsonData is Map<String, dynamic>) {
+        return jsonData;
+      }
+      return {};
+    } else if (response.statusCode == 404) {
+      return {};
+    } else {
+      throw Exception(
+          'Erro ao carregar resumo de coberturas: ${response.statusCode}');
     }
   }
 }
