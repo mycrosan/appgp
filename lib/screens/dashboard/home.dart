@@ -2,6 +2,8 @@ import 'package:GPPremium/autenticacao/login.dart';
 import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:GPPremium/service/usuarioapi.dart';
+import 'package:GPPremium/models/usuario.dart';
 import 'factory/menu.dart';
 
 class Home extends StatefulWidget {
@@ -12,6 +14,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with TickerProviderStateMixin {
   List<AnimationController> _controllers = [];
   List<Animation<double>> _opacityAnimations = [];
+  String nomeUsuario = '';
+  final UsuarioApi usuarioApi = UsuarioApi();
 
   final List<Map<String, dynamic>> menuItems = [
     {
@@ -75,6 +79,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    _buscarDadosUsuario();
 
     for (int i = 0; i < menuItems.length; i++) {
       final controller = AnimationController(
@@ -95,6 +100,21 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     }
   }
 
+  /// Busca os dados do usuário logado
+  Future<void> _buscarDadosUsuario() async {
+    try {
+      final usuario = await usuarioApi.me();
+      if (mounted) {
+        setState(() {
+          nomeUsuario = usuario.nome ?? '';
+        });
+      }
+    } catch (e) {
+      // Em caso de erro, mantém o nome vazio
+      print('Erro ao buscar dados do usuário: $e');
+    }
+  }
+
   @override
   void dispose() {
     for (var controller in _controllers) {
@@ -105,12 +125,24 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final title = "GP PREMIUM";
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Text(title),
+        title: Row(
+          children: [
+            Text("GP PREMIUM"),
+            if (nomeUsuario.isNotEmpty) ...[
+              SizedBox(width: 16),
+              Text(
+                "Olá $nomeUsuario!",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ],
+        ),
         actions: [
           PopupMenuButton(
             itemBuilder: (context) => [

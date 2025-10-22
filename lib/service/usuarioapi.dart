@@ -86,4 +86,16 @@ class UsuarioApi extends ChangeNotifier {
       throw Exception('Usuário não encontrado');
     }
   }
+
+  /// Busca os dados do usuário logado através do endpoint /api/usuario/me
+  Future<Usuario> me() async {
+    var objData = ConfigRequest();
+    var response = await objData.requestGet('$ENDPOINT/me');
+
+    if (response.statusCode == 200) {
+      return Usuario.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Erro ao buscar dados do usuário logado');
+    }
+  }
 }
