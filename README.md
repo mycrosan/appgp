@@ -92,3 +92,10 @@ Carlos
 
 fvm flutter run -d 11836f8
 
+
+
+http://localhost:8080/v3/api-docs
+http://localhost:8080/swagger-ui/index.html
+
+ git clean -fd - remove arquivos soltos
+

@@ -328,16 +328,29 @@ class PrintPageState extends State<PrintPage> {
                                                   fontWeight:
                                                       pw.FontWeight.bold)),
                                       // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
-                                      pw.Text(
-                                          widget.producaoPrint.regra.antiquebra1
-                                              .descricao,
-                                          textScaleFactor: 1.5,
-                                          textAlign: pw.TextAlign.center,
-                                          style: pw.Theme.of(context)
-                                              .defaultTextStyle
-                                              .copyWith(
-                                                fontWeight: pw.FontWeight.bold,
-                                              ))
+                                      widget.producaoPrint.regra.antiquebra1 !=
+                                              null && 
+                                          widget.producaoPrint.regra.antiquebra1.descricao != null &&
+                                          widget.producaoPrint.regra.antiquebra1.descricao.isNotEmpty
+                                          ? pw.Text(
+                                              widget.producaoPrint.regra
+                                                  .antiquebra1.descricao,
+                                              textScaleFactor: 1.5,
+                                              textAlign: pw.TextAlign.center,
+                                              style: pw.Theme.of(context)
+                                                  .defaultTextStyle
+                                                  .copyWith(
+                                                    fontWeight:
+                                                        pw.FontWeight.bold,
+                                                  ))
+                                          : pw.Text("NÃO",
+                                              textScaleFactor: 2,
+                                              textAlign: pw.TextAlign.center,
+                                              style: pw.Theme.of(context)
+                                                  .defaultTextStyle
+                                                  .copyWith(
+                                                      fontWeight:
+                                                          pw.FontWeight.bold))
                                     ])),
                                 pw.Container(
                                   width: 100.0,
@@ -356,7 +369,9 @@ class PrintPageState extends State<PrintPage> {
                                                     pw.FontWeight.bold)),
                                     // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
                                     widget.producaoPrint.regra.antiquebra2 !=
-                                            null
+                                            null && 
+                                        widget.producaoPrint.regra.antiquebra2.descricao != null &&
+                                        widget.producaoPrint.regra.antiquebra2.descricao.isNotEmpty
                                         ? pw.Text(
                                             widget.producaoPrint.regra
                                                 .antiquebra2.descricao,
@@ -397,7 +412,9 @@ class PrintPageState extends State<PrintPage> {
                                                     pw.FontWeight.bold)),
                                     // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
                                     widget.producaoPrint.regra.antiquebra3 !=
-                                            null
+                                            null && 
+                                        widget.producaoPrint.regra.antiquebra3.descricao != null &&
+                                        widget.producaoPrint.regra.antiquebra3.descricao.isNotEmpty
                                         ? pw.Text(
                                             widget.producaoPrint.regra
                                                 .antiquebra3.descricao,
@@ -411,6 +428,7 @@ class PrintPageState extends State<PrintPage> {
                                                 ))
                                         : pw.Text("NÃO",
                                             textScaleFactor: 2,
+                                            textAlign: pw.TextAlign.center,
                                             style: pw.Theme.of(context)
                                                 .defaultTextStyle
                                                 .copyWith(
@@ -437,7 +455,9 @@ class PrintPageState extends State<PrintPage> {
                                                     pw.FontWeight.bold)),
                                     // pw.Padding(padding: const pw.EdgeInsets.only(top: 0)),
                                     widget.producaoPrint.regra.espessuramento !=
-                                            null
+                                            null && 
+                                        widget.producaoPrint.regra.espessuramento.descricao != null &&
+                                        widget.producaoPrint.regra.espessuramento.descricao.isNotEmpty
                                         ? pw.Text(
                                             widget.producaoPrint.regra
                                                 .espessuramento.descricao,
